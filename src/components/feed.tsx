@@ -1,33 +1,33 @@
-import { useSession } from 'next-auth/react';
-import React from 'react';
-import MiniProfile from './mini-profile';
-import Posts from './posts';
-import Stories from './stories';
-import Suggestions from './suggestions';
+import { useSession } from "next-auth/react";
+import React from "react";
+import MiniProfile from "./mini-profile";
+import Posts from "./posts";
+import Stories from "./stories";
+import Suggestions from "./suggestions";
 
-type FeedProps = {
-  message: string;
-};
-
-const Feed: React.FC<FeedProps> = ({ message }) => {
+const Feed: React.FC = () => {
   const { data: session } = useSession();
   return (
-    <main className={`grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-3 xl:max-w-6xl mx-auto ${!session && "!grid-cols-1 !max-w-3xl"}`}>
+    <main
+      className={`mx-auto grid grid-cols-1 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${
+        !session && "!max-w-3xl !grid-cols-1"
+      }`}
+    >
       {/* Section */}
       <section className="col-span-2">
         {/* Stories */}
-        <Stories message={'Stories'} />
+        <Stories message={"Stories"} />
         {/* Posts */}
-        <Posts message={'Posts'} />
+        <Posts message={"Posts"} />
       </section>
       {/* Section */}
-      {/* Mini Profile */}
-      {/* Suggestions */}
       {session && (
-        <section className="hidden xl:inline-grid md:col-span-1">
+        <section className="hidden md:col-span-1 xl:inline-grid">
           <div className="fixed top-20">
-            <MiniProfile message={'Mini Profile'} />
-            <Suggestions message={'Bookmarked Officials '} />
+            {/* Mini Profile */}
+            <MiniProfile message={"Mini Profile"} />
+            {/* Suggestions */}
+            <Suggestions message={"Bookmarked Officials "} />
           </div>
         </section>
       )}

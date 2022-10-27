@@ -9,6 +9,8 @@ import { trpc } from "../utils/trpc";
 
 type VoteProps = {
   voteId: string;
+  congress: number;
+  chamber: string;
   rollCall: number;
   title: string;
   latestAction: string;
@@ -23,7 +25,7 @@ type VoteProps = {
 
 const Vote: React.FC<VoteProps> = ({
   voteId,
-  rollCall,
+  chamber,
   date,
   result,
   title,
@@ -68,7 +70,6 @@ const Vote: React.FC<VoteProps> = ({
 
   useEffect(() => {
     result === "Passed" ? setVoteResult(true) : setVoteResult(false);
-    console.log(data);
     if (data) setIsSaved(true);
   }, [result, data]);
 
@@ -147,6 +148,9 @@ const Vote: React.FC<VoteProps> = ({
           )}
         </div>
       </div>
+      <h2 className="text-gray-400">
+        Chamber: {chamber.charAt(0).toUpperCase() + chamber.slice(1)}
+      </h2>
       <h2>{title}</h2>
       <h2>{latestAction}</h2>
       {/* eslint-disable-next-line @next/next/no-img-element */}

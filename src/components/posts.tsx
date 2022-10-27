@@ -7,48 +7,6 @@ type PostsProps = {
   message: string;
 };
 
-const postsList = [
-  {
-    bill: {
-      title:
-        "To amend the Justice for United States Victims of State Sponsored Terrorism Act to authorize appropriations for catch-up payments from the United States Victims of State Sponsored Terrorism Fund.",
-      latest_action:
-        "Motion to reconsider laid on the table Agreed to without objection.",
-    },
-    description: "Fairness for 9/11 Families Act",
-    vote_type: "YEA-AND-NAY",
-    date: "2022-09-30",
-    time: "13:19:00",
-    result: "Passed",
-    democratic: {
-      yes: 219,
-      no: 1,
-      present: 0,
-      not_voting: 1,
-      majority_position: "Yes",
-    },
-    republican: {
-      yes: 181,
-      no: 30,
-      present: 0,
-      not_voting: 1,
-      majority_position: "Yes",
-    },
-    independent: {
-      yes: 0,
-      no: 0,
-      present: 0,
-      not_voting: 0,
-    },
-    total: {
-      yes: 400,
-      no: 31,
-      present: 0,
-      not_voting: 2,
-    },
-  },
-];
-
 const Posts: React.FC<PostsProps> = ({ message }) => {
   const { data, status } = trpc.example.getVotes.useQuery();
   if (status === "loading") {
@@ -107,6 +65,8 @@ const Posts: React.FC<PostsProps> = ({ message }) => {
                 date={vote.date}
                 rollCall={vote.rollCall}
                 voteId={vote.id}
+                congress={117}
+                chamber={vote.chamber}
               />
             </div>
           );

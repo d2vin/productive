@@ -1,9 +1,15 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { trpc } from "../utils/trpc";
 import Header from "../components/header";
 import Feed from "../components/feed";
+import MiniProfile from "../components/mini-profile";
+import Suggestions from "../components/suggestions";
+import Election from "../components/election";
+import ElectionFeed from "../components/election-feed";
 
-const Home: NextPage = () => {
+const Elections: NextPage = () => {
   return (
     <div className="bg-gray-50-h-screen overflow-y-scroll scrollbar-hide">
       <Head>
@@ -19,11 +25,9 @@ const Home: NextPage = () => {
       <div className="mb-16">
         <Header message={"Productive"} />
       </div>
-
-      {/* Feed */}
-      <Feed />
+      <ElectionFeed message="Midterm Senate Elections" />
     </div>
   );
 };
 
-export default Home;
+export default Elections;

@@ -14,6 +14,8 @@ const doBackfill = async () => {
   const allVotes = res.data.results.votes;
   const formattedVotes = (await allVotes).map(
     (vote: {
+      congress?: number;
+      chamber?: string;
       roll_call?: number;
       bill: {
         title?: string;
@@ -27,6 +29,8 @@ const doBackfill = async () => {
       independent?: object;
       total?: object;
     }) => ({
+      congress: vote.congress,
+      chamber: vote.chamber,
       rollCall: vote.roll_call,
       title: vote.bill.title,
       latestAction: vote.bill.latest_action,

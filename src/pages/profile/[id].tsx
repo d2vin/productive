@@ -21,7 +21,9 @@ const Profile: React.FC<ProfileProps> = ({}) => {
   }
   return (
     <>
-      <Header message={"Productive"} />
+      <div className="mb-16">
+        <Header message={"Productive"} />
+      </div>
       <main
         className={`mx-auto grid grid-cols-1 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${
           !session && "!max-w-3xl !grid-cols-1"

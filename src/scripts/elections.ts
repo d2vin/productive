@@ -10,29 +10,249 @@ const doBackfill = async () => {
       candidateA: "Mandela Barnes",
       candidateB: "Ron Johnson",
     },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "WA-S3",
+      candidateA: "Patty Murray",
+      candidateB: "Tiffany Smiley",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "VT-S3",
+      candidateA: "Peter Welch",
+      candidateB: "Gerald Malloy",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "UT-S3",
+      candidateA: "Evan McMullin",
+      candidateB: "Mike Lee",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "SD-S3",
+      candidateA: "Brian L. Bengs",
+      candidateB: "John R. Thune",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "SC-S3",
+      candidateA: "Krystle Matthews",
+      candidateB: "Tim Scott",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "PA-S3",
+      candidateA: "John Fetterman",
+      candidateB: "Mehmet Oz",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "OR-S3",
+      candidateA: "Ron Wyden",
+      candidateB: "Jo Rae Perkins",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "OK-S3",
+      candidateA: "Madison Horn",
+      candidateB: "James Lankford",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "OK-S2",
+      candidateA: "Kendra Horn",
+      candidateB: "Markwayne Mullin",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "OH-S3",
+      candidateA: "Tim Ryan",
+      candidateB: "J.D. Vance",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "NY-S3",
+      candidateA: "Charles E. Schumer",
+      candidateB: "Joe Pinion",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "NV-S3",
+      candidateA: "Catherine Cortez Masto",
+      candidateB: "Adam Paul Laxalt",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "NH-S3",
+      candidateA: "Maggie Hassan",
+      candidateB: "Donald C. Bolduc",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "ND-S3",
+      candidateA: "Katrina Christiansen",
+      candidateB: "John Hoeven",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "NC-S3",
+      candidateA: "Cheri Beasley",
+      candidateB: "Ted Budd",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "MO-S3",
+      candidateA: "Trudy Busch Valentine",
+      candidateB: "Eric Schmitt",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "MD-S3",
+      candidateA: "Chris Van Hollen",
+      candidateB: "Chris Chaffee",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "LA-S3",
+      candidateA: "Gary Chambers",
+      candidateB: "John Kennedy",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "KY-S3",
+      candidateA: "Charles Booker",
+      candidateB: "Rand Paul",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "KS-S3",
+      candidateA: "Mark R. Holland",
+      candidateB: "Jerry Moran",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "IN-S3",
+      candidateA: "Thomas McDermott",
+      candidateB: "Todd Young",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "IL-S3",
+      candidateA: "Tammy Duckworth",
+      candidateB: "Kathy Salvi",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "ID-S3",
+      candidateA: "David Roth",
+      candidateB: "Mike Crapo",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "IA-S3",
+      candidateA: "Michael Franken",
+      candidateB: "Chuck Grassley",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "HI-S3",
+      candidateA: "Brian Schatz",
+      candidateB: "Bob McDermott",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "GA-S3",
+      candidateA: "Raphael Warnock",
+      candidateB: "Herschel Junior Walker",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "FL-S3",
+      candidateA: "Val Demings",
+      candidateB: "Marco Rubio",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "CT-S3",
+      candidateA: "Richard Blumenthal",
+      candidateB: "Leora R. Levy",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "CO-S3",
+      candidateA: "Michael Bennet",
+      candidateB: "Joe O'Dea",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "CA-S3",
+      candidateA: "Alex Padilla",
+      candidateB: "Mark P. Meuser",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "AZ-S3",
+      candidateA: "Mark Kelly",
+      candidateB: "Blake Masters",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "AR-S3",
+      candidateA: "Natalie James",
+      candidateB: "John Boozman",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "AL-S3",
+      candidateA: "Will Boyd",
+      candidateB: "Katie Britt",
+    },
+    {
+      cycle: "2022",
+      branch: "Senate",
+      district: "AK-S3",
+      candidateA: "Lisa Murkowski",
+      candidateB: "Kelly Tshibaka",
+    },
   ];
 
-  const formattedElections = elections.map(
-    (election: {
-      cycle: string;
-      branch: string;
-      district: string;
-      candidateA: string;
-      candidateB: string;
-    }) => ({
-      cycle: election.cycle,
-      branch: election.branch,
-      district: election.district,
-      candidateA: election.candidateA,
-      candidateB: election.candidateB,
-    })
-  );
+  const creation = await prisma.senateElection.createMany({ data: elections });
 
-  // const creation = await prisma.vote.createMany({
-  //   data: formattedElections,
-  // });
-
-  // console.log("creation:", creation);
+  console.log("creation:", creation);
 };
 
 doBackfill();

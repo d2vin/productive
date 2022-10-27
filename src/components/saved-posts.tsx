@@ -65,6 +65,8 @@ const SavedPosts: React.FC<SavedPostsProps> = ({}) => {
                 date={vote.date}
                 rollCall={vote.rollCall}
                 voteId={vote.id}
+                congress={0}
+                chamber={vote.chamber}
               />
             </div>
           );

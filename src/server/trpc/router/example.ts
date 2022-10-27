@@ -94,26 +94,174 @@ export const exampleRouter = t.router({
         },
       });
     }),
-  getSenators: t.procedure.query(async () => {
-    const res = await axios.get(
-      "https://api.propublica.org/congress/v1/117/senate/members.json",
-      {
-        headers: {
-          "X-API-Key": "UfkwGLR7qYlW4i0fKxiLJ3kxIFnPp1lJolHy8hw8",
+  getSenator: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.senator.findUnique({
+        where: {
+          id: input.id,
         },
-      }
-    );
-    return res.data;
+      });
+    }),
+  getSponsoredLegislation: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const res = await axios.get(
+        `https://api.congress.gov/v3/member/${input.id}/sponsored-legislation/`,
+        {
+          params: {
+            api_key: process.env.CONGRESS_API,
+          },
+        }
+      );
+      return res.data;
+    }),
+  getSenators: t.procedure.query(async ({ ctx }) => {
+    return await ctx.prisma.senator.findMany();
   }),
-  getRepresentatives: t.procedure.query(async () => {
-    const res = await axios.get(
-      "https://api.propublica.org/congress/v1/117/house/members.json",
-      {
-        headers: {
-          "X-API-Key": "UfkwGLR7qYlW4i0fKxiLJ3kxIFnPp1lJolHy8hw8",
+  getRepresentative: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.representative.findUnique({
+        where: {
+          id: input.id,
         },
-      }
-    );
-    return res.data;
+      });
+    }),
+  getRepresentatives: t.procedure.query(async ({ ctx }) => {
+    return await ctx.prisma.representative.findMany();
   }),
+  getSenateElections: t.procedure.query(async ({ ctx }) => {
+    return await ctx.prisma.senateElection.findMany();
+  }),
+  getBookmarkedSenators: t.procedure.query(async ({ ctx }) => {
+    const bookmarkedSenators = await ctx.prisma.bookmarkedSenator.findMany({
+      where: {
+        userId: ctx.session?.user?.id,
+      },
+    });
+    const senators = [];
+    for (let i = 0; i < bookmarkedSenators.length; i++) {
+      const senator = await ctx.prisma.senator.findFirst({
+        where: {
+          id: bookmarkedSenators[i]?.senatorId,
+        },
+      });
+      senators.push(senator);
+    }
+    return senators;
+  }),
+  isBookmarkedSenator: t.procedure
+    .input(z.object({ senatorId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.bookmarkedSenator.findFirst({
+        where: {
+          senatorId: input.senatorId,
+        },
+      });
+    }),
+  bookmarkSenator: t.procedure
+    .input(
+      z.object({
+        userId: z.string(),
+        senatorId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.bookmarkedSenator.create({
+        data: input,
+      });
+    }),
+  unbookmarkSenator: t.procedure
+    .input(
+      z.object({
+        userId: z.string(),
+        senatorId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const bookmarkedSenator = await ctx.prisma.bookmarkedSenator.findFirst({
+        where: {
+          userId: input.userId,
+          senatorId: input.senatorId,
+        },
+      });
+      return await ctx.prisma.bookmarkedSenator.delete({
+        where: {
+          id: bookmarkedSenator?.id,
+        },
+      });
+    }),
+  getBookmarkedRepresentatives: t.procedure.query(async ({ ctx }) => {
+    const bookmarkedRepresentative =
+      await ctx.prisma.bookmarkedRepresentative.findMany({
+        where: {
+          userId: ctx.session?.user?.id,
+        },
+      });
+    const representatives = [];
+    for (let i = 0; i < bookmarkedRepresentative.length; i++) {
+      const representative = await ctx.prisma.representative.findFirst({
+        where: {
+          id: bookmarkedRepresentative[i]?.representativeId,
+        },
+      });
+      representatives.push(representative);
+    }
+    return representatives;
+  }),
+  isBookmarkedRepresentative: t.procedure
+    .input(z.object({ representativeId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.bookmarkedRepresentative.findFirst({
+        where: {
+          representativeId: input.representativeId,
+        },
+      });
+    }),
+  bookmarkRepresentative: t.procedure
+    .input(
+      z.object({
+        userId: z.string(),
+        representativeId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.bookmarkedRepresentative.create({
+        data: input,
+      });
+    }),
+  unbookmarkRepresentative: t.procedure
+    .input(
+      z.object({
+        userId: z.string(),
+        representativeId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const bookmarkedrepresentative =
+        await ctx.prisma.bookmarkedRepresentative.findFirst({
+          where: {
+            userId: input.userId,
+            representativeId: input.representativeId,
+          },
+        });
+      return await ctx.prisma.bookmarkedRepresentative.delete({
+        where: {
+          id: bookmarkedrepresentative?.id,
+        },
+      });
+    }),
 });

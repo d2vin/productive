@@ -32,8 +32,6 @@ const doBackfill = async () => {
       missed_votes: number;
       state: string;
       district: string;
-      senate_class: string;
-      state_rank: string;
       votes_with_party_pct: number;
       votes_against_party_pct: number;
     }) => ({
@@ -55,14 +53,12 @@ const doBackfill = async () => {
       missedVotes: representative.missed_votes,
       state: representative.state,
       district: representative.district,
-      senateClass: representative.senate_class,
-      stateRank: representative.state_rank,
       votesWithPartyPct: representative.votes_with_party_pct,
       votesAgainstPartyPct: representative.votes_against_party_pct,
     })
   );
 
-  const creation = await prisma.vote.createMany({
+  const creation = await prisma.representative.createMany({
     data: formattedRepresentatives,
   });
 
