@@ -65,7 +65,7 @@ const RepresentativesList: React.FC<RepresentativesListProps> = ({
           className="h-10 w-10 transform cursor-pointer rounded-full border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
           src={`https://theunitedstates.io/images/congress/225x275/${id}.jpg`}
           alt="Logo"
-          onClick={() => router.push(`/senator/${id}`)}
+          
         />
         <div className="ml-4 flex-1">
           <h2 className="text-sm font-semibold">
