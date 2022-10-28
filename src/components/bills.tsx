@@ -3,11 +3,7 @@ import { trpc } from "../utils/trpc";
 // import { trpc } from '../utils/trpc';
 import Vote from "./vote";
 
-type PostsProps = {
-  message: string;
-};
-
-const Posts: React.FC<PostsProps> = ({ message }) => {
+const Bills: React.FC = () => {
   const { data, status } = trpc.example.getVotes.useQuery();
   if (status === "loading") {
     return <p>Loading...</p>;
@@ -75,4 +71,4 @@ const Posts: React.FC<PostsProps> = ({ message }) => {
   );
 };
 
-export default Posts;
+export default Bills;

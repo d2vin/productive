@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import React from "react";
 import MiniProfile from "./mini-profile";
-import Posts from "./posts";
+import Bills from "./bills";
 import Stories from "./stories";
 import Suggestions from "./suggestions";
 
@@ -17,8 +17,8 @@ const Feed: React.FC = () => {
       <section className="col-span-2">
         {/* Stories */}
         <Stories message={"Stories"} />
-        {/* Posts */}
-        <Posts message={"Posts"} />
+        {/* Bills */}
+        <Bills />
       </section>
       {/* Section */}
       {session && (
