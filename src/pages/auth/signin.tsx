@@ -38,7 +38,7 @@ const SignIn: NextPage<SignInProps> = ({ providers }) => {
                 className="rounded-lg bg-blue-500 p-3 text-white"
                 onClick={() =>
                   signIn(provider.id, {
-                    callbackUrl: "/",
+                    callbackUrl: "https://productive-z4up.vercel.app",
                   })
                 }
               >

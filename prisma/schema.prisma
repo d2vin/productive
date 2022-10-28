@@ -178,3 +178,31 @@ model SenateElection {
     candidateA String
     candidateB String
 }
+
+// Congress API
+
+model SponsoredLegislation {
+    number           Int    @id
+    congress         Int
+    introducedDate   String
+    latestAction     String
+    latestActionDate String
+    policyArea       String
+    title            String
+    type             String
+    url              String
+    member           Member @relation(fields: [memberBioguideId], references: [bioguideId])
+    memberBioguideId String
+}
+
+model Member {
+    bioguideId           String                 @id
+    district             Int
+    firstName            String
+    lastName             String
+    party                String
+    chamber              String
+    state                String
+    url                  String
+    SponsoredLegislation SponsoredLegislation[]
+}
