@@ -1,15 +1,11 @@
-import {
-  CakeIcon,
-  DotsHorizontalIcon,
-  BookmarkIcon,
-} from "@heroicons/react/solid";
+import { DotsHorizontalIcon, BookmarkIcon } from "@heroicons/react/solid";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { trpc } from "../utils/trpc";
 
 type LegislationProps = {
   congress: number;
-  introducedDate: string;
+  latestActionDate: string;
   latestAction?: string;
   number: number;
   policyArea: string;
@@ -19,21 +15,19 @@ type LegislationProps = {
 
 const Legislation: React.FC<LegislationProps> = ({
   congress,
-  introducedDate,
+  latestActionDate,
   latestAction,
   number,
   policyArea,
   title,
   url,
 }) => {
-  const [party, setParty] = useState<string>("");
-  const [voteResult, setVoteResult] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   const { data: session } = useSession();
-  const saveMutation = trpc.example.saveVote.useMutation();
-  const unsaveMutation = trpc.example.unsaveVote.useMutation();
+  const saveMutation = trpc.vote.saveVote.useMutation();
+  const unsaveMutation = trpc.vote.unsaveVote.useMutation();
   // const { data, status } = trpc.example.isSaved.useQuery({ voteId: voteId });
 
   // const saveVote = async () => {
@@ -71,7 +65,7 @@ const Legislation: React.FC<LegislationProps> = ({
           <span className="font-semibold">{title}</span>
 
           <span className="text-sm font-semibold text-gray-600">
-            {introducedDate}
+            {latestActionDate}
           </span>
         </h1>
         <div className="flex flex-col items-end">
@@ -79,71 +73,67 @@ const Legislation: React.FC<LegislationProps> = ({
             onClick={() => setIsOpen(!isOpen)}
             className="inline-flex w-12 items-center justify-center rounded-md border border-gray-300 bg-white px-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-400"
           >
-            <DotsHorizontalIcon className="h-5 flex-shrink-0 hover:cursor-pointer" />
+            <DotsHorizontalIcon className="z-20 h-5 flex-shrink-0 hover:cursor-pointer" />
           </button>
           {isOpen && (
-            <div className="relative right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="rounded-md py-1 hover:bg-indigo-500">
-                {session ? (
-                  <>
-                    {isSaved ? (
-                      <>
-                        <button
-                          className="group flex w-full items-center px-4 py-2 text-sm text-gray-600 hover:text-white"
-                          // onClick={() => unsaveVote()}
-                        >
-                          {" "}
-                          <BookmarkIcon
-                            className="mr-3 h-5 w-5 text-gray-400 group-hover:text-white"
-                            aria-hidden="true"
-                          />{" "}
-                          <span>Unsave Legislation</span>
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          className="group flex w-full items-center px-4 py-2 text-sm text-gray-600 hover:text-white"
-                          // onClick={() => saveLegislation()}
-                        >
-                          {" "}
-                          <BookmarkIcon
-                            className="mr-3 h-5 w-5 text-gray-400 group-hover:text-white"
-                            aria-hidden="true"
-                          />{" "}
-                          <span>Save Legislation</span>
-                        </button>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="group flex w-full items-center px-4 py-2 text-sm text-gray-600 hover:text-white"
-                      // onClick={() => saveVote()}
-                    >
-                      {" "}
-                      <BookmarkIcon
-                        className="mr-3 h-5 w-5 text-gray-400 group-hover:text-white"
-                        aria-hidden="true"
-                      />{" "}
-                      <span>Sign In</span>
-                    </button>
-                  </>
-                )}
+            <div className="absolute pt-6">
+              <div className="relative right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="rounded-md py-1 hover:bg-indigo-500">
+                  {session ? (
+                    <>
+                      {isSaved ? (
+                        <>
+                          <button
+                            className="group flex w-full items-center px-4 py-2 text-sm text-gray-600 hover:text-white"
+                            // onClick={() => unsaveVote()}
+                          >
+                            {" "}
+                            <BookmarkIcon
+                              className="mr-3 h-5 w-5 text-gray-400 group-hover:text-white"
+                              aria-hidden="true"
+                            />{" "}
+                            <span>Unsave Legislation</span>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            className="group flex w-full items-center px-4 py-2 text-sm text-gray-600 hover:text-white"
+                            // onClick={() => saveLegislation()}
+                          >
+                            {" "}
+                            <BookmarkIcon
+                              className="mr-3 h-5 w-5 text-gray-400 group-hover:text-white"
+                              aria-hidden="true"
+                            />{" "}
+                            <span>Save Legislation</span>
+                          </button>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="group flex w-full items-center px-4 py-2 text-sm text-gray-600 hover:text-white"
+                        // onClick={() => saveVote()}
+                      >
+                        {" "}
+                        <BookmarkIcon
+                          className="mr-3 h-5 w-5 text-gray-400 group-hover:text-white"
+                          aria-hidden="true"
+                        />{" "}
+                        <span>Sign In</span>
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           )}
         </div>
       </div>
-      <h2 className="text-gray-400">{policyArea}</h2>
-      <h2>{latestAction}</h2>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      {/* <img
-        src="https://source.unsplash.com/random"
-        alt="Logo"
-        className="h-96 w-full object-cover"
-      /> */}
+      <h2 className="text-gray-400">Policy Area: {policyArea}</h2>
+      <h2>Latest Action: {latestAction}</h2>
     </div>
   );
 };

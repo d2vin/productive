@@ -19,12 +19,14 @@ const RepresentativesList: React.FC<RepresentativesListProps> = ({
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const router = useRouter();
   const { data: session } = useSession();
-  const bookmarkMutation = trpc.example.bookmarkRepresentative.useMutation();
+  const bookmarkMutation =
+    trpc.representative.bookmarkRepresentative.useMutation();
   const unbookmarkMutation =
-    trpc.example.unbookmarkRepresentative.useMutation();
-  const { data, status } = trpc.example.isBookmarkedRepresentative.useQuery({
-    representativeId: id,
-  });
+    trpc.representative.unbookmarkRepresentative.useMutation();
+  const { data, status } =
+    trpc.representative.isBookmarkedRepresentative.useQuery({
+      representativeId: id,
+    });
 
   const bookmarkRepresentative = async () => {
     const userId = session?.user?.id;
@@ -65,7 +67,6 @@ const RepresentativesList: React.FC<RepresentativesListProps> = ({
           className="h-10 w-10 transform cursor-pointer rounded-full border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
           src={`https://theunitedstates.io/images/congress/225x275/${id}.jpg`}
           alt="Logo"
-          
         />
         <div className="ml-4 flex-1">
           <h2 className="text-sm font-semibold">

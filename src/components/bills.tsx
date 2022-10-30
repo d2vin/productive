@@ -4,7 +4,8 @@ import { trpc } from "../utils/trpc";
 import Vote from "./vote";
 
 const Bills: React.FC = () => {
-  const { data, status } = trpc.example.getVotes.useQuery();
+  const { data, status } = trpc.vote.getVotes.useQuery();
+
   if (status === "loading") {
     return <p>Loading...</p>;
   }
@@ -14,7 +15,6 @@ const Bills: React.FC = () => {
 
   return (
     <div>
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       {data
         .slice(0, 20)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

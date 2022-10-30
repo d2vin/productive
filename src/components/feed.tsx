@@ -3,7 +3,7 @@ import React from "react";
 import MiniProfile from "./mini-profile";
 import Bills from "./bills";
 import Stories from "./stories";
-import Suggestions from "./suggestions";
+import Suggestions from "./bookmarked-officials";
 
 const Feed: React.FC = () => {
   const { data: session } = useSession();
@@ -14,9 +14,9 @@ const Feed: React.FC = () => {
       }`}
     >
       {/* Section */}
-      <section className="col-span-2">
+      <section className="col-span-2 mx-2 lg:mx-0">
         {/* Stories */}
-        <Stories message={"Stories"} />
+        <Stories />
         {/* Bills */}
         <Bills />
       </section>
@@ -25,7 +25,7 @@ const Feed: React.FC = () => {
         <section className="hidden md:col-span-1 xl:inline-grid">
           <div className="fixed top-20">
             {/* Mini Profile */}
-            <MiniProfile message={"Mini Profile"} />
+            <MiniProfile />
             {/* Suggestions */}
             <Suggestions message={"Bookmarked Officials "} />
           </div>

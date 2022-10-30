@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import { trpc } from "../utils/trpc";
 import Story from "./story";
 
-type StoriesProps = {
-  message: string;
-};
-
-const Stories: React.FC<StoriesProps> = ({ message }) => {
+const Stories: React.FC = () => {
   // const { data: session } = useSession();
   const [list, setList] = useState<boolean>(true);
-  const senators = trpc.example.getSenators.useQuery();
-  const representatives = trpc.example.getRepresentatives.useQuery();
+  const senators = trpc.senator.getSenators.useQuery();
+  const representatives = trpc.representative.getRepresentatives.useQuery();
 
   return (
     <>
@@ -44,7 +40,7 @@ const Stories: React.FC<StoriesProps> = ({ message }) => {
           </div>
         </div>
         <div className="flex space-x-2">
-          {/* Story */}
+          {/* User Story */}
           {/* {session && (
           <Story
             image={
@@ -59,16 +55,16 @@ const Stories: React.FC<StoriesProps> = ({ message }) => {
             }
           />
         )} */}
-
           {list &&
             senators.data
-              // .slice(0, 20)
-              ?.map((profile: { id: string; firstName: string }) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ?.map((profile: any) => {
                 return (
                   <Story
                     key={profile.id}
                     image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
-                    username={profile.firstName}
+                    firstName={profile.firstName}
+                    lastName={profile.lastName}
                     id={profile.id}
                     list={list}
                   />
@@ -76,13 +72,14 @@ const Stories: React.FC<StoriesProps> = ({ message }) => {
               })}
           {!list &&
             representatives.data
-              // .slice(0, 20)
-              ?.map((profile: { id: string; firstName: string }) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ?.map((profile: any) => {
                 return (
                   <Story
                     key={profile.id}
                     image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
-                    username={profile.firstName}
+                    firstName={profile.firstName}
+                    lastName={profile.lastName}
                     id={profile.id}
                     list={list}
                   />

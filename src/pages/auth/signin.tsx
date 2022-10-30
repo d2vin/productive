@@ -5,7 +5,6 @@ import {
   getProviders,
   LiteralUnion,
   signIn,
-  useSession,
 } from "next-auth/react";
 import React from "react";
 import Header from "../../components/header";
@@ -19,7 +18,6 @@ type SignInProps = {
 
 // Browser...
 const SignIn: NextPage<SignInProps> = ({ providers }) => {
-  const { data: session } = useSession();
   return (
     <>
       <Header message={"Productive"} />

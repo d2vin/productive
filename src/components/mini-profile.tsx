@@ -2,16 +2,11 @@ import React from "react";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 
-type MiniProfileProps = {
-  message: string;
-};
-
-const MiniProfile: React.FC<MiniProfileProps> = ({ message }) => {
+const MiniProfile: React.FC = () => {
   const { data: session } = useSession();
-  // console.log(session);
+
   return (
     <div className="mt-14 ml-10 flex items-center justify-between">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <Image
         src={
           typeof session?.user?.image === "string"
@@ -22,11 +17,9 @@ const MiniProfile: React.FC<MiniProfileProps> = ({ message }) => {
         width="36"
         alt="Profile"
         className="h-16 w-16 rounded-full border p-[2px]"
-        // className="h-10 rounded-full cursor-pointer"
       />
       <div className="mx-4 flex-1">
         <h2 className="font-bold">{session?.user?.name}</h2>
-        {/* <h3 className="text-sm text-gray-400">{message}</h3> */}
       </div>
       <button
         onClick={() => signOut()}

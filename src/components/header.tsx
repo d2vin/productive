@@ -19,7 +19,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ message }) => {
   const { data: session } = useSession();
-  const { data } = trpc.example.getSenators.useQuery();
+  const { data } = trpc.senator.getSenators.useQuery();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [filteredData, setFilteredData] = useState<Senator[]>([]);
@@ -69,35 +69,37 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
             />
           </div>
           {filteredData.length != 0 && (
-            <div className="absolute mt-2 max-h-48 w-[230px] overflow-hidden overflow-y-auto rounded-lg border bg-white p-1">
-              {filteredData?.map((value, k) => {
-                return (
-                  <div key={k}>
-                    <a
-                      href={`/senator/${value.id}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <div className="flex">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          className="h-8 w-8 transform cursor-pointer rounded-full border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
-                          src={`https://theunitedstates.io/images/congress/225x275/${value.id}.jpg`}
-                          alt="Logo"
-                        />
-                        <div className="ml-4 flex-1">
-                          <h2 className="text-sm font-semibold">
-                            {value.firstName} {value.lastName}
-                          </h2>
-                          <h3 className="text-xs text-gray-400">
-                            Party: {value.party}
-                          </h3>
+            <div className="absolute pl-3">
+              <div className="mt-2 max-h-48 w-[229px] overflow-hidden overflow-y-auto rounded-lg border bg-white sm:w-[208px]">
+                {filteredData?.map((value, k) => {
+                  return (
+                    <div key={k}>
+                      <a
+                        href={`/senator/${value.id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <div className="flex">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            className="h-8 w-8 transform cursor-pointer rounded-full border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
+                            src={`https://theunitedstates.io/images/congress/225x275/${value.id}.jpg`}
+                            alt="Logo"
+                          />
+                          <div className="ml-4 flex-1">
+                            <h2 className="text-sm font-semibold">
+                              {value.firstName} {value.lastName}
+                            </h2>
+                            <h3 className="text-xs text-gray-400">
+                              Party: {value.party}
+                            </h3>
+                          </div>
                         </div>
-                      </div>
-                    </a>
-                  </div>
-                );
-              })}
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

@@ -2,15 +2,11 @@ import { useSession } from "next-auth/react";
 import React from "react";
 import Header from "../../components/header";
 import MiniProfile from "../../components/mini-profile";
-import SavedPosts from "../../components/saved-posts";
-import Suggestions from "../../components/suggestions";
+import SavedVotes from "../../components/saved-votes";
+import Suggestions from "../../components/bookmarked-officials";
 import { trpc } from "../../utils/trpc";
 
-type ProfileProps = {
-  message: string;
-};
-
-const Profile: React.FC<ProfileProps> = ({}) => {
+const Profile: React.FC = () => {
   const { data: session } = useSession();
   const { status } = trpc.auth.getSession.useQuery();
   if (status === "loading") {
@@ -30,18 +26,18 @@ const Profile: React.FC<ProfileProps> = ({}) => {
         }`}
       >
         {/* Section */}
-        <section className="col-span-2">
+        <section className="col-span-2 mx-2 lg:mx-0">
           <h1 className="mt-20 text-4xl font-semibold">Your Saved Votes</h1>
           {/* Posts */}
-          <SavedPosts message={"Posts"} />
+          <SavedVotes />
         </section>
         {/* Section */}
-        {/* Mini Profile */}
-        {/* Suggestions */}
         {session && (
           <section className="hidden md:col-span-1 xl:inline-grid">
             <div className="fixed top-20">
-              <MiniProfile message={"Mini Profile"} />
+              {/* Mini Profile */}
+              <MiniProfile />
+              {/* Suggestions */}
               <Suggestions message={"Bookmarked Officials "} />
             </div>
           </section>

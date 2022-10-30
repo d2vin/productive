@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const prisma = new PrismaClient();
 const doBackfill = async () => {
   const res = await axios.get(

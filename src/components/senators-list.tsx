@@ -19,9 +19,10 @@ const SenatorsList: React.FC<SenatorsListProps> = ({
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const router = useRouter();
   const { data: session } = useSession();
-  const bookmarkMutation = trpc.example.bookmarkSenator.useMutation();
-  const unbookmarkMutation = trpc.example.unbookmarkSenator.useMutation();
-  const { data, status } = trpc.example.isBookmarkedSenator.useQuery({
+  const bookmarkMutation = trpc.senator.bookmarkSenator.useMutation();
+  const unbookmarkMutation = trpc.senator.unbookmarkSenator.useMutation();
+  const { data, status } = trpc.senator.isBookmarkedSenator.useQuery({
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     senatorId: id,
   });
 

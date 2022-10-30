@@ -2,22 +2,19 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { trpc } from "../utils/trpc";
 
-type SuggestionsProps = {
+type BookmarkedOfficialsProps = {
   message: string;
 };
 
-const Suggestions: React.FC<SuggestionsProps> = ({ message }) => {
-  const router = useRouter();
+const BookmarkedOfficials: React.FC<BookmarkedOfficialsProps> = ({
+  message,
+}) => {
   const [list, setList] = useState(true);
-  const senators = trpc.example.getBookmarkedSenators.useQuery();
-  console.log(senators.data);
-  const representatives = trpc.example.getBookmarkedRepresentatives.useQuery();
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
-  if (status === "error") {
-    return <p>Loading...</p>;
-  }
+  const router = useRouter();
+  const senators = trpc.senator.getBookmarkedSenators.useQuery();
+  const representatives =
+    trpc.representative.getBookmarkedRepresentatives.useQuery();
+
   return (
     <div className="mt-4 ml-10">
       <div className="mb-5 flex justify-between space-x-8 text-sm">
@@ -39,7 +36,7 @@ const Suggestions: React.FC<SuggestionsProps> = ({ message }) => {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  className="h-10 w-10 transform cursor-pointer rounded-full border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
+                  className="h-10 transform cursor-pointer rounded-md border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
                   src={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
                   alt="Logo"
                 />
@@ -66,7 +63,7 @@ const Suggestions: React.FC<SuggestionsProps> = ({ message }) => {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  className="h-10 w-10 transform cursor-pointer rounded-full border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
+                  className="h-10 transform cursor-pointer rounded-md border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
                   src={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
                   alt="Logo"
                 />
@@ -88,4 +85,4 @@ const Suggestions: React.FC<SuggestionsProps> = ({ message }) => {
   );
 };
 
-export default Suggestions;
+export default BookmarkedOfficials;

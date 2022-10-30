@@ -9,8 +9,8 @@ type OfficialsListProps = {
 
 const OfficialsList: React.FC<OfficialsListProps> = ({ message }) => {
   const [list, setList] = useState<boolean>(true);
-  const senators = trpc.example.getSenators.useQuery();
-  const representatives = trpc.example.getRepresentatives.useQuery();
+  const senators = trpc.senator.getSenators.useQuery();
+  const representatives = trpc.representative.getRepresentatives.useQuery();
 
   return (
     <>

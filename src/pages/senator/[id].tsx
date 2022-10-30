@@ -1,29 +1,27 @@
 import React from "react";
 import Header from "../../components/header";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { trpc } from "../../utils/trpc";
 import Link from "next/link";
 import Sponsored from "../../components/sponsored";
 
-type OfficialProfileProps = {
-  message: string;
-};
-
-const OfficialProfile: React.FC<OfficialProfileProps> = ({ message }) => {
-  const { data: session } = useSession();
+const OfficialProfile: React.FC = () => {
   const router = useRouter();
   const query = router.query;
-  const { data, status } = trpc.example.getSenator.useQuery({
+  const { data, status } = trpc.senator.getSenator.useQuery({
     id: query.id as string,
   });
 
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return (
+      <div className="mb-16">
+        <Header message="Productive" />
+      </div>
+    );
   }
   if (status === "error") {
-    return <p>Loading...</p>;
+    return <p>Error...</p>;
   }
 
   return (
@@ -35,7 +33,7 @@ const OfficialProfile: React.FC<OfficialProfileProps> = ({ message }) => {
         className={`mx-auto grid grid-cols-1 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${"!max-w-3xl !grid-cols-1"}`}
       >
         {/* Section */}
-        <section className="col-span-2">
+        <section className="col-span-2 mx-2 lg:mx-0">
           <div className="mt-20 text-4xl font-semibold">
             <div className="flex justify-between">
               <div className="ml-12">
@@ -115,7 +113,7 @@ const OfficialProfile: React.FC<OfficialProfileProps> = ({ message }) => {
           </div>
         </section>
         {/* Section */}
-        <section>
+        <section className="mx-2 lg:mx-0">
           <Sponsored id={query.id as string} />
         </section>
       </main>

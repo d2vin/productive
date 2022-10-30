@@ -1,14 +1,10 @@
 import React from "react";
 import { trpc } from "../utils/trpc";
-// import { trpc } from '../utils/trpc';
 import Vote from "./vote";
 
-type SavedPostsProps = {
-  message: string;
-};
+const SavedVotes: React.FC = () => {
+  const { data, status } = trpc.vote.getSavedVotes.useQuery();
 
-const SavedPosts: React.FC<SavedPostsProps> = ({}) => {
-  const { data, status } = trpc.example.getSavedVotes.useQuery();
   if (status === "loading") {
     return <p>Loading...</p>;
   }
@@ -75,4 +71,4 @@ const SavedPosts: React.FC<SavedPostsProps> = ({}) => {
   );
 };
 
-export default SavedPosts;
+export default SavedVotes;

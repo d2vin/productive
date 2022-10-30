@@ -3,9 +3,9 @@ import Head from "next/head";
 import { useSession } from "next-auth/react";
 import Header from "../components/header";
 import MiniProfile from "../components/mini-profile";
-import Suggestions from "../components/suggestions";
+import Suggestions from "../components/bookmarked-officials";
 import OfficialsList from "../components/officials-list";
-import { BookmarkIcon } from "@heroicons/react/solid";
+// import { BookmarkIcon } from "@heroicons/react/solid";
 
 const Officials: NextPage = () => {
   const { data: session } = useSession();
@@ -36,12 +36,12 @@ const Officials: NextPage = () => {
           <OfficialsList message="Senators" />
         </section>
         {/* Section */}
-        {/* Mini Profile */}
-        {/* Suggestions */}
         {session && (
           <section className="hidden md:col-span-1 xl:inline-grid">
             <div className="fixed top-20">
-              <MiniProfile message={"Mini Profile"} />
+              {/* Mini Profile */}
+              <MiniProfile />
+              {/* Suggestions */}
               <Suggestions message={"Bookmarked Officials "} />
             </div>
           </section>

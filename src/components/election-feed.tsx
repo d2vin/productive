@@ -3,7 +3,7 @@ import React from "react";
 import { trpc } from "../utils/trpc";
 import Election from "./election";
 import MiniProfile from "./mini-profile";
-import Suggestions from "./suggestions";
+import Suggestions from "./bookmarked-officials";
 
 type ElectionFeedProps = {
   message: string;
@@ -11,7 +11,7 @@ type ElectionFeedProps = {
 
 const ElectionFeed: React.FC<ElectionFeedProps> = ({ message }) => {
   const { data: session } = useSession();
-  const { data, status } = trpc.example.getSenateElections.useQuery();
+  const { data } = trpc.election.getSenateElections.useQuery();
 
   return (
     <>
@@ -27,7 +27,6 @@ const ElectionFeed: React.FC<ElectionFeedProps> = ({ message }) => {
           </h1>
           {/* Elections */}
           <div>
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {data
               ?.slice(0, 34)
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,7 +51,7 @@ const ElectionFeed: React.FC<ElectionFeedProps> = ({ message }) => {
           <section className="hidden md:col-span-1 xl:inline-grid">
             <div className="fixed top-20">
               {/* Mini Profile */}
-              <MiniProfile message={"Mini Profile"} />
+              <MiniProfile />
               {/* Suggestions */}
               <Suggestions message={"Bookmarked Officials "} />
             </div>
