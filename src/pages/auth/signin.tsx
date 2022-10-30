@@ -36,7 +36,7 @@ const SignIn: NextPage<SignInProps> = ({ providers }) => {
                 className="rounded-lg bg-blue-500 p-3 text-white"
                 onClick={() =>
                   signIn(provider.id, {
-                    callbackUrl: "https://productive.vote",
+                    callbackUrl: "https://www.productive.vote",
                   })
                 }
               >
