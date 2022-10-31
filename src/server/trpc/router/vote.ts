@@ -38,6 +38,7 @@ export const voteRouter = t.router({
       return await ctx.prisma.savedVote.findFirst({
         where: {
           voteId: input.voteId,
+          userId: ctx.session?.user?.id,
         },
       });
     }),

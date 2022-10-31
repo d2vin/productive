@@ -42,6 +42,7 @@ export const representativeRouter = t.router({
       return await ctx.prisma.bookmarkedRepresentative.findFirst({
         where: {
           representativeId: input.representativeId,
+          userId: ctx.session?.user?.id,
         },
       });
     }),

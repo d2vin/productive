@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
@@ -22,7 +22,6 @@ const SenatorsList: React.FC<SenatorsListProps> = ({
   const bookmarkMutation = trpc.senator.bookmarkSenator.useMutation();
   const unbookmarkMutation = trpc.senator.unbookmarkSenator.useMutation();
   const { data, status } = trpc.senator.isBookmarkedSenator.useQuery({
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     senatorId: id,
   });
 
@@ -61,7 +60,7 @@ const SenatorsList: React.FC<SenatorsListProps> = ({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          className="h-10 w-10 transform cursor-pointer rounded-full border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
+          className="h-10 transform cursor-pointer rounded-md border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
           src={`https://theunitedstates.io/images/congress/225x275/${id}.jpg`}
           alt="Logo"
           onClick={() => router.push(`/senator/${id}`)}
@@ -75,15 +74,23 @@ const SenatorsList: React.FC<SenatorsListProps> = ({
         <button
           className="text-xs font-bold text-blue-400"
           onClick={
-            isBookmarked ? () => unbookmarkSenator() : () => bookmarkSenator()
+            session
+              ? isBookmarked
+                ? () => unbookmarkSenator()
+                : () => bookmarkSenator()
+              : () => signIn()
           }
         >
           {status === "loading" ? (
             <p className="animate-pulse text-gray-400">...</p>
-          ) : isBookmarked ? (
-            "Unbookmark"
+          ) : session ? (
+            isBookmarked ? (
+              "Unbookmark"
+            ) : (
+              "Bookmark"
+            )
           ) : (
-            "Bookmark"
+            "Sign In"
           )}
         </button>
       </div>

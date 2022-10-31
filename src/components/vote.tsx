@@ -3,7 +3,7 @@ import {
   DotsHorizontalIcon,
   BookmarkIcon,
 } from "@heroicons/react/solid";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
 
@@ -131,7 +131,7 @@ const Vote: React.FC<VoteProps> = ({
                     <>
                       <button
                         className="group flex w-full items-center px-4 py-2 text-sm text-gray-600 hover:text-white"
-                        onClick={() => saveVote()}
+                        onClick={() => signIn()}
                       >
                         {" "}
                         <BookmarkIcon
