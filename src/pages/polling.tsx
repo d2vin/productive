@@ -20,11 +20,11 @@ const Polling: NextPage = () => {
             !session && "!max-w-3xl !grid-cols-1"
           }`}
         >
-          <section className="col-span-2">
-            <h1 className="mt-20 text-4xl font-semibold">
-              Your Polling Information
+          <section className="col-span-2 mx-2 lg:mx-0">
+            <h1 className="mt-20 text-center text-4xl font-semibold sm:text-left">
+              Your Polling Location
             </h1>
-            <Poll message="Find your polling location" />
+            <Poll />
           </section>
           {session && (
             <section className="hidden md:col-span-1 xl:inline-grid">

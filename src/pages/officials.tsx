@@ -27,7 +27,7 @@ const Officials: NextPage = () => {
         }`}
       >
         {/* Section */}
-        <section className="col-span-2">
+        <section className="col-span-2 mx-2 lg:mx-0">
           {/* Stories */}
           <h1 className="mt-20 text-center text-4xl font-semibold sm:text-left">
             Your Public Officials

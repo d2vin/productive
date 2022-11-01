@@ -120,7 +120,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/elections">
+                  <Link href="/polling">
                     <a
                       href="#"
                       className="block rounded-lg py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -154,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
           )}
           <HomeIcon onClick={() => router.push("/")} className="nav-btn" />
           <div className="nav-btn relative">
-            <Link href="/elections">
+            <Link href="/polling">
               <PaperAirplaneIcon className="nav-btn rotate-45" />
             </Link>
             {/* <div className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
