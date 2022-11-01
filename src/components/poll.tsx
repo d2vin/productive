@@ -2,16 +2,26 @@ import React, { useState, useMemo } from "react";
 import axios from "axios";
 import { GoogleMap, useLoadScript, InfoWindow } from "@react-google-maps/api";
 
+type PollingLocation = {
+  address: {
+    locationName: string;
+    line1: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  endDate: string;
+  latitude: number;
+  longitude: number;
+  pollingHours: string;
+  startDate: string;
+};
+
 const Poll: React.FC = () => {
   const [address, setAddress] = useState<string>();
-  const [results, setResults] = useState({
-    locationName: "",
-    line1: "",
-    city: "",
-    state: "",
-    zip: "",
-  });
-  const [coords, setCoords] = useState<google.maps.LatLngLiteral[]>([]);
+  const [pollingLocations, setPollingLocations] = useState<PollingLocation[]>(
+    []
+  );
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
@@ -23,13 +33,13 @@ const Poll: React.FC = () => {
     width: "full",
     height: "50vh",
     borderRadius: "10px",
+    marginBottom: "1rem",
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (event: any) => {
     event.preventDefault();
     const electionId = 8000;
-    setCoords([]);
     if (!address) return;
     const params = {
       key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
@@ -39,23 +49,10 @@ const Poll: React.FC = () => {
     axios
       .get("https://www.googleapis.com/civicinfo/v2/voterinfo", { params })
       .then((response) => {
-        const resAddress = response.data.pollingLocations[0].address;
-        setResults({
-          locationName: resAddress.locationName,
-          line1: resAddress.line1,
-          city: resAddress.city,
-          state: resAddress.state,
-          zip: resAddress.zip,
-        });
-        const coordsList = [];
-        for (let i = 0; i < response.data.pollingLocations.length; i++) {
-          coordsList.push({
-            lat: response.data.pollingLocations[i].latitude,
-            lng: response.data.pollingLocations[i].longitude,
-          });
-          console.log(i);
-        }
-        setCoords(coordsList);
+        console.log(response);
+        if (!response.data) return;
+        const data = response.data;
+        setPollingLocations(data.pollingLocations);
       })
       .catch((error) => {
         return error;
@@ -67,33 +64,43 @@ const Poll: React.FC = () => {
       <form onSubmit={onSubmit}>
         <div className="space-y-2">
           <label className="block text-sm font-medium">
-            Find your polling location
+            Find your polling location for the US 2022 Midterm Election
           </label>
-          <input
-            type="text"
-            value={address || ""}
-            placeholder="Address"
-            onChange={(e) => setAddress(e.target.value)}
-            className="w-full rounded-lg border border-gray-300"
-          />
-          <button
-            type="submit"
-            className="mt-2 w-full rounded-lg border border-gray-300 px-2"
-          >
-            Submit
-          </button>
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={address || ""}
+              placeholder="Address"
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full rounded-lg border border-gray-300"
+            />
+            <button
+              type="submit"
+              className="w-44 rounded-lg border border-gray-300 hover:bg-gray-300"
+            >
+              Search
+            </button>
+          </div>
         </div>
       </form>
       {isLoaded ? (
         <GoogleMap zoom={10} center={center} mapContainerStyle={containerStyle}>
-          {coords.length > 0 &&
-            coords.map((coord, k) => (
-              <InfoWindow position={coord} key={k}>
+          {pollingLocations.length > 0 &&
+            pollingLocations.map((pollingLocation, k) => (
+              <InfoWindow
+                position={{
+                  lat: pollingLocation.latitude,
+                  lng: pollingLocation.longitude,
+                }}
+                key={k}
+              >
                 <div className="text-center">
-                  <p>{results.locationName}</p>
-                  <p>{results.line1}</p>
+                  <p>{pollingLocation.address.locationName}</p>
+                  <p>{pollingLocation.address.line1}</p>
                   <p>
-                    {results.city}, {results.state} {results.zip}
+                    {pollingLocation.address.city},{" "}
+                    {pollingLocation.address.state}{" "}
+                    {pollingLocation.address.zip}
                   </p>
                 </div>
               </InfoWindow>
@@ -102,6 +109,38 @@ const Poll: React.FC = () => {
       ) : (
         <div>Loading...</div>
       )}
+      <label className="my-7 block text-sm font-medium">
+        Your polling locations
+      </label>
+      <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+        {pollingLocations.length > 0 &&
+          pollingLocations.map((pollingLocation, k) => (
+            <div className="flex justify-between align-middle" key={k}>
+              <div>
+                <p>{pollingLocation.address.locationName}</p>
+                <p>
+                  {pollingLocation.address.line1},{" "}
+                  {pollingLocation.address.city},{" "}
+                  {pollingLocation.address.state} {pollingLocation.address.zip}
+                </p>
+                {pollingLocation.startDate === pollingLocation.endDate ? (
+                  <>
+                    <p>Election Day: {pollingLocation.endDate}</p>
+                  </>
+                ) : (
+                  <>
+                    <p>Start Date: {pollingLocation.startDate}</p>
+                    <p>End Date: {pollingLocation.endDate}</p>
+                  </>
+                )}
+                <p>{pollingLocation.pollingHours}</p>
+              </div>
+              <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
+                Save
+              </button>
+            </div>
+          ))}
+      </div>
     </div>
   );
 };

@@ -56,6 +56,7 @@ const Stories: React.FC = () => {
           />
         )} */}
           {list &&
+            senators.isSuccess &&
             senators.data
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ?.map((profile: any) => {
@@ -71,6 +72,7 @@ const Stories: React.FC = () => {
                 );
               })}
           {!list &&
+            representatives.isSuccess &&
             representatives.data
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ?.map((profile: any) => {

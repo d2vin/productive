@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
@@ -77,17 +77,23 @@ const RepresentativesList: React.FC<RepresentativesListProps> = ({
         <button
           className="text-xs font-bold text-blue-400"
           onClick={
-            isBookmarked
-              ? () => unbookmarkRepresentative()
-              : () => bookmarkRepresentative()
+            session
+              ? isBookmarked
+                ? () => unbookmarkRepresentative()
+                : () => bookmarkRepresentative()
+              : () => signIn()
           }
         >
           {status === "loading" ? (
             <p className="animate-pulse text-gray-400">...</p>
-          ) : isBookmarked ? (
-            "Unbookmark"
+          ) : session ? (
+            isBookmarked ? (
+              "Unbookmark"
+            ) : (
+              "Bookmark"
+            )
           ) : (
-            "Bookmark"
+            "Sign In"
           )}
         </button>
       </div>
