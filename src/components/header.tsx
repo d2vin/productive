@@ -11,7 +11,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { trpc } from "../utils/trpc";
-import { Senator } from "@prisma/client";
 
 type HeaderProps = {
   message: string;
@@ -19,22 +18,13 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ message }) => {
   const { data: session } = useSession();
-  const { data } = trpc.senator.getSenators.useQuery();
   const router = useRouter();
+  const [address, setAddress] = useState<string>("");
   const [open, setOpen] = useState(false);
-  const [filteredData, setFilteredData] = useState<Senator[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleFilter = (event: any) => {
-    const searchWord = event.target.value;
-    const newFilter = data?.filter((value) => {
-      return value.firstName.toLowerCase().includes(searchWord.toLowerCase());
-    });
-    if (searchWord === "") {
-      setFilteredData([]);
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      setFilteredData(newFilter!);
-    }
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
+    router.push(`/results/${address}`);
   };
 
   return (
@@ -55,54 +45,23 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
         >
           <Image src="/productive.png" alt="Logo" height={40} width={40} />
         </div>
-        {/* Middle - Search Input */}
-        <div className="max-w-xs">
-          <div className="relative mt-1 rounded-md p-3">
-            <div className="pointer-events-none absolute inset-y-0 flex items-center pl-3">
-              <SearchIcon className="h-5 w-5 text-gray-500" />
-            </div>
-            <input
-              type="text"
-              placeholder="search"
-              onChange={handleFilter}
-              className="block w-full rounded-md border-gray-300 bg-gray-50 pl-10 focus:border-black focus:ring-black sm:text-sm"
-            />
-          </div>
-          {filteredData.length != 0 && (
-            <div className="absolute pl-3">
-              <div className="mt-2 max-h-48 w-[229px] overflow-hidden overflow-y-auto rounded-lg border bg-white sm:w-[208px]">
-                {filteredData?.map((value, k) => {
-                  return (
-                    <div key={k}>
-                      <a
-                        href={`/senator/${value.id}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <div className="flex">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            className="h-8 w-8 transform cursor-pointer rounded-full border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
-                            src={`https://theunitedstates.io/images/congress/225x275/${value.id}.jpg`}
-                            alt="Logo"
-                          />
-                          <div className="ml-4 flex-1">
-                            <h2 className="text-sm font-semibold">
-                              {value.firstName} {value.lastName}
-                            </h2>
-                            <h3 className="text-xs text-gray-400">
-                              Party: {value.party}
-                            </h3>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                  );
-                })}
+        <form onSubmit={onSubmit}>
+          {/* Middle - Search Input */}
+          <div className="max-w-xs">
+            <div className="relative mt-1 rounded-md p-3">
+              <div className="pointer-events-none absolute inset-y-0 flex items-center pl-3">
+                <SearchIcon className="h-5 w-5 text-gray-500" />
               </div>
+              <input
+                type="text"
+                placeholder="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="block w-full rounded-md border-gray-300 bg-gray-50 pl-10 focus:border-black focus:ring-black sm:text-sm"
+              />
             </div>
-          )}
-        </div>
+          </div>
+        </form>
         {/* Right */}
         <div className="flex items-center justify-end space-x-4">
           <MenuIcon
