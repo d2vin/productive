@@ -10,7 +10,6 @@ import {
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { trpc } from "../utils/trpc";
 
 type HeaderProps = {
   message: string;

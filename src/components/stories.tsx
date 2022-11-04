@@ -1,92 +1,277 @@
-import React, { useState } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import { trpc } from "../utils/trpc";
 import Story from "./story";
+import { Listbox, Transition } from "@headlessui/react";
+import { BookmarkIcon, ChevronDownIcon } from "@heroicons/react/solid";
+import { Representative, Senator } from "@prisma/client";
+
+const officials = [
+  { id: 0, name: "Officials", unavailable: false },
+  { id: 1, name: "Senators", unavailable: false },
+  { id: 2, name: "Representatives", unavailable: false },
+];
+const states = [
+  { id: 0, name: "States", unavailable: true },
+  { id: 1, name: "AL", unavailable: false },
+  { id: 2, name: "AK", unavailable: false },
+  { id: 3, name: "AZ", unavailable: false },
+  { id: 4, name: "AR", unavailable: false },
+  { id: 5, name: "CA", unavailable: false },
+  { id: 6, name: "CO", unavailable: false },
+  { id: 7, name: "CT", unavailable: false },
+  { id: 8, name: "DE", unavailable: false },
+  { id: 9, name: "FL", unavailable: false },
+  { id: 10, name: "GA", unavailable: false },
+  { id: 11, name: "HI", unavailable: false },
+  { id: 12, name: "ID", unavailable: false },
+  { id: 13, name: "IL", unavailable: false },
+  { id: 14, name: "IN", unavailable: false },
+  { id: 15, name: "IA", unavailable: false },
+  { id: 16, name: "KS", unavailable: false },
+  { id: 17, name: "KY", unavailable: false },
+  { id: 18, name: "LA", unavailable: false },
+  { id: 19, name: "ME", unavailable: false },
+  { id: 20, name: "MD", unavailable: false },
+  { id: 21, name: "MA", unavailable: false },
+  { id: 22, name: "MI", unavailable: false },
+  { id: 23, name: "MN", unavailable: false },
+  { id: 24, name: "MS", unavailable: false },
+  { id: 25, name: "MO", unavailable: false },
+  { id: 26, name: "MT", unavailable: false },
+  { id: 27, name: "NE", unavailable: false },
+  { id: 28, name: "NV", unavailable: false },
+  { id: 29, name: "NH", unavailable: false },
+  { id: 30, name: "NJ", unavailable: false },
+  { id: 31, name: "NM", unavailable: false },
+  { id: 32, name: "NY", unavailable: false },
+  { id: 33, name: "NC", unavailable: false },
+  { id: 34, name: "ND", unavailable: false },
+  { id: 35, name: "OH", unavailable: false },
+  { id: 36, name: "OK", unavailable: false },
+  { id: 37, name: "OR", unavailable: false },
+  { id: 38, name: "PA", unavailable: false },
+  { id: 39, name: "RI", unavailable: false },
+  { id: 40, name: "SC", unavailable: false },
+  { id: 41, name: "SD", unavailable: false },
+  { id: 42, name: "TN", unavailable: false },
+  { id: 43, name: "TX", unavailable: false },
+  { id: 44, name: "UT", unavailable: false },
+  { id: 45, name: "VT", unavailable: false },
+  { id: 46, name: "VI", unavailable: false },
+  { id: 47, name: "WA", unavailable: false },
+  { id: 48, name: "WV", unavailable: false },
+  { id: 49, name: "WI", unavailable: false },
+  { id: 50, name: "WY", unavailable: false },
+];
 
 const Stories: React.FC = () => {
-  // const { data: session } = useSession();
-  const [list, setList] = useState<boolean>(true);
+  const [selected, setSelected] = useState(officials[0]);
+  const [selectedState, setSelectedState] = useState(states[0]);
+  const [senatorList, setSenatorList] = useState<Senator[]>([]);
+  const [representativeList, setRepresentativeList] = useState<
+    Representative[]
+  >([]);
+
   const senators = trpc.senator.getSenators.useQuery();
   const representatives = trpc.representative.getRepresentatives.useQuery();
 
+  useEffect(() => {
+    if (senators.isSuccess) setSenatorList(senators.data);
+    if (representatives.isSuccess) setRepresentativeList(representatives.data);
+  }, [
+    senators.isSuccess,
+    senators.data,
+    representatives.isSuccess,
+    representatives.data,
+  ]);
+
+  const filterData = () => {
+    setSenatorList(
+      senatorList.filter((senator) => senator.state === selectedState?.name)
+    );
+  };
+
   return (
     <>
-      <div className="mt-8 flex-col justify-center space-y-10 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-6 align-middle scrollbar-thin scrollbar-thumb-black">
+      <div className="mt-8 flex-col justify-center space-y-12 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-6 align-middle scrollbar-thin scrollbar-thumb-black">
         <div className="absolute flex max-w-xl space-x-2">
-          <div className="flex flex-1 justify-center">
-            <button
-              onClick={(event) => {
-                event.preventDefault();
-                setList(true);
-              }}
-              className={`rounded-md border border-gray-300 px-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-400 ${
-                list ? `bg-gray-400` : `bg-white`
-              }`}
-            >
-              Senators
-            </button>
-          </div>
-          <div className="flex flex-1 justify-center">
-            <button
-              onClick={(event) => {
-                event.preventDefault();
-                setList(false);
-              }}
-              className={`rounded-md border border-gray-300 px-2 text-sm font-medium text-gray-600 shadow-sm hover:bg-gray-400 ${
-                !list ? `bg-gray-400` : `bg-white`
-              }`}
-            >
-              Representatives
-            </button>
-          </div>
+          <Listbox value={selected} onChange={setSelected}>
+            <div className="relative">
+              <Listbox.Button className="relative w-48 cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                <span className="block truncate">{selected?.name}</span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <ChevronDownIcon
+                    className="h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </span>
+              </Listbox.Button>
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-48 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  {officials.map((official, k) => (
+                    <Listbox.Option
+                      key={k}
+                      className={({ active }) =>
+                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                          active
+                            ? "bg-amber-100 text-amber-900"
+                            : "text-gray-900"
+                        }`
+                      }
+                      value={official}
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span
+                            className={`block truncate ${
+                              selected ? "font-medium" : "font-normal"
+                            }`}
+                          >
+                            {official.name}
+                          </span>
+                          {selected ? (
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                              <BookmarkIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </Listbox>
+          <Listbox value={selectedState} onChange={setSelectedState}>
+            <div className="relative">
+              <Listbox.Button className="relative w-24 cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                <span className="block truncate">{selectedState?.name}</span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <ChevronDownIcon
+                    className="h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </span>
+              </Listbox.Button>
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-48 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                  {states.map((state, k) => (
+                    <Listbox.Option
+                      key={k}
+                      className={({ active }) =>
+                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                          active
+                            ? "bg-amber-100 text-amber-900"
+                            : "text-gray-900"
+                        }`
+                      }
+                      value={state}
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span
+                            className={`block truncate ${
+                              selected ? "font-medium" : "font-normal"
+                            }`}
+                          >
+                            {state.name}
+                          </span>
+                          {selected ? (
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                              <BookmarkIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                              />
+                            </span>
+                          ) : null}
+                        </>
+                      )}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </Transition>
+            </div>
+          </Listbox>
         </div>
         <div className="flex space-x-2">
-          {/* User Story */}
-          {/* {session && (
-          <Story
-            image={
-              typeof session?.user?.image === 'string'
-                ? session?.user?.image
-                : '/productive.png'
-            }
-            username={
-              typeof session?.user?.name === 'string'
-                ? session?.user?.name
-                : '/productive.png'
-            }
-          />
-        )} */}
-          {list &&
-            senators.isSuccess &&
-            senators.data
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ?.map((profile: any) => {
-                return (
-                  <Story
-                    key={profile.id}
-                    image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
-                    firstName={profile.firstName}
-                    lastName={profile.lastName}
-                    id={profile.id}
-                    list={list}
-                  />
-                );
-              })}
-          {!list &&
-            representatives.isSuccess &&
-            representatives.data
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ?.map((profile: any) => {
-                return (
-                  <Story
-                    key={profile.id}
-                    image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
-                    firstName={profile.firstName}
-                    lastName={profile.lastName}
-                    id={profile.id}
-                    list={list}
-                  />
-                );
-              })}
+          {selected?.name === "Senators" &&
+            (selectedState === states[0]
+              ? senatorList
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  ?.map((profile: any) => {
+                    return (
+                      <Story
+                        key={profile.id}
+                        image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
+                        firstName={profile.firstName}
+                        lastName={profile.lastName}
+                        id={profile.id}
+                        office={selected.name}
+                      />
+                    );
+                  })
+              : senatorList
+                  .filter((senator) => selectedState?.name === senator.state)
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  ?.map((profile: any) => {
+                    return (
+                      <Story
+                        key={profile.id}
+                        image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
+                        firstName={profile.firstName}
+                        lastName={profile.lastName}
+                        id={profile.id}
+                        office={selected?.name}
+                      />
+                    );
+                  }))}
+          {selected?.name === "Representatives" &&
+            (selectedState === states[0]
+              ? representativeList
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  ?.map((profile: any) => {
+                    return (
+                      <Story
+                        key={profile.id}
+                        image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
+                        firstName={profile.firstName}
+                        lastName={profile.lastName}
+                        id={profile.id}
+                        office={selected.name}
+                      />
+                    );
+                  })
+              : representativeList
+                  .filter(
+                    (representative) =>
+                      selectedState?.name === representative.state
+                  )
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  ?.map((profile: any) => {
+                    return (
+                      <Story
+                        key={profile.id}
+                        image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
+                        firstName={profile.firstName}
+                        lastName={profile.lastName}
+                        id={profile.id}
+                        office={selected?.name}
+                      />
+                    );
+                  }))}
         </div>
       </div>
     </>

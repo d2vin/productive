@@ -7,6 +7,7 @@ import MiniProfile from "../../components/mini-profile";
 import BookmarkedOfficials from "../../components/bookmarked-officials";
 import Header from "../../components/header";
 import { GetServerSideProps } from "next";
+import { Tab } from "@headlessui/react";
 
 type PollingLocation = {
   address: {
@@ -45,6 +46,35 @@ type State = {
   name: string;
 };
 
+type RepAddress = {
+  line1: string;
+  city: string;
+  state: string;
+  zip: string;
+};
+
+type Channel = {
+  type: string;
+  id: string;
+};
+
+type Official = {
+  name: string;
+  address: RepAddress[];
+  party: string;
+  phones: string[];
+  urls: string[];
+  channels: Channel[];
+};
+
+type Office = {
+  name: string;
+  divisionId: string;
+  levels: string[];
+  roles: string[];
+  officialIndices: number[];
+};
+
 interface ResultsProps {
   data: {
     pollingLocations: PollingLocation[];
@@ -52,14 +82,17 @@ interface ResultsProps {
     state: State[];
   };
   address: string;
+  repData: { offices: Office[]; officials: Official[] };
 }
 
-const Results: NextPage<ResultsProps> = ({ data }) => {
+const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
   const { data: session } = useSession();
   const [search, setSearch] = useState<string>("Polling Locations");
   const [dropdown, setDropdown] = useState<boolean>();
+  const [searchAddress, setSearchAddress] = useState<string>();
+  const [offices, setOffices] = useState<Office[]>([]);
+  const [officials, setOfficials] = useState<Official[]>([]);
   const [state, setState] = useState<State[]>([]);
-  const [address, setAddress] = useState<string>();
   const [contests, setContests] = useState<Contest[]>([]);
   const [pollingLocations, setPollingLocations] = useState<PollingLocation[]>(
     []
@@ -69,10 +102,19 @@ const Results: NextPage<ResultsProps> = ({ data }) => {
       setPollingLocations(data?.pollingLocations);
       setContests(data?.contests);
       setState(data?.state);
-      setAddress(address);
+      setSearchAddress(address);
+      setOffices(repData?.offices);
+      setOfficials(repData?.officials);
     }, 1000);
     return () => clearTimeout(timer);
-  }, [data.pollingLocations, data.contests, data.state]);
+  }, [
+    data?.pollingLocations,
+    data?.contests,
+    data?.state,
+    address,
+    repData?.officials,
+    repData?.offices,
+  ]);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
@@ -86,6 +128,10 @@ const Results: NextPage<ResultsProps> = ({ data }) => {
     borderRadius: "10px",
     marginBottom: "1rem",
   };
+
+  function classNames(...classes: string[]) {
+    return classes.filter(Boolean).join(" ");
+  }
 
   return (
     <>
@@ -129,114 +175,168 @@ const Results: NextPage<ResultsProps> = ({ data }) => {
                     : null}
                 </GoogleMap>
               )}
-              <label className="my-7 block text-sm font-medium">
-                Your upcoming elections
-              </label>
-              <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-                {state.map((s, k) => (
-                  <div
-                    className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2"
-                    key={k}
+              <Tab.Group>
+                <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+                  <Tab
+                    className={({ selected }) =>
+                      classNames(
+                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
+                        "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                        selected
+                          ? "bg-white shadow"
+                          : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                      )
+                    }
                   >
-                    <a
-                      className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
-                      href={s.electionAdministrationBody.electionInfoUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Election Information
-                    </a>
-                    <a
-                      className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
-                      href={
-                        s.electionAdministrationBody.electionRegistrationUrl
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Election Registration
-                    </a>
-                    <a
-                      className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
-                      href={s.electionAdministrationBody.absenteeVotingInfoUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Absentee Voting
-                    </a>
-                  </div>
-                ))}
-              </div>
-              {contests.length > 0 &&
-                contests.map((contest, k) => (
-                  <div
-                    className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl"
-                    key={k}
+                    Your Voter Information
+                  </Tab>
+                  <Tab
+                    className={({ selected }) =>
+                      classNames(
+                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
+                        "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                        selected
+                          ? "bg-white shadow"
+                          : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                      )
+                    }
                   >
-                    <div className="flex justify-between align-middle">
-                      <p>
-                        {contest.ballotTitle}
-                        {contest.district.name.includes(contest.ballotTitle)
-                          ? null
-                          : ": " + contest.district.name}
-                      </p>
-                      {/* <button className="rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
+                    Your Representative Information
+                  </Tab>
+                </Tab.List>
+                <Tab.Panels>
+                  <Tab.Panel>
+                    <label className="my-7 block text-sm font-medium">
+                      Your upcoming elections
+                    </label>
+                    <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+                      {state.map((s, k) => (
+                        <div
+                          className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2"
+                          key={k}
+                        >
+                          <a
+                            className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
+                            href={s.electionAdministrationBody.electionInfoUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Election Information
+                          </a>
+                          <a
+                            className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
+                            href={
+                              s.electionAdministrationBody
+                                .electionRegistrationUrl
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Election Registration
+                          </a>
+                          <a
+                            className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
+                            href={
+                              s.electionAdministrationBody.absenteeVotingInfoUrl
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Absentee Voting
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                    {contests.length > 0 &&
+                      contests.map((contest, k) => (
+                        <div
+                          className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl"
+                          key={k}
+                        >
+                          <div className="flex justify-between align-middle">
+                            <p>
+                              {contest.ballotTitle}
+                              {contest.district.name.includes(
+                                contest.ballotTitle
+                              )
+                                ? null
+                                : ": " + contest.district.name}
+                            </p>
+                            {/* <button className="rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
                         Save
                       </button> */}
-                    </div>
-                    <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-                      {contest.candidates &&
-                        contest.candidates.map((candidate, k) => (
+                          </div>
+                          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+                            {contest.candidates &&
+                              contest.candidates.map((candidate, k) => (
+                                <div
+                                  key={k}
+                                  className={`bg-${
+                                    candidate.party === "Republican Party"
+                                      ? "red"
+                                      : candidate.party === "Democratic Party"
+                                      ? "indigo"
+                                      : "gray"
+                                  }-400 flex-1 rounded-md p-2 text-center`}
+                                >
+                                  {candidate.name}
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      ))}
+                    <label className="my-7 block text-sm font-medium">
+                      Your polling locations
+                    </label>
+                    <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+                      {pollingLocations.length > 0 &&
+                        pollingLocations.map((pollingLocation, k) => (
                           <div
+                            className="flex justify-between align-middle"
                             key={k}
-                            className={`bg-${
-                              candidate.party === "Republican Party"
-                                ? "red"
-                                : candidate.party === "Democratic Party"
-                                ? "indigo"
-                                : "gray"
-                            }-400 flex-1 rounded-md p-2 text-center`}
                           >
-                            {candidate.name}
+                            <div>
+                              <p>{pollingLocation.address.locationName}</p>
+                              <p>
+                                {pollingLocation.address.line1},{" "}
+                                {pollingLocation.address.city},{" "}
+                                {pollingLocation.address.state}{" "}
+                                {pollingLocation.address.zip}
+                              </p>
+                              {pollingLocation.startDate ===
+                              pollingLocation.endDate ? (
+                                <>
+                                  <p>Election Day: {pollingLocation.endDate}</p>
+                                </>
+                              ) : (
+                                <>
+                                  <p>Start Date: {pollingLocation.startDate}</p>
+                                  <p>End Date: {pollingLocation.endDate}</p>
+                                </>
+                              )}
+                              <p>{pollingLocation.pollingHours}</p>
+                            </div>
+                            <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
+                              Save
+                            </button>
                           </div>
                         ))}
                     </div>
-                  </div>
-                ))}
-              <label className="my-7 block text-sm font-medium">
-                Your polling locations
-              </label>
-              <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-                {pollingLocations.length > 0 &&
-                  pollingLocations.map((pollingLocation, k) => (
-                    <div className="flex justify-between align-middle" key={k}>
-                      <div>
-                        <p>{pollingLocation.address.locationName}</p>
-                        <p>
-                          {pollingLocation.address.line1},{" "}
-                          {pollingLocation.address.city},{" "}
-                          {pollingLocation.address.state}{" "}
-                          {pollingLocation.address.zip}
-                        </p>
-                        {pollingLocation.startDate ===
-                        pollingLocation.endDate ? (
-                          <>
-                            <p>Election Day: {pollingLocation.endDate}</p>
-                          </>
-                        ) : (
-                          <>
-                            <p>Start Date: {pollingLocation.startDate}</p>
-                            <p>End Date: {pollingLocation.endDate}</p>
-                          </>
-                        )}
-                        <p>{pollingLocation.pollingHours}</p>
-                      </div>
-                      <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
-                        Save
-                      </button>
-                    </div>
-                  ))}
-              </div>
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    {offices.length > 0 &&
+                      offices.map((office, k) => (
+                        <div key={k}>
+                          {office.name}:{" "}
+                          {
+                            officials[office?.officialIndices[0] as number]
+                              ?.name
+                          }
+                        </div>
+                      ))}
+                  </Tab.Panel>
+                </Tab.Panels>
+              </Tab.Group>
             </div>
           </section>
           {session && (
@@ -273,7 +373,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   console.log(response);
   const data = await response.data;
 
+  const repUrl = "https://www.googleapis.com/civicinfo/v2/representatives";
+  const repParams = {
+    key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+    address: address,
+  };
+
+  const repResponse = await axios.get(repUrl, { params: repParams });
+  console.log(repResponse);
+  const repData = await repResponse.data;
+  console.log(JSON.stringify(repData));
+
   return {
-    props: { data: data, address: address },
+    props: { data: data, repData: repData, address: address },
   };
 };

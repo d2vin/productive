@@ -5,7 +5,7 @@ type StoryProps = {
   image: string;
   firstName: string;
   id: string;
-  list: boolean;
+  office: string;
   lastName: string;
 };
 
@@ -14,7 +14,7 @@ const Story: React.FC<StoryProps> = ({
   firstName,
   lastName,
   id,
-  list,
+  office,
 }) => {
   const router = useRouter();
   return (
@@ -24,7 +24,7 @@ const Story: React.FC<StoryProps> = ({
           <button
             onClick={(event) => {
               event.preventDefault();
-              list
+              office === "Senators"
                 ? router.push(`/senator/${id}`)
                 : router.push(`/representative/${id}`);
             }}

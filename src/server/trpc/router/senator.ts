@@ -15,6 +15,15 @@ export const senatorRouter = t.router({
         },
       });
     }),
+  getSenatorByState: t.procedure
+    .input(z.object({ state: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.senator.findMany({
+        where: {
+          state: input.state,
+        },
+      });
+    }),
   getSenators: t.procedure.query(async ({ ctx }) => {
     return await ctx.prisma.senator.findMany();
   }),
