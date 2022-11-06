@@ -5,7 +5,7 @@ export const representativeRouter = t.router({
   getRepresentative: t.procedure
     .input(
       z.object({
-        id: z.string(),
+        id: z.number(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -37,7 +37,7 @@ export const representativeRouter = t.router({
     return representatives;
   }),
   isBookmarkedRepresentative: t.procedure
-    .input(z.object({ representativeId: z.string() }))
+    .input(z.object({ representativeId: z.number() }))
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.bookmarkedRepresentative.findFirst({
         where: {
@@ -50,7 +50,7 @@ export const representativeRouter = t.router({
     .input(
       z.object({
         userId: z.string(),
-        representativeId: z.string(),
+        representativeId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -62,7 +62,7 @@ export const representativeRouter = t.router({
     .input(
       z.object({
         userId: z.string(),
-        representativeId: z.string(),
+        representativeId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {

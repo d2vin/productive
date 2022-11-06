@@ -12,10 +12,6 @@ datasource db {
     referentialIntegrity = "prisma"
 }
 
-model Example {
-    id String @id @default(cuid())
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -65,8 +61,7 @@ model VerificationToken {
 }
 
 model Vote {
-    // Have to fill DB so savedVote can reference a vote IN THE DB! duh.
-    id            String      @id @default(cuid())
+    id            Int         @id @default(autoincrement())
     congress      Int
     chamber       String
     rollCall      Int
@@ -83,37 +78,36 @@ model Vote {
 }
 
 model SavedVote {
-    id      String @id @default(cuid())
+    id      Int    @id @default(autoincrement())
     vote    Vote   @relation(fields: [voteId], references: [id])
-    voteId  String
+    voteId  Int
     savedBy User   @relation(fields: [userId], references: [id])
-    userId  String @db.VarChar(255)
+    userId  String
 
     @@index([userId, voteId])
 }
 
 model BookmarkedSenator {
-    id           String  @id @default(cuid())
-    senator      Senator @relation(fields: [senatorId], references: [id])
-    senatorId    String
-    bookmarkedBy User    @relation(fields: [userId], references: [id])
-    userId       String  @db.VarChar(255)
+    id           Int    @id @default(autoincrement())
+    bookmarkedBy User   @relation(fields: [userId], references: [id])
+    userId       String
 
-    @@index([userId, senatorId])
+    Senator   Senator @relation(fields: [senatorId], references: [id])
+    senatorId Int
 }
 
 model BookmarkedRepresentative {
-    id               String         @id @default(cuid())
-    represenative    Representative @relation(fields: [representativeId], references: [id])
-    representativeId String
-    bookmarkedBy     User           @relation(fields: [userId], references: [id])
-    userId           String         @db.VarChar(255)
+    id           Int    @id @default(autoincrement())
+    bookmarkedBy User   @relation(fields: [userId], references: [id])
+    userId       String
 
-    @@index([userId, representativeId])
+    Representative   Representative @relation(fields: [representativeId], references: [id])
+    representativeId Int
 }
 
 model Senator {
-    id                   String              @id
+    id                   Int                 @id @default(autoincrement())
+    bioguideId           String
     title                String
     shortTitle           String
     apiUri               String
@@ -138,7 +132,8 @@ model Senator {
 }
 
 model Representative {
-    id                       String                     @id
+    id                       Int                        @id @default(autoincrement())
+    bioguideId               String
     title                    String
     shortTitle               String
     apiUri                   String
@@ -162,7 +157,7 @@ model Representative {
 }
 
 model HouseElection {
-    id         String @id @default(cuid())
+    id         Int    @id @default(autoincrement())
     cycle      String
     branch     String
     district   String
@@ -171,7 +166,7 @@ model HouseElection {
 }
 
 model SenateElection {
-    id         String @id @default(cuid())
+    id         Int    @id @default(autoincrement())
     cycle      String
     branch     String
     district   String
@@ -182,14 +177,16 @@ model SenateElection {
 // Congress API
 
 model SponsoredLegislation {
-    id               String  @id @default(cuid())
-    number           String? @db.Text
-    congress         Int
-    latestAction     String? @db.Text
-    latestActionDate String? @db.Text
-    policyArea       String? @db.Text
-    title            String? @db.Text
-    type             String? @db.Text
-    url              String  @db.Text
-    sponsorId        String  @db.Text
+    id                Int     @id @default(autoincrement())
+    number            String? @db.Text
+    congress          Int
+    latestAction      String? @db.Text
+    latestActionDate  String? @db.Text
+    policyArea        String? @db.Text
+    title             String? @db.Text
+    type              String? @db.Text
+    url               String  @db.Text
+    sponsorId         String  @db.Text
+    sponsor           String? @db.Text
+    sponsorMemberType String? @db.Text
 }

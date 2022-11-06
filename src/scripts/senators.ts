@@ -36,7 +36,7 @@ const doBackfill = async () => {
       votes_with_party_pct: number;
       votes_against_party_pct: number;
     }) => ({
-      id: senator.id,
+      bioguideId: senator.id,
       title: senator.title,
       shortTitle: senator.short_title,
       apiUri: senator.api_uri,

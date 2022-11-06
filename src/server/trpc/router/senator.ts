@@ -5,13 +5,13 @@ export const senatorRouter = t.router({
   getSenator: t.procedure
     .input(
       z.object({
-        id: z.string(),
+        id: z.number(),
       })
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.senator.findUnique({
+      return await ctx.prisma.senator.findFirst({
         where: {
-          id: input.id,
+          id: input.id
         },
       });
     }),
@@ -45,7 +45,7 @@ export const senatorRouter = t.router({
     return senators;
   }),
   isBookmarkedSenator: t.procedure
-    .input(z.object({ senatorId: z.string() }))
+    .input(z.object({ senatorId: z.number() }))
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.bookmarkedSenator.findFirst({
         where: {
@@ -58,7 +58,7 @@ export const senatorRouter = t.router({
     .input(
       z.object({
         userId: z.string(),
-        senatorId: z.string(),
+        senatorId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -70,7 +70,7 @@ export const senatorRouter = t.router({
     .input(
       z.object({
         userId: z.string(),
-        senatorId: z.string(),
+        senatorId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {

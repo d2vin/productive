@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
 
 type VoteProps = {
-  voteId: string;
+  voteId: number;
   congress: number;
   chamber: string;
   rollCall: number;

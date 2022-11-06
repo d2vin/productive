@@ -214,11 +214,11 @@ const Stories: React.FC = () => {
                   ?.map((profile: any) => {
                     return (
                       <Story
-                        key={profile.id}
-                        image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
+                        key={profile.bioguideId}
+                        image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
                         firstName={profile.firstName}
                         lastName={profile.lastName}
-                        id={profile.id}
+                        id={profile.bioguideId}
                         office={selected.name}
                       />
                     );
@@ -229,11 +229,11 @@ const Stories: React.FC = () => {
                   ?.map((profile: any) => {
                     return (
                       <Story
-                        key={profile.id}
-                        image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
+                        key={profile.bioguideId}
+                        image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
                         firstName={profile.firstName}
                         lastName={profile.lastName}
-                        id={profile.id}
+                        id={profile.bioguideId}
                         office={selected?.name}
                       />
                     );
@@ -245,11 +245,11 @@ const Stories: React.FC = () => {
                   ?.map((profile: any) => {
                     return (
                       <Story
-                        key={profile.id}
-                        image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
+                        key={profile.bioguideId}
+                        image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
                         firstName={profile.firstName}
                         lastName={profile.lastName}
-                        id={profile.id}
+                        id={profile.bioguideId}
                         office={selected.name}
                       />
                     );
@@ -263,11 +263,11 @@ const Stories: React.FC = () => {
                   ?.map((profile: any) => {
                     return (
                       <Story
-                        key={profile.id}
-                        image={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
+                        key={profile.bioguideId}
+                        image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
                         firstName={profile.firstName}
                         lastName={profile.lastName}
-                        id={profile.id}
+                        id={profile.bioguideId}
                         office={selected?.name}
                       />
                     );

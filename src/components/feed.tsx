@@ -1,12 +1,17 @@
 import { useSession } from "next-auth/react";
 import React from "react";
 import MiniProfile from "./mini-profile";
-import Bills from "./bills";
 import Stories from "./stories";
 import Suggestions from "./bookmarked-officials";
+import { Tab } from "@headlessui/react";
+import SenatorLegislation from "./senator-legislation";
+import RepresentativeLegislation from "./representative-legislation";
 
 const Feed: React.FC = () => {
   const { data: session } = useSession();
+  function classNames(...classes: string[]) {
+    return classes.filter(Boolean).join(" ");
+  }
   return (
     <main
       className={`mx-auto grid grid-cols-1 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${
@@ -14,11 +19,48 @@ const Feed: React.FC = () => {
       }`}
     >
       {/* Section */}
-      <section className="col-span-2 mx-2 lg:mx-0">
+      <section className="col-span-2 mx-2 space-y-8 lg:mx-0">
         {/* Stories */}
         <Stories />
-        {/* Bills */}
-        <Bills />
+        <Tab.Group>
+          <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+            <Tab
+              className={({ selected }) =>
+                classNames(
+                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
+                  "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                  selected
+                    ? "bg-white shadow"
+                    : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                )
+              }
+            >
+              Senate Legislation
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                classNames(
+                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
+                  "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                  selected
+                    ? "bg-white shadow"
+                    : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                )
+              }
+            >
+              House Legislation
+            </Tab>
+          </Tab.List>
+          <Tab.Panels>
+            <Tab.Panel>
+              {/* Bills */}
+              <SenatorLegislation />
+            </Tab.Panel>
+            <Tab.Panel>
+              <RepresentativeLegislation />
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
       </section>
       {/* Section */}
       {session && (

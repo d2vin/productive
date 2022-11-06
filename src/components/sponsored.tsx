@@ -29,6 +29,7 @@ const Sponsored: React.FC<SponsoredProps> = ({ id }) => {
                 policyArea={legislation.policyArea}
                 title={legislation.title}
                 url={legislation.url}
+                sponsor={legislation.sponsor}
               />
             </div>
           );

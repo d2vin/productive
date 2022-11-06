@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const voteRouter = t.router({
   getVote: t.procedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const id = input?.id;
       return await ctx.prisma.vote.findUnique({
@@ -33,7 +33,7 @@ export const voteRouter = t.router({
     return votes;
   }),
   isSavedVote: t.procedure
-    .input(z.object({ voteId: z.string() }))
+    .input(z.object({ voteId: z.number() }))
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.savedVote.findFirst({
         where: {
@@ -46,7 +46,7 @@ export const voteRouter = t.router({
     .input(
       z.object({
         userId: z.string(),
-        voteId: z.string(),
+        voteId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -58,7 +58,7 @@ export const voteRouter = t.router({
     .input(
       z.object({
         userId: z.string(),
-        voteId: z.string(),
+        voteId: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {

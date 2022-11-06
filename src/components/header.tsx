@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import {
   SearchIcon,
-  UserGroupIcon,
+  UserIcon,
   BookmarkIcon,
   MenuIcon,
   HomeIcon,
@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
           </h1>
         </div>
         <div
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/home")}
           className="relative w-10 flex-shrink-0 cursor-pointer lg:hidden"
         >
           <Image src="/productive.png" alt="Logo" height={40} width={40} />
@@ -71,8 +71,10 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
             <div className="absolute top-14 right-9 z-20 rounded-lg border bg-white md:hidden">
               <ul className="text-sm text-gray-700">
                 <li>
-                  <Link href="/">
-                    <a className="block rounded-lg py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                  <Link href="/home">
+                    <a
+                      className={`block rounded-t-lg py-2 px-4 hover:bg-gray-300 hover:text-black`}
+                    >
                       Home
                     </a>
                   </Link>
@@ -81,19 +83,11 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
                   <Link href="/polling">
                     <a
                       href="#"
-                      className="block rounded-lg py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      className={`block ${
+                        !session && "rounded-b-lg"
+                      } py-2 px-4 hover:bg-gray-300 hover:text-black`}
                     >
                       Elections
-                    </a>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/officials">
-                    <a
-                      href="#"
-                      className="block rounded-lg py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      Officials
                     </a>
                   </Link>
                 </li>
@@ -101,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
                   <li>
                     <a
                       onClick={() => signOut()}
-                      className="block rounded-lg py-2 px-4 hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      className="block rounded-b-lg py-2 px-4 hover:cursor-pointer hover:bg-gray-300 hover:text-black"
                     >
                       Sign out
                     </a>
@@ -110,7 +104,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
               </ul>
             </div>
           )}
-          <HomeIcon onClick={() => router.push("/")} className="nav-btn" />
+          <HomeIcon onClick={() => router.push("/home")} className="nav-btn" />
           <div className="nav-btn relative">
             <Link href="/polling">
               <BookmarkIcon className="nav-btn" />
@@ -119,9 +113,9 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
                   2
                 </div> */}
           </div>
-          <Link href="/officials">
+          {/* <Link href="/officials">
             <UserGroupIcon className="nav-btn" />
-          </Link>
+          </Link> */}
           {session ? (
             <>
               <a
@@ -144,7 +138,9 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
               </a>
             </>
           ) : (
-            <button onClick={() => signIn()}>Sign In</button>
+            <button onClick={() => signIn()}>
+              <UserIcon className="nav-btn" />
+            </button>
           )}
         </div>
       </div>

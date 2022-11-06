@@ -10,7 +10,7 @@ const OfficialProfile: React.FC = () => {
   const router = useRouter();
   const query = router.query;
   const { data, status } = trpc.representative.getRepresentative.useQuery({
-    id: query.id as string,
+    id: 1
   });
 
   if (status === "loading") {
