@@ -32,11 +32,11 @@ const RepresentativeLegislation: React.FC = () => {
     return () => {
       document.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  });
 
   return (
     <div>
-      {RepresentativesLegislation.data?.pages.map((page) =>
+      {RepresentativesLegislation.data?.pages.map((page: { items: any[] }) =>
         page?.items
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ?.map((legislation: any, k: React.Key | null | undefined) => {

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
 
 type RepresentativesListProps = {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   party: string;

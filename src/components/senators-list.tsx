@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
 
 type SenatorsListProps = {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   party: string;

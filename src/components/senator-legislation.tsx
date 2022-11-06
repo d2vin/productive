@@ -32,7 +32,7 @@ const SenatorLegislation: React.FC = () => {
     return () => {
       document.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  });
 
   return (
     <div>
