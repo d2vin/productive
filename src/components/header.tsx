@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
           </h1>
         </div>
         <div
-          onClick={() => router.push("/home")}
+          onClick={() => router.push("/")}
           className="relative w-10 flex-shrink-0 cursor-pointer lg:hidden"
         >
           <Image src="/productive.png" alt="Logo" height={40} width={40} />

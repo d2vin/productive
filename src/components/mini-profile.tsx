@@ -1,10 +1,11 @@
 import React from "react";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const MiniProfile: React.FC = () => {
   const { data: session } = useSession();
-
+  const router = useRouter();
   return (
     <div className="mt-14 ml-10 flex items-center justify-between">
       <Image
@@ -22,7 +23,10 @@ const MiniProfile: React.FC = () => {
         <h2 className="font-bold">{session?.user?.name}</h2>
       </div>
       <button
-        onClick={() => signOut()}
+        onClick={() => {
+          router.push("/");
+          signOut();
+        }}
         className="text-sm font-semibold text-blue-400"
       >
         Sign out

@@ -102,6 +102,7 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
   const [pollingLocations, setPollingLocations] = useState<PollingLocation[]>(
     []
   );
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setPollingLocations(data?.pollingLocations);
@@ -212,7 +213,7 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                 <Tab.Panels>
                   <Tab.Panel>
                     <label className="my-7 block text-sm font-medium">
-                      Your upcoming elections
+                      Election Resources
                     </label>
                     <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
                       {state.map((s, k) => (
@@ -252,6 +253,9 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                         </div>
                       ))}
                     </div>
+                    <label className="my-7 block text-sm font-medium">
+                      Upcoming Elections
+                    </label>
                     {contests.length > 0 &&
                       contests.map((contest, k) => (
                         <div
@@ -271,7 +275,8 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                                 <div className="w-full">
                                   {contest.referendumSubtitle}
                                   <br />
-                                  <div className="flex justify-between">
+                                  <br />
+                                  <div className="flex space-x-2">
                                     {contest.referendumBallotResponses?.map(
                                       (response, k) => {
                                         return (
@@ -279,7 +284,7 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                                             className="w-full flex-1"
                                             key={k}
                                           >
-                                            <button className="w-full rounded-lg flex-1 border border-gray-300 bg-gray-50 p-2 hover:bg-gray-300">
+                                            <button className="w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 p-2 hover:bg-gray-300">
                                               {response}
                                             </button>
                                           </div>
@@ -359,16 +364,21 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                     </div>
                   </Tab.Panel>
                   <Tab.Panel>
-                    {offices.length > 0 &&
-                      offices.map((office, k) => (
-                        <div key={k}>
-                          {office.name}:{" "}
-                          {
-                            officials[office?.officialIndices[0] as number]
-                              ?.name
-                          }
-                        </div>
-                      ))}
+                    <div className="space-y-2">
+                      {offices.length > 0 &&
+                        offices.map((office, k) => (
+                          <div
+                            key={k}
+                            className="w-full rounded-lg border border-gray-300 p-2"
+                          >
+                            {office.name}:{" "}
+                            {
+                              officials[office?.officialIndices[0] as number]
+                                ?.name
+                            }
+                          </div>
+                        ))}
+                    </div>
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>

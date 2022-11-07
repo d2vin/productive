@@ -122,7 +122,12 @@ const Legislation: React.FC<LegislationProps> = ({
           </button>
         </div>
       ) : (
-        <button onClick={() => signIn()}>Sign in to save your vote</button>
+        <button
+          className="w-full rounded-lg bg-slate-300 p-2"
+          onClick={() => signIn()}
+        >
+          Sign in to save your vote
+        </button>
       )}
     </div>
   );
