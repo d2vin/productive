@@ -92,7 +92,9 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
                 {session ? (
                   <li>
                     <a
-                      onClick={() => signOut()}
+                      onClick={() =>
+                        signOut({ callbackUrl: "https://productive.vote" })
+                      }
                       className="block rounded-b-lg py-2 px-4 hover:cursor-pointer hover:bg-gray-300 hover:text-black"
                     >
                       Sign out

@@ -24,8 +24,7 @@ const MiniProfile: React.FC = () => {
       </div>
       <button
         onClick={() => {
-          router.push("/");
-          signOut();
+          signOut({ callbackUrl: 'https://productive.vote'});
         }}
         className="text-sm font-semibold text-blue-400"
       >
