@@ -1,6 +1,6 @@
 import { DotsHorizontalIcon, BookmarkIcon } from "@heroicons/react/solid";
 import { Data } from "@react-google-maps/api";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
 
@@ -73,53 +73,57 @@ const Legislation: React.FC<LegislationProps> = ({
       <h2 className="text-gray-400">Policy Area: {policyArea}</h2>
       <h2>Latest Action: {latestAction}</h2>
       <h2>Sponsored by: {sponsor}</h2>
-      <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-        <button
-          className={`w-full rounded-lg bg-slate-300 p-2 ${
-            voteFor && "bg-green-500"
-          }`}
-          onClick={() => {
-            if (!voteFor && !voteAgainst) {
-              setVoteFor(true);
-              vote(true);
-            }
-            if (voteFor) {
-              setVoteFor(false);
-              unvote();
-            }
-            if (voteAgainst) {
-              setVoteFor(true);
-              setVoteAgainst(false);
-              unvote();
-              vote(true);
-            }
-          }}
-        >
-          Vote For
-        </button>
-        <button
-          className={`w-full rounded-lg bg-slate-300 p-2 ${
-            voteAgainst && "bg-cyan-400"
-          }`}
-          onClick={() => {
-            if (!voteFor && !voteAgainst) {
-              vote(false);
-            }
-            if (voteAgainst) {
-              setVoteAgainst(false);
-              unvote();
-            }
-            if (voteFor) {
-              setVoteAgainst(true);
-              setVoteFor(false);
-              unvote();
-              vote(false);
-            }
-          }}
-        >
-          Vote Against
-        </button>
-      </div>
+      {session ? (
+        <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+          <button
+            className={`w-full rounded-lg bg-slate-300 p-2 ${
+              voteFor && "bg-green-500"
+            }`}
+            onClick={() => {
+              if (!voteFor && !voteAgainst) {
+                setVoteFor(true);
+                vote(true);
+              }
+              if (voteFor) {
+                setVoteFor(false);
+                unvote();
+              }
+              if (voteAgainst) {
+                setVoteFor(true);
+                setVoteAgainst(false);
+                unvote();
+                vote(true);
+              }
+            }}
+          >
+            Vote For
+          </button>
+          <button
+            className={`w-full rounded-lg bg-slate-300 p-2 ${
+              voteAgainst && "bg-cyan-400"
+            }`}
+            onClick={() => {
+              if (!voteFor && !voteAgainst) {
+                vote(false);
+              }
+              if (voteAgainst) {
+                setVoteAgainst(false);
+                unvote();
+              }
+              if (voteFor) {
+                setVoteAgainst(true);
+                setVoteFor(false);
+                unvote();
+                vote(false);
+              }
+            }}
+          >
+            Vote Against
+          </button>
+        </div>
+      ) : (
+        <button onClick={() => signIn()}>Sign in to save your vote</button>
+      )}
     </div>
   );
 };
