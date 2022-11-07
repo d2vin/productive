@@ -22,6 +22,7 @@ const Sponsored: React.FC<SponsoredProps> = ({ id }) => {
           return (
             <div key={k}>
               <Legislation
+                id={legislation.id}
                 congress={legislation.congress}
                 latestActionDate={legislation.latestActionDate}
                 latestAction={legislation.latestAction}
@@ -33,7 +34,8 @@ const Sponsored: React.FC<SponsoredProps> = ({ id }) => {
               />
             </div>
           );
-        })}
+        })
+        }
     </div>
   );
 };

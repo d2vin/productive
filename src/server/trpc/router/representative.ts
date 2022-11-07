@@ -18,6 +18,35 @@ export const representativeRouter = t.router({
   getRepresentatives: t.procedure.query(async ({ ctx }) => {
     return await ctx.prisma.representative.findMany();
   }),
+  infiniteRepresentatives: t.procedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        state: z.string().optional(),
+        cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 50;
+      const { cursor } = input;
+      const items = await ctx.prisma.representative.findMany({
+        take: limit + 1, // get an extra item at the end which we'll use as next cursor
+        where: {
+          state: input.state
+        },
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        nextCursor = nextItem!.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
   getBookmarkedRepresentatives: t.procedure.query(async ({ ctx }) => {
     const bookmarkedRepresentative =
       await ctx.prisma.bookmarkedRepresentative.findMany({

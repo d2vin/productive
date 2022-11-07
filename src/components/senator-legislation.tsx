@@ -6,7 +6,7 @@ const SenatorLegislation: React.FC = () => {
   const senatorsLegislation =
     trpc.legislation.infiniteSenatorLegislation.useInfiniteQuery(
       {
-        limit: 10,
+        limit: 4,
       },
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,26 +36,30 @@ const SenatorLegislation: React.FC = () => {
 
   return (
     <div>
-      {senatorsLegislation.data?.pages.map((page) =>
-        page?.items
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ?.map((legislation: any, k: React.Key | null | undefined) => {
-            return (
-              <div key={k}>
-                <Legislation
-                  congress={legislation.congress}
-                  latestActionDate={legislation.latestActionDate}
-                  latestAction={legislation.latestAction}
-                  number={legislation.number}
-                  policyArea={legislation.policyArea}
-                  title={legislation.title}
-                  url={legislation.url}
-                  sponsor={legislation.sponsor}
-                />
-              </div>
-            );
-          })
-      )}
+      {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        senatorsLegislation.data?.pages.map((page: { items: any[] }) =>
+          page?.items
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ?.map((legislation: any, k: React.Key | null | undefined) => {
+              return (
+                <div key={k}>
+                  <Legislation
+                    id={legislation.id}
+                    congress={legislation.congress}
+                    latestActionDate={legislation.latestActionDate}
+                    latestAction={legislation.latestAction}
+                    number={legislation.number}
+                    policyArea={legislation.policyArea}
+                    title={legislation.title}
+                    url={legislation.url}
+                    sponsor={legislation.sponsor}
+                  />
+                </div>
+              );
+            })
+        )
+      }
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { t } from "../trpc";
 import { z } from "zod";
-import axios from "axios";
+import { Input, Result } from "postcss";
 
 export const legislationRouter = t.router({
   getSponsoredLegislation: t.procedure
@@ -15,6 +15,28 @@ export const legislationRouter = t.router({
           sponsorId: input.id,
         },
       });
+    }),
+  getUserVotesOnSponsoredLegislation: t.procedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const votes = await ctx.prisma.userVote.findMany({
+        where: {
+          userId: input.userId,
+        },
+      });
+      const voteList = [];
+      for (let i = 0; i < votes.length; i++) {
+        voteList.push(votes?.[i]?.sponsoredLegislationId);
+      }
+      const legislation = [];
+      for (let i = 0; i < voteList.length; i++) {
+        const id = voteList[i];
+        const vote = await ctx.prisma.sponsoredLegislation.findFirst({
+          where: { id: id },
+        });
+        legislation.push(vote);
+      }
+      return legislation;
     }),
   infiniteSenatorLegislation: t.procedure
     .input(
@@ -64,11 +86,55 @@ export const legislationRouter = t.router({
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
         const nextItem = items.pop();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         nextCursor = nextItem!.id;
       }
       return {
         items,
         nextCursor,
       };
+    }),
+  voteForLegislation: t.procedure
+    .input(
+      z.object({
+        userId: z.string(),
+        sponsoredLegislationId: z.number(),
+        result: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.userVote.create({
+        data: input,
+      });
+    }),
+  unvoteForLegislation: t.procedure
+    .input(
+      z.object({
+        userId: z.string(),
+        sponsoredLegislationId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userVote = await ctx.prisma.userVote.findFirst({
+        where: {
+          userId: input.userId,
+          sponsoredLegislationId: input.sponsoredLegislationId,
+        },
+      });
+      return await ctx.prisma.userVote.delete({
+        where: {
+          id: userVote?.id,
+        },
+      });
+    }),
+  getVoteForLegislation: t.procedure
+    .input(z.object({ sponsoredLegislationId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.userVote.findFirst({
+        where: {
+          userId: ctx?.session?.user?.id,
+          sponsoredLegislationId: input.sponsoredLegislationId,
+        },
+      });
     }),
 });

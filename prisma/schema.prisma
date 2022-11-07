@@ -50,6 +50,7 @@ model User {
     savedVotes              SavedVote[]
     BookmarkedSenator       BookmarkedSenator[]
     BookmarkedRepresenative BookmarkedRepresentative[]
+    UserVote                UserVote[]
 }
 
 model VerificationToken {
@@ -177,16 +178,26 @@ model SenateElection {
 // Congress API
 
 model SponsoredLegislation {
-    id                Int     @id @default(autoincrement())
-    number            String? @db.Text
+    id                Int        @id @default(autoincrement())
+    number            String?    @db.Text
     congress          Int
-    latestAction      String? @db.Text
-    latestActionDate  String? @db.Text
-    policyArea        String? @db.Text
-    title             String? @db.Text
-    type              String? @db.Text
-    url               String  @db.Text
-    sponsorId         String  @db.Text
-    sponsor           String? @db.Text
-    sponsorMemberType String? @db.Text
+    latestAction      String?    @db.Text
+    latestActionDate  String?    @db.Text
+    policyArea        String?    @db.Text
+    title             String?    @db.Text
+    type              String?    @db.Text
+    url               String     @db.Text
+    sponsorId         String     @db.Text
+    sponsor           String?    @db.Text
+    sponsorMemberType String?    @db.Text
+    UserVote          UserVote[]
+}
+
+model UserVote {
+    id                     Int                  @id @default(autoincrement())
+    castedBy               User                 @relation(fields: [userId], references: [id])
+    userId                 String
+    votedOn                SponsoredLegislation @relation(fields: [sponsoredLegislationId], references: [id])
+    sponsoredLegislationId Int
+    result                 Boolean
 }

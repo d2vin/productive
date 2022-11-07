@@ -8,9 +8,13 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Tab } from "@headlessui/react";
+import Legislation from "../../components/legislation";
 const Profile: React.FC = () => {
   const { data: session } = useSession();
-  const { status } = trpc.auth.getSession.useQuery();
+  const { data, status } =
+    trpc.legislation.getUserVotesOnSponsoredLegislation.useQuery({
+      userId: session?.user?.id as string
+    });
   const router = useRouter();
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -104,14 +108,35 @@ const Profile: React.FC = () => {
                 )}
               >
                 {/* Saved Votes */}
-                <SavedVotes />
+                {data.length > 0 && data
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  ?.map((legislation: any, k: React.Key | null | undefined) => {
+                    return (
+                      <div key={k}>
+                        <Legislation
+                          id={legislation.id}
+                          congress={legislation.congress}
+                          latestActionDate={legislation.latestActionDate}
+                          latestAction={legislation.latestAction}
+                          number={legislation.number}
+                          policyArea={legislation.policyArea}
+                          title={legislation.title}
+                          url={legislation.url}
+                          sponsor={legislation.sponsor}
+                        />
+                      </div>
+                    );
+                  })
+                  }
               </Tab.Panel>
               <Tab.Panel
                 className={classNames(
                   "rounded-xl bg-white p-3",
                   "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
                 )}
-              ></Tab.Panel>
+              >
+                Elections
+              </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         </section>

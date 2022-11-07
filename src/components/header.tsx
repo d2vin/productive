@@ -16,7 +16,7 @@ type HeaderProps = {
 };
 
 const Header: React.FC<HeaderProps> = ({ message }) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [address, setAddress] = useState<string>("");
   const [open, setOpen] = useState(false);
@@ -83,21 +83,28 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
                   <Link href="/polling">
                     <a
                       href="#"
-                      className={`block ${
-                        !session && "rounded-b-lg"
-                      } py-2 px-4 hover:bg-gray-300 hover:text-black`}
+                      className={`block py-2 px-4 hover:bg-gray-300 hover:text-black`}
                     >
                       Elections
                     </a>
                   </Link>
                 </li>
-                {session && (
+                {session ? (
                   <li>
                     <a
                       onClick={() => signOut()}
                       className="block rounded-b-lg py-2 px-4 hover:cursor-pointer hover:bg-gray-300 hover:text-black"
                     >
                       Sign out
+                    </a>
+                  </li>
+                ) : (
+                  <li>
+                    <a
+                      onClick={() => signIn()}
+                      className="block rounded-b-lg py-2 px-4 hover:cursor-pointer hover:bg-gray-300 hover:text-black"
+                    >
+                      Sign in
                     </a>
                   </li>
                 )}

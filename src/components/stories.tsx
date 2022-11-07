@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useRef } from "react";
 import { trpc } from "../utils/trpc";
 import Story from "./story";
 import { Listbox, Transition } from "@headlessui/react";
@@ -72,28 +72,77 @@ const Stories: React.FC = () => {
     Representative[]
   >([]);
 
-  const senators = trpc.senator.getSenators.useQuery();
-  const representatives = trpc.representative.getRepresentatives.useQuery();
+  const senators = trpc.senator.infiniteSenators.useInfiniteQuery(
+    {
+      limit: 12,
+      state:
+        selectedState?.name != states[0]?.name
+          ? selectedState?.name
+          : undefined,
+    },
+    {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getNextPageParam(lastPage: any) {
+        return lastPage.nextCursor;
+      },
+    }
+  );
+
+  const representatives =
+    trpc.representative.infiniteRepresentatives.useInfiniteQuery(
+      {
+        limit: 12,
+        state:
+          selectedState?.name != states[0]?.name
+            ? selectedState?.name
+            : undefined,
+      },
+      {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        getNextPageParam(lastPage: any) {
+          return lastPage.nextCursor;
+        },
+      }
+    );
+
+  const fetchMoreSenators = () => senators.fetchNextPage();
+  const fetchMoreRepresentatives = () => representatives.fetchNextPage();
+
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (senators.isSuccess) setSenatorList(senators.data);
-    if (representatives.isSuccess) setRepresentativeList(representatives.data);
-  }, [
-    senators.isSuccess,
-    senators.data,
-    representatives.isSuccess,
-    representatives.data,
-  ]);
-
-  const filterData = () => {
-    setSenatorList(
-      senatorList.filter((senator) => senator.state === selectedState?.name)
-    );
-  };
+    const element = ref.current;
+    let distanceScrolled;
+    let elementWidth;
+    let scrollbarWidth;
+    const onScroll = () => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      distanceScrolled = element!.scrollLeft;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      elementWidth = element!.offsetWidth;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      scrollbarWidth = element!.scrollWidth;
+      console.log(distanceScrolled + elementWidth > scrollbarWidth);
+      if (distanceScrolled + elementWidth > scrollbarWidth) {
+        if (selected?.name === "Senators") {
+          fetchMoreSenators();
+        } else {
+          fetchMoreRepresentatives();
+        }
+      }
+    };
+    element?.addEventListener("scroll", onScroll);
+    return () => {
+      element?.removeEventListener("scroll", onScroll);
+    };
+  });
 
   return (
     <>
-      <div className="mt-8 flex-col justify-center space-y-12 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-6 align-middle scrollbar-thin scrollbar-thumb-black">
+      <div
+        ref={ref}
+        className="mt-8 flex-col justify-center space-y-12 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-6 align-middle scrollbar-thin scrollbar-thumb-black"
+      >
         <div className="absolute flex max-w-xl space-x-2">
           <Listbox value={selected} onChange={setSelected}>
             <div className="relative">
@@ -209,69 +258,81 @@ const Stories: React.FC = () => {
         <div className="flex space-x-2">
           {selected?.name === "Senators" &&
             (selectedState === states[0]
-              ? senatorList
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  ?.map((profile: any) => {
-                    return (
-                      <Story
-                        key={profile.bioguideId}
-                        image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
-                        firstName={profile.firstName}
-                        lastName={profile.lastName}
-                        id={profile.bioguideId}
-                        office={selected.name}
-                      />
-                    );
-                  })
-              : senatorList
-                  .filter((senator) => selectedState?.name === senator.state)
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  ?.map((profile: any) => {
-                    return (
-                      <Story
-                        key={profile.bioguideId}
-                        image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
-                        firstName={profile.firstName}
-                        lastName={profile.lastName}
-                        id={profile.bioguideId}
-                        office={selected?.name}
-                      />
-                    );
-                  }))}
+              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                senators?.data?.pages?.map((page: { items: any[] }) =>
+                  page?.items
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    ?.map((profile: any) => {
+                      return (
+                        <Story
+                          key={profile.bioguideId}
+                          image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
+                          firstName={profile.firstName}
+                          lastName={profile.lastName}
+                          id={profile.bioguideId}
+                          office={selected.name}
+                        />
+                      );
+                    })
+                )
+              : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                senators?.data?.pages?.map((page: { items: any[] }) =>
+                  page?.items
+                    .filter((senator) => selectedState?.name === senator.state)
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    ?.map((profile: any) => {
+                      return (
+                        <Story
+                          key={profile.bioguideId}
+                          image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
+                          firstName={profile.firstName}
+                          lastName={profile.lastName}
+                          id={profile.bioguideId}
+                          office={selected?.name}
+                        />
+                      );
+                    })
+                ))}
           {selected?.name === "Representatives" &&
             (selectedState === states[0]
-              ? representativeList
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  ?.map((profile: any) => {
-                    return (
-                      <Story
-                        key={profile.bioguideId}
-                        image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
-                        firstName={profile.firstName}
-                        lastName={profile.lastName}
-                        id={profile.bioguideId}
-                        office={selected.name}
-                      />
-                    );
-                  })
-              : representativeList
-                  .filter(
-                    (representative) =>
-                      selectedState?.name === representative.state
-                  )
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  ?.map((profile: any) => {
-                    return (
-                      <Story
-                        key={profile.bioguideId}
-                        image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
-                        firstName={profile.firstName}
-                        lastName={profile.lastName}
-                        id={profile.bioguideId}
-                        office={selected?.name}
-                      />
-                    );
-                  }))}
+              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                representatives?.data?.pages?.map((page: { items: any[] }) =>
+                  page?.items
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    ?.map((profile: any) => {
+                      return (
+                        <Story
+                          key={profile.bioguideId}
+                          image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
+                          firstName={profile.firstName}
+                          lastName={profile.lastName}
+                          id={profile.bioguideId}
+                          office={selected.name}
+                        />
+                      );
+                    })
+                )
+              : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                representatives?.data?.pages?.map((page: { items: any[] }) =>
+                  page?.items
+                    .filter(
+                      (representative) =>
+                        selectedState?.name === representative.state
+                    )
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    ?.map((profile: any) => {
+                      return (
+                        <Story
+                          key={profile.bioguideId}
+                          image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
+                          firstName={profile.firstName}
+                          lastName={profile.lastName}
+                          id={profile.bioguideId}
+                          office={selected?.name}
+                        />
+                      );
+                    })
+                ))}
         </div>
       </div>
     </>
