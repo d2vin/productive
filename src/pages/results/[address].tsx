@@ -33,6 +33,11 @@ type Contest = {
   district: {
     name: string;
   };
+  type: string;
+  referendumTitle?: string;
+  referendumSubtitle?: string;
+  referendumUrl?: string;
+  referendumBallotResponses?: [];
 };
 
 type State = {
@@ -261,26 +266,56 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                               )
                                 ? null
                                 : ": " + contest.district.name}
+                              <br />
+                              {contest.type === "Referendum" && (
+                                <div className="w-full">
+                                  {contest.referendumSubtitle}
+                                  <br />
+                                  <div className="flex justify-between">
+                                    {contest.referendumBallotResponses?.map(
+                                      (response, k) => {
+                                        return (
+                                          <div
+                                            className="w-full flex-1"
+                                            key={k}
+                                          >
+                                            <button className="w-full rounded-lg flex-1 border border-gray-300 bg-gray-50 p-2 hover:bg-gray-300">
+                                              {response}
+                                            </button>
+                                          </div>
+                                        );
+                                      }
+                                    )}
+                                  </div>
+                                  <br />
+                                  <button className="rounded-lg border border-gray-600 bg-gray-50 p-2 hover:bg-gray-300">
+                                    <a
+                                      href={contest.referendumUrl}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Learn More
+                                    </a>
+                                  </button>
+                                </div>
+                              )}
                             </p>
-                            {/* <button className="rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
-                        Save
-                      </button> */}
                           </div>
                           <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
                             {contest.candidates &&
                               contest.candidates.map((candidate, k) => (
-                                <div
+                                <button
                                   key={k}
                                   className={`bg-${
                                     candidate.party === "Republican Party"
                                       ? "red"
                                       : candidate.party === "Democratic Party"
                                       ? "indigo"
-                                      : "gray"
+                                      : "slate"
                                   }-400 flex-1 rounded-md p-2 text-center`}
                                 >
                                   {candidate.name}
-                                </div>
+                                </button>
                               ))}
                           </div>
                         </div>
@@ -370,8 +405,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 
   const response = await axios.get(url, { params });
-  console.log(response);
   const data = await response.data;
+  console.log(data.contests);
 
   const repUrl = "https://www.googleapis.com/civicinfo/v2/representatives";
   const repParams = {
@@ -380,9 +415,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 
   const repResponse = await axios.get(repUrl, { params: repParams });
-  console.log(repResponse);
   const repData = await repResponse.data;
-  console.log(JSON.stringify(repData));
 
   return {
     props: { data: data, repData: repData, address: address },
