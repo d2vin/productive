@@ -356,9 +356,9 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                               )}
                               <p>{pollingLocation.pollingHours}</p>
                             </div>
-                            <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
+                            {/* <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
                               Save
-                            </button>
+                            </button> */}
                           </div>
                         ))}
                     </div>
