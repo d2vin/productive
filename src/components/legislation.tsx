@@ -27,6 +27,7 @@ const Legislation: React.FC<LegislationProps> = ({
   const { data: session } = useSession();
   const [voteFor, setVoteFor] = useState<boolean>(false);
   const [voteAgainst, setVoteAgainst] = useState<boolean>(false);
+  const [voteId, setVoteId] = useState<number>();
   const { data, status } = trpc.legislation.getVoteForLegislation.useQuery({
     sponsoredLegislationId: id,
   });
@@ -54,10 +55,20 @@ const Legislation: React.FC<LegislationProps> = ({
     });
   };
 
+  const updateVote = async (result: boolean) => {
+    const userId = session?.user?.id;
+    await updateVoteMutation.mutate({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      id: voteId!,
+      result: result,
+    });
+  };
+
   useEffect(() => {
     if (data && status === "success") {
       setVoteFor(data.result);
       setVoteAgainst(!data.result);
+      setVoteId(data.id);
     }
   }, [data, status]);
 

@@ -21,9 +21,6 @@ const Polling: NextPage = () => {
           }`}
         >
           <section className="col-span-2 mx-2 lg:mx-0">
-            <h1 className="mt-20 text-center text-4xl font-semibold sm:text-left">
-              Your Polling Information
-            </h1>
             <Poll />
           </section>
           {session && (

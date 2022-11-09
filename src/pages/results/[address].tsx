@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
-import { GoogleMap, useLoadScript, InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, InfoWindow } from "@react-google-maps/api";
 import { useSession } from "next-auth/react";
 import MiniProfile from "../../components/mini-profile";
 import BookmarkedOfficials from "../../components/bookmarked-officials";

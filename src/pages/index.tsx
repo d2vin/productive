@@ -33,7 +33,6 @@ const Landing: NextPage = () => {
           <div className="text-center text-6xl font-medium sm:text-left">
             <h1>
               Democracy for
-              <br />
               the next generation 🏛️
             </h1>
           </div>
@@ -69,7 +68,7 @@ const Landing: NextPage = () => {
                       leaveTo="opacity-0"
                       afterLeave={() => setValue("")}
                     >
-                      <Combobox.Options className="absolute mt-2 max-h-60 w-96 overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                      <Combobox.Options className="absolute mt-2 max-h-60 w-64 overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                         {status === "OK" &&
                           data.map(({ place_id, description }) => (
                             <Combobox.Option
@@ -77,7 +76,7 @@ const Landing: NextPage = () => {
                               className={({ active }) =>
                                 `relative cursor-default select-none py-2 pl-10 pr-4 ${
                                   active
-                                    ? "bg-gray-600 text-white"
+                                    ? "bg-gray-300 text-black"
                                     : "text-gray-900"
                                 }`
                               }

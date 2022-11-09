@@ -27,11 +27,11 @@ const Feed: React.FC = () => {
             <Tab
               className={({ selected }) =>
                 classNames(
-                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-400",
+                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-slate-400",
                   "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none",
                   selected
-                    ? "bg-white shadow-md"
-                    : "text-gray-100 hover:bg-white/[0.12] hover:text-white"
+                    ? "bg-white text-gray-400 shadow-md"
+                    : "text-gray-100 hover:bg-white/[0.12] hover:text-slate-600"
                 )
               }
             >
@@ -40,11 +40,11 @@ const Feed: React.FC = () => {
             <Tab
               className={({ selected }) =>
                 classNames(
-                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-400",
+                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-slate-400",
                   "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none",
                   selected
-                    ? "bg-white shadow-md"
-                    : "text-gray-100 hover:bg-white/[0.12] hover:text-white"
+                    ? "bg-white text-gray-400 shadow-md"
+                    : "text-gray-100 hover:bg-white/[0.12] hover:text-slate-600"
                 )
               }
             >

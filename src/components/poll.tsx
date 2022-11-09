@@ -49,9 +49,9 @@ const Poll: React.FC = () => {
     []
   );
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
-  });
+  // const { isLoaded } = useLoadScript({
+  //   googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
+  // });
 
   const center = useMemo(() => ({ lat: 40.7351, lng: -73.9945 }), []);
 
@@ -199,7 +199,7 @@ const Poll: React.FC = () => {
           </div>
         </div>
       </form>
-      {isLoaded ? (
+      {true ? (
         <GoogleMap zoom={10} center={center} mapContainerStyle={containerStyle}>
           {pollingLocations.length > 0 &&
             pollingLocations.map((pollingLocation, k) => (
@@ -225,41 +225,43 @@ const Poll: React.FC = () => {
       ) : (
         <div>Loading...</div>
       )}
-      <label className="my-7 block text-sm font-medium">
-        Your upcoming elections
-      </label>
-      <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-        {state.map((s, k) => (
-          <div
-            className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2"
-            key={k}
-          >
-            <a
-              className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
-              href={s.electionAdministrationBody.electionInfoUrl}
-              target="_blank"
-              rel="noreferrer"
+      <div className="my-7 max-w-2xl space-y-2 border rounded-lg bg-white p-4 sm:max-w-6xl">
+        {state.length > 0 && (
+            <label className="my-7 block text-sm font-medium">
+              Your upcoming elections
+            </label>
+          ) &&
+          state.map((s, k) => (
+            <div
+              className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2"
+              key={k}
             >
-              Election Information
-            </a>
-            <a
-              className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
-              href={s.electionAdministrationBody.electionRegistrationUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Election Registration
-            </a>
-            <a
-              className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
-              href={s.electionAdministrationBody.absenteeVotingInfoUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Absentee Voting
-            </a>
-          </div>
-        ))}
+              <a
+                className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
+                href={s.electionAdministrationBody.electionInfoUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Election Information
+              </a>
+              <a
+                className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
+                href={s.electionAdministrationBody.electionRegistrationUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Election Registration
+              </a>
+              <a
+                className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
+                href={s.electionAdministrationBody.absenteeVotingInfoUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Absentee Voting
+              </a>
+            </div>
+          ))}
       </div>
       {contests.length > 0 &&
         contests.map((contest, k) => (
@@ -297,11 +299,13 @@ const Poll: React.FC = () => {
             </div>
           </div>
         ))}
-      <label className="my-7 block text-sm font-medium">
-        Your polling locations
-      </label>
-      <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-        {pollingLocations.length > 0 &&
+
+      <div className="my-7 max-w-2xl space-y-2 border rounded-lg bg-white p-4 sm:max-w-6xl">
+        {pollingLocations.length > 0 && (
+            <label className="my-7 block text-sm font-medium">
+              Your polling locations
+            </label>
+          ) &&
           pollingLocations.map((pollingLocation, k) => (
             <div className="flex justify-between align-middle" key={k}>
               <div>
