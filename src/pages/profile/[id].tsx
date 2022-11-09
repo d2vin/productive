@@ -26,7 +26,7 @@ const Profile: React.FC = () => {
         <div className="mb-16">
           <Header message={"Productive"} />
         </div>
-        <section className="bg-white">
+        <section className="bg-gray-50">
           <div className="mx-auto max-w-screen-xl py-8 px-4 lg:py-16 lg:px-6">
             <div className="mx-auto max-w-screen-sm text-center">
               <h1 className="text-primary-600 dark:text-primary-500 mb-4 text-7xl font-extrabold tracking-tight lg:text-9xl">

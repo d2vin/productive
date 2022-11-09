@@ -201,6 +201,8 @@ model UserVote {
     votedOn                SponsoredLegislation @relation(fields: [sponsoredLegislationId], references: [id])
     sponsoredLegislationId Int
     result                 Boolean
+
+    @@index([userId, sponsoredLegislationId])
 }
 
 model Candidate {

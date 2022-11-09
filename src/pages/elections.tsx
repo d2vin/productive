@@ -5,7 +5,7 @@ import ElectionFeed from "../components/election-feed";
 
 const Elections: NextPage = () => {
   return (
-    <div className="bg-gray-50-h-screen overflow-y-scroll scrollbar-hide">
+    <div className="bg-gray-50 h-screen overflow-y-scroll scrollbar-hide">
       <Head>
         <title>Productive</title>
         <meta

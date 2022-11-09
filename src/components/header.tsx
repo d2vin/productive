@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
 
   return (
     <div className="fixed top-0 z-20 w-full border-b bg-white shadow-sm">
-      <div className="mx-5 flex max-w-6xl items-center justify-between bg-white lg:mx-auto">
+      <div className="mx-5 flex max-w-5xl items-center justify-between bg-white lg:mx-auto">
         {/* Left - Logo */}
         <div className="relative hidden cursor-pointer lg:inline-grid">
           <h1

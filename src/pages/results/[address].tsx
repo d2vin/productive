@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import { GoogleMap, useLoadScript, InfoWindow } from "@react-google-maps/api";
 import { useSession } from "next-auth/react";
@@ -102,6 +102,8 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
   const [pollingLocations, setPollingLocations] = useState<PollingLocation[]>(
     []
   );
+  const center = useMemo(() => ({ lat: 40.7351, lng: -73.9945 }), []);
+  const [selected, setSelected] = useState(center);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -122,12 +124,6 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
     repData?.offices,
   ]);
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
-  });
-
-  const center = useMemo(() => ({ lat: 40.7351, lng: -73.9945 }), []);
-
   const containerStyle = {
     width: "full",
     height: "50vh",
@@ -141,7 +137,7 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
 
   return (
     <>
-      <div className="bg-gray-50-h-screen overflow-y-scroll scrollbar-hide">
+      <div className="bg-gray-50 h-screen overflow-y-scroll scrollbar-hide">
         <div className="mb-16">
           <Header message={"Productive"} />
         </div>
@@ -152,35 +148,33 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
         >
           <section className="col-span-2 mx-2 lg:mx-0">
             <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-              {isLoaded && (
-                <GoogleMap
-                  zoom={10}
-                  center={center}
-                  mapContainerStyle={containerStyle}
-                >
-                  {pollingLocations.length > 0
-                    ? pollingLocations.map((pollingLocation, k) => (
-                        <InfoWindow
-                          position={{
-                            lat: pollingLocation.latitude,
-                            lng: pollingLocation.longitude,
-                          }}
-                          key={k}
-                        >
-                          <div className="text-center">
-                            <p>{pollingLocation.address.locationName}</p>
-                            <p>{pollingLocation.address.line1}</p>
-                            <p>
-                              {pollingLocation.address.city},{" "}
-                              {pollingLocation.address.state}{" "}
-                              {pollingLocation.address.zip}
-                            </p>
-                          </div>
-                        </InfoWindow>
-                      ))
-                    : null}
-                </GoogleMap>
-              )}
+              <GoogleMap
+                zoom={10}
+                center={center}
+                mapContainerStyle={containerStyle}
+              >
+                {pollingLocations.length > 0
+                  ? pollingLocations.map((pollingLocation, k) => (
+                      <InfoWindow
+                        position={{
+                          lat: pollingLocation.latitude,
+                          lng: pollingLocation.longitude,
+                        }}
+                        key={k}
+                      >
+                        <div className="text-center">
+                          <p>{pollingLocation.address.locationName}</p>
+                          <p>{pollingLocation.address.line1}</p>
+                          <p>
+                            {pollingLocation.address.city},{" "}
+                            {pollingLocation.address.state}{" "}
+                            {pollingLocation.address.zip}
+                          </p>
+                        </div>
+                      </InfoWindow>
+                    ))
+                  : null}
+              </GoogleMap>
               <Tab.Group>
                 <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
                   <Tab
@@ -263,7 +257,7 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                           key={k}
                         >
                           <div className="flex justify-between align-middle">
-                            <p>
+                            <div>
                               {contest.ballotTitle}
                               {contest.district.name.includes(
                                 contest.ballotTitle
@@ -304,7 +298,7 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                                   </button>
                                 </div>
                               )}
-                            </p>
+                            </div>
                           </div>
                           <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
                             {contest.candidates &&

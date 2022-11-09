@@ -21,7 +21,7 @@ const SignIn: NextPage<SignInProps> = ({ providers }) => {
   return (
     <>
       <Header message={"Productive"} />
-      <div className="flex min-h-screen flex-col items-center justify-center space-y-8 text-center">
+      <div className="flex min-h-screen flex-col items-center justify-center space-y-8 bg-gray-50 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="mt-6 w-36" src="/productive.png" alt="Logo" />
         <p className="font-xs italic">

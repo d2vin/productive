@@ -137,4 +137,17 @@ export const legislationRouter = t.router({
         },
       });
     }),
+  updateVoteForLegislation: t.procedure
+    .input(z.object({ id: z.number(), result: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const userVote = await ctx.prisma.userVote.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          result: input.result,
+        },
+      });
+      return userVote;
+    }),
 });

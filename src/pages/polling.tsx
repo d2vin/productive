@@ -11,7 +11,7 @@ const Polling: NextPage = () => {
 
   return (
     <>
-      <div className="bg-gray-50-h-screen overflow-y-scroll scrollbar-hide">
+      <div className="bg-gray-50 h-screen overflow-y-scroll scrollbar-hide">
         <div className="mb-16">
           <Header message={"Productive"} />
         </div>

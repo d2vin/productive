@@ -31,6 +31,8 @@ const Legislation: React.FC<LegislationProps> = ({
     sponsoredLegislationId: id,
   });
   const voteMutation = trpc.legislation.voteForLegislation.useMutation();
+  const updateVoteMutation =
+    trpc.legislation.updateVoteForLegislation.useMutation();
   const unvoteMutation = trpc.legislation.unvoteForLegislation.useMutation();
 
   const vote = async (result: boolean) => {

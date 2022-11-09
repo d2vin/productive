@@ -30,7 +30,7 @@ const OfficialProfile: React.FC = () => {
         <Header message="Productive" />
       </div>
       <main
-        className={`mx-auto grid grid-cols-1 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${"!max-w-3xl !grid-cols-1"}`}
+        className={`bg-gray-50 mx-auto grid grid-cols-1 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${"!max-w-3xl !grid-cols-1"}`}
       >
         {/* Section */}
         <section className="col-span-2 mx-2 lg:mx-0">
