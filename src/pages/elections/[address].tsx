@@ -8,6 +8,7 @@ import BookmarkedOfficials from "../../components/bookmarked-officials";
 import Header from "../../components/header";
 import { GetServerSideProps } from "next";
 import { Tab } from "@headlessui/react";
+import { PlacesAutocomplete } from "../../components/places";
 
 type PollingLocation = {
   address: {
@@ -38,6 +39,7 @@ type Contest = {
   referendumSubtitle?: string;
   referendumUrl?: string;
   referendumBallotResponses?: [];
+  office: string;
 };
 
 type State = {
@@ -92,9 +94,7 @@ interface ResultsProps {
 
 const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
   const { data: session } = useSession();
-  const [search, setSearch] = useState<string>("Polling Locations");
-  const [dropdown, setDropdown] = useState<boolean>();
-  const [searchAddress, setSearchAddress] = useState<string>();
+  const [searchAddress, setSearchAddress] = useState<string>("");
   const [offices, setOffices] = useState<Office[]>([]);
   const [officials, setOfficials] = useState<Official[]>([]);
   const [state, setState] = useState<State[]>([]);
@@ -105,14 +105,63 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
   const center = useMemo(() => ({ lat: 40.7351, lng: -73.9945 }), []);
   const [selected, setSelected] = useState(center);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSubmit = async (event: any) => {
+    event.preventDefault();
+    const electionId = 2000;
+    if (!address) return;
+
+    const url = "https://www.googleapis.com/civicinfo/v2/voterinfo";
+    const params = {
+      key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+      searchAddress,
+      electionId: electionId,
+    };
+
+    const repUrl = "https://www.googleapis.com/civicinfo/v2/representatives";
+    const repParams = {
+      key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+      address: searchAddress,
+    };
+
+    axios
+      .get(url, { params })
+      .then((response) => {
+        console.log(response);
+        if (!response.data) return;
+        const data = response.data;
+        setPollingLocations(data.pollingLocations);
+        setContests(data.contests);
+        setState(data.state);
+      })
+      .catch((error) => {
+        return error;
+      });
+
+    axios
+      .get(repUrl, { params: repParams })
+      .then((response) => {
+        console.log(response);
+        if (!response.data) return;
+        const repData = response.data;
+        setOffices(repData.offices);
+        setOfficials(repData.officials);
+      })
+      .catch((error) => {
+        return error;
+      });
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      setPollingLocations(data?.pollingLocations);
-      setContests(data?.contests);
-      setState(data?.state);
-      setSearchAddress(address);
-      setOffices(repData?.offices);
-      setOfficials(repData?.officials);
+      if (!searchAddress) {
+        setPollingLocations(data?.pollingLocations);
+        setContests(data?.contests);
+        setState(data?.state);
+        setSearchAddress(address);
+        setOffices(repData?.offices);
+        setOfficials(repData?.officials);
+      }
     }, 1000);
     return () => clearTimeout(timer);
   }, [
@@ -122,6 +171,7 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
     address,
     repData?.officials,
     repData?.offices,
+    searchAddress,
   ]);
 
   const containerStyle = {
@@ -137,7 +187,7 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
 
   return (
     <>
-      <div className="bg-gray-50 h-screen overflow-y-scroll scrollbar-hide">
+      <div className="h-screen overflow-y-scroll bg-gray-50 scrollbar-hide">
         <div className="mb-16">
           <Header message={"Productive"} />
         </div>
@@ -153,13 +203,23 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                 center={center}
                 mapContainerStyle={containerStyle}
               >
+                <form onSubmit={onSubmit}>
+                  <PlacesAutocomplete
+                    setSelected={setSelected}
+                    setAddress={setSearchAddress}
+                    address={searchAddress}
+                  />
+                </form>
                 {pollingLocations.length > 0
                   ? pollingLocations.map((pollingLocation, k) => (
                       <InfoWindow
-                        position={{
-                          lat: pollingLocation.latitude,
-                          lng: pollingLocation.longitude,
-                        }}
+                        position={
+                          // {
+                          // lat: pollingLocation.latitude,
+                          // lng: pollingLocation.longitude,
+                          // }
+                          center
+                        }
                         key={k}
                       >
                         <div className="text-center">
@@ -258,7 +318,9 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                         >
                           <div className="flex justify-between align-middle">
                             <div>
-                              {contest.ballotTitle}
+                              {contest.type === "Referendum"
+                                ? contest.referendumTitle
+                                : contest.office}
                               {contest.district.name.includes(
                                 contest.ballotTitle
                               )
@@ -300,15 +362,15 @@ const Results: NextPage<ResultsProps> = ({ data, address, repData }) => {
                               )}
                             </div>
                           </div>
-                          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+                          <div className="flex flex-col space-y-2 overflow-scroll sm:flex-row sm:space-y-0 sm:space-x-2">
                             {contest.candidates &&
                               contest.candidates.map((candidate, k) => (
                                 <button
                                   key={k}
                                   className={`bg-${
-                                    candidate.party === "Republican Party"
+                                    candidate.party === "Republican"
                                       ? "red"
-                                      : candidate.party === "Democratic Party"
+                                      : candidate.party === "Democratic"
                                       ? "indigo"
                                       : "slate"
                                   }-400 flex-1 rounded-md p-2 text-center`}
@@ -400,7 +462,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const address = context.params?.address as string;
   console.log("address", address);
 
-  const electionId = 8000;
+  const electionId = 2000;
   const url = "https://www.googleapis.com/civicinfo/v2/voterinfo";
   const params = {
     key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,

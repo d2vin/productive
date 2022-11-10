@@ -143,7 +143,7 @@ const Stories: React.FC = () => {
         ref={ref}
         className="mt-8 flex-col justify-center space-y-12 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-6 align-middle scrollbar-thin scrollbar-thumb-black"
       >
-        <div className="absolute flex max-w-xl space-x-2">
+        <div className="sticky flex max-w-xl space-x-2">
           <Listbox value={selected} onChange={setSelected}>
             <div className="relative">
               <Listbox.Button className="relative w-48 cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">

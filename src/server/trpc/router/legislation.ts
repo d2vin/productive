@@ -103,9 +103,20 @@ export const legislationRouter = t.router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.userVote.create({
-        data: input,
+      const existingVote = await ctx.prisma.userVote.findFirst({
+        where: {
+          userId: input.userId,
+          sponsoredLegislationId: input.sponsoredLegislationId,
+          result: input.result,
+        },
       });
+      if (!existingVote) {
+        return await ctx.prisma.userVote.create({
+          data: input,
+        });
+      } else {
+        return null;
+      }
     }),
   unvoteForLegislation: t.procedure
     .input(

@@ -37,6 +37,7 @@ type Contest = {
   referendumSubtitle?: string;
   referendumUrl?: string;
   referendumBallotResponses?: [];
+  office: string;
 };
 
 type State = {
@@ -83,8 +84,6 @@ const Index = () => {
   const { data: session } = useSession();
 
   const [address, setAddress] = useState<string>("");
-  const [dropdown, setDropdown] = useState<boolean>();
-  const [searchAddress, setSearchAddress] = useState<string>();
   const [offices, setOffices] = useState<Office[]>([]);
   const [officials, setOfficials] = useState<Official[]>([]);
   const [state, setState] = useState<State[]>([]);
@@ -98,7 +97,7 @@ const Index = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (event: any) => {
     event.preventDefault();
-    const electionId = 8000;
+    const electionId = 2000;
     if (!address) return;
 
     const url = "https://www.googleapis.com/civicinfo/v2/voterinfo";
@@ -106,6 +105,12 @@ const Index = () => {
       key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
       address,
       electionId: electionId,
+    };
+
+    const repUrl = "https://www.googleapis.com/civicinfo/v2/representatives";
+    const repParams = {
+      key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+      address: address,
     };
 
     axios
@@ -117,6 +122,19 @@ const Index = () => {
         setPollingLocations(data.pollingLocations);
         setContests(data.contests);
         setState(data.state);
+      })
+      .catch((error) => {
+        return error;
+      });
+
+    axios
+      .get(repUrl, { params: repParams })
+      .then((response) => {
+        console.log(response);
+        if (!response.data) return;
+        const repData = response.data;
+        setOffices(repData.offices);
+        setOfficials(repData.officials);
       })
       .catch((error) => {
         return error;
@@ -173,14 +191,23 @@ const Index = () => {
                 center={center}
                 mapContainerStyle={containerStyle}
               >
-              <PlacesAutocomplete setSelected={setSelected} />
-                {pollingLocations.length > 0
+                <form onSubmit={onSubmit}>
+                  <PlacesAutocomplete
+                    setSelected={setSelected}
+                    setAddress={setAddress}
+                    address={address}
+                  />
+                </form>
+                {pollingLocations != undefined
                   ? pollingLocations.map((pollingLocation, k) => (
                       <InfoWindow
-                        position={{
-                          lat: pollingLocation.latitude,
-                          lng: pollingLocation.longitude,
-                        }}
+                        position={
+                          // {
+                          // lat: pollingLocation.latitude,
+                          // lng: pollingLocation.longitude,
+                          // }
+                          center
+                        }
                         key={k}
                       >
                         <div className="text-center">
@@ -284,7 +311,9 @@ const Index = () => {
                             >
                               <div className="flex justify-between align-middle">
                                 <div>
-                                  {contest.ballotTitle}
+                                  {contest.type === "Referendum"
+                                    ? contest.referendumTitle
+                                    : contest.office}
                                   {contest.district.name.includes(
                                     contest.ballotTitle
                                   )
@@ -326,7 +355,7 @@ const Index = () => {
                                   )}
                                 </div>
                               </div>
-                              <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+                              <div className="flex flex-col space-y-2 overflow-scroll sm:flex-row sm:space-y-0 sm:space-x-2">
                                 {contest.candidates &&
                                   contest.candidates.map((candidate, k) => (
                                     <button
@@ -350,7 +379,7 @@ const Index = () => {
                           Your polling locations
                         </label>
                         <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-                          {pollingLocations.length > 0 &&
+                          {pollingLocations != undefined ? (
                             pollingLocations.map((pollingLocation, k) => (
                               <div
                                 className="flex justify-between align-middle"
@@ -385,7 +414,13 @@ const Index = () => {
                               Save
                             </button> */}
                               </div>
-                            ))}
+                            ))
+                          ) : (
+                            <div>
+                              Sorry, we couldn&apos;t find any polling
+                              locations, try a different address.
+                            </div>
+                          )}
                         </div>
                       </>
                     ) : (

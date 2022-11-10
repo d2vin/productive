@@ -1,7 +1,7 @@
 import { DotsHorizontalIcon, BookmarkIcon } from "@heroicons/react/solid";
 import { Data } from "@react-google-maps/api";
 import { signIn, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { trpc } from "../utils/trpc";
 
 type LegislationProps = {
@@ -25,9 +25,9 @@ const Legislation: React.FC<LegislationProps> = ({
   sponsor,
 }) => {
   const { data: session } = useSession();
+  const buttonRef = useRef(null);
   const [voteFor, setVoteFor] = useState<boolean>(false);
   const [voteAgainst, setVoteAgainst] = useState<boolean>(false);
-  const [voteId, setVoteId] = useState<number>();
   const { data, status } = trpc.legislation.getVoteForLegislation.useQuery({
     sponsoredLegislationId: id,
   });
@@ -55,20 +55,49 @@ const Legislation: React.FC<LegislationProps> = ({
     });
   };
 
-  const updateVote = async (result: boolean) => {
-    const userId = session?.user?.id;
-    await updateVoteMutation.mutate({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      id: voteId!,
-      result: result,
-    });
+  const handleVoteForClick = async () => {
+    if (!voteFor && !voteAgainst) {
+      setVoteFor(true);
+      await vote(true);
+    }
+    if (voteFor) {
+      setVoteFor(false);
+      await unvote();
+    }
+    if (voteAgainst) {
+      setVoteFor(true);
+      setVoteAgainst(false);
+      await unvote();
+      await vote(true);
+    }
+  };
+
+  const handleVoteAgainstClick = async () => {
+    if (!voteFor && !voteAgainst) {
+      await vote(false);
+    }
+    if (voteAgainst) {
+      setVoteAgainst(false);
+      await unvote();
+    }
+    if (voteFor) {
+      setVoteAgainst(true);
+      setVoteFor(false);
+      await unvote();
+      await vote(false);
+    }
+  };
+
+  const handleVoteResetClick = async () => {
+    setVoteAgainst(false);
+    setVoteFor(false);
+    await unvote();
   };
 
   useEffect(() => {
     if (data && status === "success") {
       setVoteFor(data.result);
       setVoteAgainst(!data.result);
-      setVoteId(data.id);
     }
   }, [data, status]);
 
@@ -87,48 +116,31 @@ const Legislation: React.FC<LegislationProps> = ({
       <h2>Latest Action: {latestAction}</h2>
       <h2>Sponsored by: {sponsor}</h2>
       {session ? (
-        <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+        <div className="flex flex-col space-y-2 ">
           <button
+            disabled={voteFor}
             className={`w-full rounded-lg bg-slate-300 p-2 ${
               voteFor && "bg-green-500"
             }`}
-            onClick={() => {
-              if (!voteFor && !voteAgainst) {
-                setVoteFor(true);
-                vote(true);
+            onClick={async (e) => {
+              if (e?.currentTarget) {
+                e.currentTarget.disabled = true;
               }
-              if (voteFor) {
-                setVoteFor(false);
-                unvote();
+              if (e.currentTarget) {
+                e.currentTarget.disabled = false;
               }
-              if (voteAgainst) {
-                setVoteFor(true);
-                setVoteAgainst(false);
-                unvote();
-                vote(true);
-              }
+              await handleVoteForClick();
             }}
           >
             Vote For
           </button>
           <button
+            disabled={voteAgainst}
             className={`w-full rounded-lg bg-slate-300 p-2 ${
               voteAgainst && "bg-cyan-400"
             }`}
-            onClick={() => {
-              if (!voteFor && !voteAgainst) {
-                vote(false);
-              }
-              if (voteAgainst) {
-                setVoteAgainst(false);
-                unvote();
-              }
-              if (voteFor) {
-                setVoteAgainst(true);
-                setVoteFor(false);
-                unvote();
-                vote(false);
-              }
+            onClick={async () => {
+              await handleVoteAgainstClick();
             }}
           >
             Vote Against

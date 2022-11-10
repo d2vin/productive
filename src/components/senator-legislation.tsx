@@ -35,7 +35,7 @@ const SenatorLegislation: React.FC = () => {
   });
 
   return (
-    <div>
+    <>
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         senatorsLegislation.data?.pages.map((page: { items: any[] }) =>
@@ -60,7 +60,7 @@ const SenatorLegislation: React.FC = () => {
             })
         )
       }
-    </div>
+    </>
   );
 };
 

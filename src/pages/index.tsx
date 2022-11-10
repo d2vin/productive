@@ -31,10 +31,7 @@ const Landing: NextPage = () => {
       <div className="flex h-screen items-center justify-center space-y-10 bg-gray-50 text-black">
         <div className="mx-8 max-w-2xl space-y-4 rounded-xl border border-gray-300 bg-white py-8 px-4">
           <div className="text-center text-6xl font-medium sm:text-left">
-            <h1>
-              Democracy for
-              the next generation 🏛️
-            </h1>
+            <h1>Democracy for the next generation 🏛️</h1>
           </div>
           <div className="text-center sm:text-left">
             Welcome to <strong>Productive</strong>, an accessible resource for
@@ -116,9 +113,8 @@ const Landing: NextPage = () => {
             <button
               className="w-full rounded-lg bg-black p-2 text-white focus:shadow hover:text-gray-200"
               onClick={() => {
-                console.log("value", value);
                 address
-                  ? router.push(`results/${address}`)
+                  ? router.push(`elections/${address}`)
                   : router.push("/home");
               }}
             >

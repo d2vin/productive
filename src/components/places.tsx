@@ -1,7 +1,15 @@
 import { useRouter } from "next/router";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
-import { useState, useMemo, SetStateAction, Dispatch, Fragment } from "react";
+import {
+  useState,
+  useMemo,
+  SetStateAction,
+  Dispatch,
+  Fragment,
+  useRef,
+  useEffect,
+} from "react";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
 import usePlacesAutocomplete, {
   GeocodeResult,
@@ -10,18 +18,22 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 
 const Places: React.FC = () => {
-
   return <Map />;
 };
 
 const Map: React.FC = () => {
   const center = useMemo(() => ({ lat: 40.7351, lng: -73.9945 }), []);
   const [selected, setSelected] = useState(center);
+  const [address, setAddress] = useState("");
 
   return (
     <>
       <div className="places-container">
-        <PlacesAutocomplete setSelected={setSelected} />
+        <PlacesAutocomplete
+          setSelected={setSelected}
+          setAddress={setAddress}
+          address={address}
+        />
       </div>
 
       <GoogleMap
@@ -37,10 +49,14 @@ const Map: React.FC = () => {
 
 type PlacesAutocompleteProps = {
   setSelected: Dispatch<SetStateAction<{ lat: number; lng: number }>>;
+  setAddress: Dispatch<SetStateAction<string>>;
+  address: string;
 };
 
 export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   setSelected,
+  setAddress,
+  address,
 }) => {
   const {
     ready,
@@ -50,9 +66,12 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     clearSuggestions,
   } = usePlacesAutocomplete();
 
+  const inputRef = useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSelect = async (address: string) => {
-    console.log(address);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    setAddress(address!);
     setValue(address, false);
     clearSuggestions();
 
@@ -61,13 +80,18 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     setSelected({ lat, lng });
   };
 
+  useEffect(() => {
+    inputRef?.current?.focus();
+  }, [address]);
+
   return (
     <>
-      <div className="absolute left-48 top-2 z-20 w-72">
-        <Combobox value={value} onChange={handleSelect}>
+      <div className="absolute left-52 top-2 z-10 w-44 md:w-64 lg:w-96 transition-all duration-200">
+        <Combobox value={address} onChange={handleSelect}>
           <div className="relative mt-1">
             <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
               <Combobox.Input
+                ref={inputRef}
                 className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
                 placeholder="address"
                 onChange={(event) => setValue(event.target.value)}

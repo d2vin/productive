@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import Image from "next/image";
 import {
   SearchIcon,
@@ -6,31 +6,51 @@ import {
   BookmarkIcon,
   MenuIcon,
   HomeIcon,
+  ChevronDownIcon,
+  CheckIcon,
 } from "@heroicons/react/solid";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Combobox, Transition } from "@headlessui/react";
+import usePlacesAutocomplete from "use-places-autocomplete";
 
 type HeaderProps = {
   message: string;
 };
 
 const Header: React.FC<HeaderProps> = ({ message }) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const router = useRouter();
   const [address, setAddress] = useState<string>("");
   const [open, setOpen] = useState(false);
+
+  const {
+    ready,
+    value,
+    setValue,
+    suggestions: { status, data },
+    clearSuggestions,
+  } = usePlacesAutocomplete();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSelect = async (address: string) => {
+    setAddress(address);
+    setValue(address, false);
+    console.log(value);
+    clearSuggestions();
+  };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (e: any) => {
     e.preventDefault();
-    router.push(`/results/${address}`);
+    router.push(`/elections/${address}`);
   };
 
   return (
     <div className="fixed top-0 z-20 w-full border-b bg-white shadow-sm">
       <div className="mx-5 flex max-w-5xl items-center justify-between bg-white lg:mx-auto">
         {/* Left - Logo */}
-        <div className="relative hidden cursor-pointer lg:inline-grid">
+        <div className="relative hidden cursor-pointer lg:inline-grid ">
           <h1
             onClick={() => router.push("/")}
             className="text-2xl font-extralight"
@@ -40,15 +60,15 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
         </div>
         <div
           onClick={() => router.push("/")}
-          className="relative w-10 flex-shrink-0 cursor-pointer lg:hidden"
+          className="relative top-1 w-10 flex-shrink-0 cursor-pointer lg:hidden"
         >
           <Image src="/productive.png" alt="Logo" height={40} width={40} />
         </div>
         <form onSubmit={onSubmit}>
           {/* Middle - Search Input */}
           <div className="max-w-xs">
-            <div className="relative mt-1 rounded-md p-3">
-              <div className="pointer-events-none absolute inset-y-0 flex items-center pl-3">
+            <div className="relative rounded-md p-3">
+              {/* <div className="pointer-events-none absolute inset-y-0 flex items-center pl-3">
                 <SearchIcon className="h-5 w-5 text-gray-500" />
               </div>
               <input
@@ -57,7 +77,80 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="block w-full rounded-md border-gray-300 bg-gray-50 pl-10 focus:border-black focus:ring-black sm:text-sm"
-              />
+              /> */}
+              <div className="w-full">
+                <Combobox value={address} onChange={handleSelect}>
+                  <div className="relative">
+                    <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+                      <Combobox.Input
+                        className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+                        placeholder="address"
+                        onChange={(event) => setValue(event.target.value)}
+                        value={value}
+                        disabled={!ready}
+                      />
+                      <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                        <ChevronDownIcon
+                          className="h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                      </Combobox.Button>
+                    </div>
+                    {value && status === "OK" && (
+                      <Transition
+                        as={Fragment}
+                        leave="transition ease-in duration-100"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                        afterLeave={() => setValue("")}
+                      >
+                        <Combobox.Options className="absolute mt-2 max-h-60 w-64 overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                          {status === "OK" &&
+                            data.map(({ place_id, description }) => (
+                              <Combobox.Option
+                                key={place_id}
+                                className={({ active }) =>
+                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                    active
+                                      ? "bg-gray-300 text-black"
+                                      : "text-gray-900"
+                                  }`
+                                }
+                                value={description}
+                              >
+                                {({ selected, active }) => (
+                                  <>
+                                    <span
+                                      className={`block truncate ${
+                                        selected ? "font-medium" : "font-normal"
+                                      }`}
+                                    >
+                                      {description}
+                                    </span>
+                                    {selected ? (
+                                      <span
+                                        className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                          active
+                                            ? "text-white"
+                                            : "text-teal-600"
+                                        }`}
+                                      >
+                                        <CheckIcon
+                                          className="h-5 w-5"
+                                          aria-hidden="true"
+                                        />
+                                      </span>
+                                    ) : null}
+                                  </>
+                                )}
+                              </Combobox.Option>
+                            ))}
+                        </Combobox.Options>
+                      </Transition>
+                    )}
+                  </div>
+                </Combobox>
+              </div>
             </div>
           </div>
         </form>
@@ -80,7 +173,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/polling">
+                  <Link href="/elections">
                     <a
                       href="#"
                       className={`block py-2 px-4 hover:bg-gray-300 hover:text-black`}
@@ -115,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
           )}
           <HomeIcon onClick={() => router.push("/home")} className="nav-btn" />
           <div className="nav-btn relative">
-            <Link href="/polling">
+            <Link href="/elections">
               <BookmarkIcon className="nav-btn" />
             </Link>
             {/* <div className="absolute -top-1 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
