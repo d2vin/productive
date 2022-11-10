@@ -65,7 +65,7 @@ const states = [
 ];
 
 const Stories: React.FC = () => {
-  const [selected, setSelected] = useState(officials[0]);
+  const [selected, setSelected] = useState(officials[1]);
   const [selectedState, setSelectedState] = useState(states[0]);
   const [senatorList, setSenatorList] = useState<Senator[]>([]);
   const [representativeList, setRepresentativeList] = useState<
@@ -141,9 +141,9 @@ const Stories: React.FC = () => {
     <>
       <div
         ref={ref}
-        className="mt-8 flex-col justify-center space-y-12 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-6 align-middle scrollbar-thin scrollbar-thumb-black"
+        className="h-48 mt-8 flex-col justify-center space-y-4 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-6 align-middle scrollbar-thin scrollbar-thumb-black"
       >
-        <div className="sticky flex max-w-xl space-x-2">
+        <div className="sticky flex max-w-xl space-x-2 z-10">
           <Listbox value={selected} onChange={setSelected}>
             <div className="relative">
               <Listbox.Button className="relative w-48 cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -216,7 +216,7 @@ const Stories: React.FC = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-48 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <Listbox.Options className="absolute z-20 mt-1 max-h-28 w-48 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                   {states.map((state, k) => (
                     <Listbox.Option
                       key={k}
