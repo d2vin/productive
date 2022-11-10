@@ -39,7 +39,7 @@ const Landing: NextPage = () => {
             representative and voter information
           </div>
           <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-            <div className="w-full">
+            {/* <div className="w-full">
               <Combobox value={address} onChange={handleSelect}>
                 <div className="relative mt-1">
                   <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
@@ -109,13 +109,19 @@ const Landing: NextPage = () => {
                   )}
                 </div>
               </Combobox>
-            </div>
+            </div> */}
             <button
               className="w-full rounded-lg bg-black p-2 text-white focus:shadow hover:text-gray-200"
               onClick={() => {
-                address
-                  ? router.push(`elections/${address}`)
-                  : router.push("/home");
+                router.push("/elections");
+              }}
+            >
+              Search
+            </button>
+            <button
+              className="w-full rounded-lg bg-black p-2 text-white focus:shadow hover:text-gray-200"
+              onClick={() => {
+                router.push("/home");
               }}
             >
               Explore
