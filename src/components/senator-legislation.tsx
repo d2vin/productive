@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { trpc } from "../utils/trpc";
 import Legislation from "./legislation";
 
 const SenatorLegislation: React.FC = () => {
-  const senatorsLegislation =
+  const [loading, setLoading] = useState<boolean>();
+  const senatorLegislation =
     trpc.legislation.infiniteSenatorLegislation.useInfiniteQuery(
       {
         limit: 4,
@@ -16,32 +18,37 @@ const SenatorLegislation: React.FC = () => {
       }
     );
 
-  const fetchMore = () => senatorsLegislation.fetchNextPage();
+  const [ref, inView, entry] = useInView();
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const onScroll = (event: any) => {
-      const { scrollHeight, scrollTop, clientHeight } =
-        event.target.scrollingElement;
-      if (scrollHeight - scrollTop <= clientHeight * 1) {
-        console.log("hi");
-        fetchMore();
-      }
-    };
-    document.addEventListener("scroll", onScroll);
-    return () => {
-      document.removeEventListener("scroll", onScroll);
-    };
-  });
+    inView ? senatorLegislation.fetchNextPage() : setLoading(true);
+  }, [inView, senatorLegislation]);
 
   return (
     <>
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        senatorsLegislation.data?.pages.map((page: { items: any[] }) =>
+        senatorLegislation.data?.pages.map((page: { items: any[] }) =>
           page?.items
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ?.map((legislation: any, k: React.Key | null | undefined) => {
+            ?.map((legislation: any, k: number) => {
+              if (page?.items?.length === k + 1) {
+                return (
+                  <div key={k} ref={ref}>
+                    <Legislation
+                      id={legislation.id}
+                      congress={legislation.congress}
+                      latestActionDate={legislation.latestActionDate}
+                      latestAction={legislation.latestAction}
+                      number={legislation.number}
+                      policyArea={legislation.policyArea}
+                      title={legislation.title}
+                      url={legislation.url}
+                      sponsor={legislation.sponsor}
+                    />
+                  </div>
+                );
+              }
               return (
                 <div key={k}>
                   <Legislation

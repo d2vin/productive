@@ -141,7 +141,7 @@ const Stories: React.FC = () => {
     <>
       <div
         ref={ref}
-        className="h-48 mt-8 flex-col justify-center space-y-4 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-6 align-middle scrollbar-thin scrollbar-thumb-black"
+        className="h-48 mt-8 flex-col justify-center space-y-4 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-4 align-middle scrollbar-thin scrollbar-thumb-black"
       >
         <div className="sticky flex max-w-xl space-x-2 z-10">
           <Listbox value={selected} onChange={setSelected}>

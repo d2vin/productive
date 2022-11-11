@@ -1,9 +1,12 @@
-import React, { useEffect } from "react";
+import loadConfig from "next/dist/server/config";
+import React, { useEffect, useRef, useCallback, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { trpc } from "../utils/trpc";
 import Legislation from "./legislation";
 
 const RepresentativeLegislation: React.FC = () => {
-  const RepresentativesLegislation =
+  const [loading, setLoading] = useState<boolean>();
+  const representativeLegislation =
     trpc.legislation.infiniteRepresentativeLegislation.useInfiniteQuery(
       {
         limit: 4,
@@ -16,32 +19,37 @@ const RepresentativeLegislation: React.FC = () => {
       }
     );
 
-  const fetchMore = () => RepresentativesLegislation.fetchNextPage();
+  const [ref, inView, entry] = useInView();
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const onScroll = (event: any) => {
-      const { scrollHeight, scrollTop, clientHeight } =
-        event.target.scrollingElement;
-      console.log(event.target.scrollingElement);
-      if (scrollHeight - scrollTop <= clientHeight * 1) {
-        fetchMore();
-      }
-    };
-    document.addEventListener("scroll", onScroll);
-    return () => {
-      document.removeEventListener("scroll", onScroll);
-    };
-  });
+    inView ? representativeLegislation.fetchNextPage() : setLoading(true);
+  }, [inView, representativeLegislation]);
 
   return (
-    <div>
+    <>
       {
         //eslint-disable-next-line @typescript-eslint/no-explicit-any
-        RepresentativesLegislation.data?.pages.map((page: { items: any[] }) =>
+        representativeLegislation.data?.pages.map((page: { items: any[] }) =>
           page?.items
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ?.map((legislation: any, k: React.Key | null | undefined) => {
+            ?.map((legislation: any, k: number) => {
+              if (page?.items?.length === k + 1) {
+                return (
+                  <div key={k} ref={ref}>
+                    <Legislation
+                      id={legislation.id}
+                      congress={legislation.congress}
+                      latestActionDate={legislation.latestActionDate}
+                      latestAction={legislation.latestAction}
+                      number={legislation.number}
+                      policyArea={legislation.policyArea}
+                      title={legislation.title}
+                      url={legislation.url}
+                      sponsor={legislation.sponsor}
+                    />
+                  </div>
+                );
+              }
               return (
                 <div key={k}>
                   <Legislation
@@ -60,7 +68,7 @@ const RepresentativeLegislation: React.FC = () => {
             })
         )
       }
-    </div>
+    </>
   );
 };
 
