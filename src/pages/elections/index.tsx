@@ -190,6 +190,11 @@ const Index = () => {
                 zoom={10}
                 center={center}
                 mapContainerStyle={containerStyle}
+                options={{
+                  mapTypeControl: false,
+                  fullscreenControl: false,
+                  streetViewControl: false,
+                }}
               >
                 <form onSubmit={onSubmit}>
                   <PlacesAutocomplete

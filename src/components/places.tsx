@@ -86,7 +86,7 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
 
   return (
     <>
-      <div className="absolute left-52 top-2 z-10 w-44 md:w-64 lg:w-96 transition-all duration-200">
+      <div className="absolute left-2.5 top-2 z-10 w-64 transition-all duration-200">
         <Combobox value={address} onChange={handleSelect}>
           <div className="relative mt-1">
             <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
