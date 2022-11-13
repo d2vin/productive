@@ -179,19 +179,20 @@ model SenateElection {
 // Congress API
 
 model SponsoredLegislation {
-    id                Int        @id @default(autoincrement())
-    number            String?    @db.Text
-    congress          Int
-    latestAction      String?    @db.Text
-    latestActionDate  String?    @db.Text
-    policyArea        String?    @db.Text
-    title             String?    @db.Text
-    type              String?    @db.Text
-    url               String     @db.Text
-    sponsorId         String     @db.Text
-    sponsor           String?    @db.Text
-    sponsorMemberType String?    @db.Text
-    UserVote          UserVote[]
+    id                   Int        @id @default(autoincrement())
+    number               String?    @db.Text
+    congress             Int
+    latestAction         String?    @db.Text
+    latestActionDate     String?    @db.Text
+    // latestActionDateTime DateTime?   @db.DateTime()
+    policyArea           String?    @db.Text
+    title                String?    @db.Text
+    type                 String?    @db.Text
+    url                  String     @db.Text
+    sponsorId            String     @db.Text
+    sponsor              String?    @db.Text
+    sponsorMemberType    String?    @db.Text
+    UserVote             UserVote[]
 }
 
 model UserVote {

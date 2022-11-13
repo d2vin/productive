@@ -1,51 +1,11 @@
-import { useRouter } from "next/router";
 import { Combobox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
-import {
-  useState,
-  useMemo,
-  SetStateAction,
-  Dispatch,
-  Fragment,
-  useRef,
-  useEffect,
-} from "react";
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
+import { CheckIcon, SearchIcon } from "@heroicons/react/solid";
+import { SetStateAction, Dispatch, Fragment, useRef, useEffect } from "react";
 import usePlacesAutocomplete, {
   GeocodeResult,
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
-
-const Places: React.FC = () => {
-  return <Map />;
-};
-
-const Map: React.FC = () => {
-  const center = useMemo(() => ({ lat: 40.7351, lng: -73.9945 }), []);
-  const [selected, setSelected] = useState(center);
-  const [address, setAddress] = useState("");
-
-  return (
-    <>
-      <div className="places-container">
-        <PlacesAutocomplete
-          setSelected={setSelected}
-          setAddress={setAddress}
-          address={address}
-        />
-      </div>
-
-      <GoogleMap
-        zoom={10}
-        center={center}
-        mapContainerClassName="map-container"
-      >
-        {selected && <Marker position={selected} />}
-      </GoogleMap>
-    </>
-  );
-};
 
 type PlacesAutocompleteProps = {
   setSelected: Dispatch<SetStateAction<{ lat: number; lng: number }>>;
@@ -53,7 +13,7 @@ type PlacesAutocompleteProps = {
   address: string;
 };
 
-export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
+const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   setSelected,
   setAddress,
   address,
@@ -66,7 +26,8 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     clearSuggestions,
   } = usePlacesAutocomplete();
 
-  const inputRef = useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>;
+  const inputRef =
+    useRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSelect = async (address: string) => {
@@ -74,7 +35,6 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     setAddress(address!);
     setValue(address, false);
     clearSuggestions();
-
     const results = await getGeocode({ address });
     const { lat, lng } = await getLatLng(results[0] as GeocodeResult);
     setSelected({ lat, lng });
@@ -99,7 +59,7 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
                 disabled={!ready}
               />
               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                <ChevronDownIcon
+                <SearchIcon
                   className="h-5 w-5 text-gray-400"
                   aria-hidden="true"
                 />
@@ -160,4 +120,4 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   );
 };
 
-export default Places;
+export default PlacesAutocomplete;

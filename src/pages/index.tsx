@@ -35,7 +35,7 @@ const Landing: NextPage = () => {
           </div>
           <div className="text-center sm:text-left">
             Welcome to <strong>Productive</strong>, an accessible resource for
-            government data. Enter an address or explore to find all relative
+            government data. Search via address or explore to find all relative
             representative and voter information
           </div>
           <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
@@ -111,7 +111,7 @@ const Landing: NextPage = () => {
               </Combobox>
             </div> */}
             <button
-              className="w-full rounded-lg bg-black p-2 text-white focus:shadow hover:text-gray-200"
+              className="w-full rounded-lg bg-gray-900 p-2 text-white focus:shadow hover:bg-gray-800"
               onClick={() => {
                 router.push("/elections");
               }}
@@ -119,7 +119,7 @@ const Landing: NextPage = () => {
               Search
             </button>
             <button
-              className="w-full rounded-lg bg-black p-2 text-white focus:shadow hover:text-gray-200"
+              className="w-full rounded-lg bg-gray-900 p-2 text-white focus:shadow hover:bg-gray-800"
               onClick={() => {
                 router.push("/home");
               }}

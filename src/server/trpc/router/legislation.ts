@@ -49,6 +49,11 @@ export const legislationRouter = t.router({
       const limit = input.limit ?? 50;
       const { cursor } = input;
       const items = await ctx.prisma.sponsoredLegislation.findMany({
+        orderBy: [
+          {
+            latestActionDate: "desc",
+          },
+        ],
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
         where: {
           sponsorMemberType: "senator",
@@ -77,6 +82,11 @@ export const legislationRouter = t.router({
       const limit = input.limit ?? 50;
       const { cursor } = input;
       const items = await ctx.prisma.sponsoredLegislation.findMany({
+        orderBy: [
+          {
+            latestActionDate: "desc",
+          },
+        ],
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
         where: {
           sponsorMemberType: "representative",

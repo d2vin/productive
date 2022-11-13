@@ -3,15 +3,15 @@ import { trpc } from "../utils/trpc";
 import Story from "./story";
 import { Listbox, Transition } from "@headlessui/react";
 import { BookmarkIcon, ChevronDownIcon } from "@heroicons/react/solid";
-import { Representative, Senator } from "@prisma/client";
+import LoadingStory from "./loading-story";
 
 const officials = [
-  { id: 0, name: "Officials", unavailable: false },
-  { id: 1, name: "Senators", unavailable: false },
-  { id: 2, name: "Representatives", unavailable: false },
+  { id: 0, name: "Senators", unavailable: false },
+  { id: 1, name: "Representatives", unavailable: false },
 ];
+
 const states = [
-  { id: 0, name: "States", unavailable: true },
+  { id: 0, name: "All", unavailable: true },
   { id: 1, name: "AL", unavailable: false },
   { id: 2, name: "AK", unavailable: false },
   { id: 3, name: "AZ", unavailable: false },
@@ -65,13 +65,10 @@ const states = [
 ];
 
 const Stories: React.FC = () => {
-  const [selected, setSelected] = useState(officials[1]);
+  // stories filter state
+  const [selected, setSelected] = useState(officials[0]);
   const [selectedState, setSelectedState] = useState(states[0]);
-  const [senatorList, setSenatorList] = useState<Senator[]>([]);
-  const [representativeList, setRepresentativeList] = useState<
-    Representative[]
-  >([]);
-
+  // senator and representative infintie queries
   const senators = trpc.senator.infiniteSenators.useInfiniteQuery(
     {
       limit: 12,
@@ -87,7 +84,6 @@ const Stories: React.FC = () => {
       },
     }
   );
-
   const representatives =
     trpc.representative.infiniteRepresentatives.useInfiniteQuery(
       {
@@ -104,12 +100,12 @@ const Stories: React.FC = () => {
         },
       }
     );
-
+  // fetch calls
   const fetchMoreSenators = () => senators.fetchNextPage();
   const fetchMoreRepresentatives = () => representatives.fetchNextPage();
-
+  // sidebar ref
   const ref = useRef<HTMLDivElement>(null);
-
+  // sidebar useEffect
   useEffect(() => {
     const element = ref.current;
     let distanceScrolled;
@@ -141,9 +137,9 @@ const Stories: React.FC = () => {
     <>
       <div
         ref={ref}
-        className="h-48 mt-8 flex-col justify-center space-y-4 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-4 align-middle scrollbar-thin scrollbar-thumb-black"
+        className="mt-8 h-48 flex-col justify-center space-y-4 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-4 align-middle scrollbar-thin scrollbar-thumb-black"
       >
-        <div className="sticky flex max-w-xl space-x-2 z-10">
+        <div className="sticky z-10 flex max-w-xl space-x-2">
           <Listbox value={selected} onChange={setSelected}>
             <div className="relative">
               <Listbox.Button className="relative w-48 cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -161,15 +157,13 @@ const Stories: React.FC = () => {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-48 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <Listbox.Options className="absolute z-20 mt-1 max-h-60 w-48 overflow-auto rounded-md bg-white text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                   {officials.map((official, k) => (
                     <Listbox.Option
                       key={k}
                       className={({ active }) =>
                         `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                          active
-                            ? "bg-amber-100 text-amber-900"
-                            : "text-gray-900"
+                          active ? "bg-gray-100 text-black" : "text-gray-800"
                         }`
                       }
                       value={official}
@@ -184,7 +178,7 @@ const Stories: React.FC = () => {
                             {official.name}
                           </span>
                           {selected ? (
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-600">
                               <BookmarkIcon
                                 className="h-5 w-5"
                                 aria-hidden="true"
@@ -222,9 +216,7 @@ const Stories: React.FC = () => {
                       key={k}
                       className={({ active }) =>
                         `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                          active
-                            ? "bg-amber-100 text-amber-900"
-                            : "text-gray-900"
+                          active ? "bg-gray-100 text-black" : "text-gray-800"
                         }`
                       }
                       value={state}
@@ -239,7 +231,7 @@ const Stories: React.FC = () => {
                             {state.name}
                           </span>
                           {selected ? (
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-600">
                               <BookmarkIcon
                                 className="h-5 w-5"
                                 aria-hidden="true"
@@ -257,8 +249,37 @@ const Stories: React.FC = () => {
         </div>
         <div className="flex space-x-2">
           {selected?.name === "Senators" &&
-            (selectedState === states[0]
-              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (selectedState != states[0]
+              ? senators.isFetching
+                ? [...Array(12)].map((senator, k) => {
+                    return (
+                      <div key={k}>
+                        {" "}
+                        <LoadingStory />
+                      </div>
+                    );
+                  })
+                : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  senators?.data?.pages?.map((page: { items: any[] }) =>
+                    page?.items
+                      .filter(
+                        (senator) => selectedState?.name === senator.state
+                      )
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      ?.map((profile: any) => {
+                        return (
+                          <Story
+                            key={profile.bioguideId}
+                            image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
+                            firstName={profile.firstName}
+                            lastName={profile.lastName}
+                            id={profile.bioguideId}
+                            office={selected?.name}
+                          />
+                        );
+                      })
+                  )
+              : // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 senators?.data?.pages?.map((page: { items: any[] }) =>
                   page?.items
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -271,31 +292,43 @@ const Stories: React.FC = () => {
                           lastName={profile.lastName}
                           id={profile.bioguideId}
                           office={selected.name}
-                        />
-                      );
-                    })
-                )
-              : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                senators?.data?.pages?.map((page: { items: any[] }) =>
-                  page?.items
-                    .filter((senator) => selectedState?.name === senator.state)
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    ?.map((profile: any) => {
-                      return (
-                        <Story
-                          key={profile.bioguideId}
-                          image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
-                          firstName={profile.firstName}
-                          lastName={profile.lastName}
-                          id={profile.bioguideId}
-                          office={selected?.name}
                         />
                       );
                     })
                 ))}
           {selected?.name === "Representatives" &&
-            (selectedState === states[0]
-              ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (selectedState != states[0]
+              ? representatives.isFetching
+                ? [...Array(12)].map((representative, k) => {
+                    return (
+                      <div key={k}>
+                        {" "}
+                        <LoadingStory />
+                      </div>
+                    );
+                  })
+                : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  representatives?.data?.pages?.map((page: { items: any[] }) =>
+                    page?.items
+                      .filter(
+                        (representative) =>
+                          selectedState?.name === representative.state
+                      )
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      ?.map((profile: any) => {
+                        return (
+                          <Story
+                            key={profile.bioguideId}
+                            image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
+                            firstName={profile.firstName}
+                            lastName={profile.lastName}
+                            id={profile.bioguideId}
+                            office={selected?.name}
+                          />
+                        );
+                      })
+                  )
+              : // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 representatives?.data?.pages?.map((page: { items: any[] }) =>
                   page?.items
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -308,27 +341,6 @@ const Stories: React.FC = () => {
                           lastName={profile.lastName}
                           id={profile.bioguideId}
                           office={selected.name}
-                        />
-                      );
-                    })
-                )
-              : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                representatives?.data?.pages?.map((page: { items: any[] }) =>
-                  page?.items
-                    .filter(
-                      (representative) =>
-                        selectedState?.name === representative.state
-                    )
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    ?.map((profile: any) => {
-                      return (
-                        <Story
-                          key={profile.bioguideId}
-                          image={`https://theunitedstates.io/images/congress/225x275/${profile.bioguideId}.jpg`}
-                          firstName={profile.firstName}
-                          lastName={profile.lastName}
-                          id={profile.bioguideId}
-                          office={selected?.name}
                         />
                       );
                     })

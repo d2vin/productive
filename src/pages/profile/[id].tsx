@@ -26,7 +26,7 @@ const Profile: React.FC = () => {
         <div className="mb-16">
           <Header message={"Productive"} />
         </div>
-        <section className="bg-gray-50 h-screen">
+        <section className="h-screen bg-gray-50">
           <div className="mx-auto max-w-screen-xl py-8 px-4 lg:py-16 lg:px-6">
             <div className="mx-auto max-w-screen-sm text-center">
               <h1 className="text-primary-600 dark:text-primary-500 mb-4 text-7xl font-extrabold tracking-tight lg:text-9xl">
@@ -144,7 +144,8 @@ const Profile: React.FC = () => {
                 )}
               >
                 {/* Saved Votes */}
-                {data && data?.length > 0 &&
+                {data &&
+                  data?.length > 0 &&
                   data?.map(
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (legislation: any, k: React.Key | null | undefined) => {
@@ -187,6 +188,54 @@ const Profile: React.FC = () => {
           </section>
         )}
       </main>
+      <footer className="bg-gray-50 p-4 md:px-6 md:py-8">
+        <div className="sm:flex sm:items-center sm:justify-between">
+          <a
+            href="https://productive.vote"
+            className="mb-4 flex items-center sm:mb-0"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/productive.png"
+              className="mr-3 h-8"
+              alt="Productive Logo"
+            />
+            <span className="self-center whitespace-nowrap text-2xl font-semibold">
+              Productive
+            </span>
+          </a>
+          <ul className="mb-6 flex flex-wrap items-center text-sm text-gray-500 sm:mb-0">
+            <li>
+              <a href="#" className="mr-4 hover:underline md:mr-6 ">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="#" className="mr-4 hover:underline md:mr-6">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" className="mr-4 hover:underline md:mr-6 ">
+                Licensing
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:underline">
+                Contact
+              </a>
+            </li>
+          </ul>
+        </div>
+        <hr className="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
+        <span className="block text-sm text-gray-500 dark:text-gray-400 sm:text-center">
+          © 2022{" "}
+          <a href="https://productive.vote/" className="hover:underline">
+            Productive™
+          </a>
+          . All Rights Reserved.
+        </span>
+      </footer>
     </>
   );
 };

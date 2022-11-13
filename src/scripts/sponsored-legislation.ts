@@ -78,41 +78,60 @@ const prisma = new PrismaClient();
 
 // doCleanUp();
 
-const getSponsorNames = async () => {
-  const officials: (Senator | Representative | undefined)[] = [];
-  const senators = await prisma.senator.findMany();
-  const representatives = await prisma.representative.findMany();
+// const getSponsorNames = async () => {
+//   const officials: (Senator | Representative | undefined)[] = [];
+//   const senators = await prisma.senator.findMany();
+//   const representatives = await prisma.representative.findMany();
 
-  for (let i = 0; i < senators.length; i++) {
-    officials.push(senators[i]);
-  }
-  for (let i = 0; i < representatives.length; i++) {
-    officials.push(representatives[i]);
-  }
-  const sponsoredLegislation = await prisma.sponsoredLegislation.findMany();
+//   for (let i = 0; i < senators.length; i++) {
+//     officials.push(senators[i]);
+//   }
+//   for (let i = 0; i < representatives.length; i++) {
+//     officials.push(representatives[i]);
+//   }
+//   const sponsoredLegislation = await prisma.sponsoredLegislation.findMany();
 
-  for (let i = 0; i < sponsoredLegislation.length; i++) {
-    // code
-    for (let j = 0; j < officials.length; j++) {
-      const creation = await prisma.sponsoredLegislation.updateMany({
-        where: {
-          sponsorId: officials[j]?.bioguideId,
-        },
-        data: {
-          sponsor:
-            officials[j]?.shortTitle +
-            " " +
-            officials[j]?.firstName +
-            " " +
-            officials[j]?.lastName,
-          sponsorMemberType: `${
-            officials[j]?.shortTitle === "Sen." ? "senator" : "representative"
-          }`,
-        },
-      });
-      console.log("creation:", creation);
-    }
-  }
-};
+//   for (let i = 0; i < sponsoredLegislation.length; i++) {
+//     // code
+//     for (let j = 0; j < officials.length; j++) {
+//       const creation = await prisma.sponsoredLegislation.updateMany({
+//         where: {
+//           sponsorId: officials[j]?.bioguideId,
+//         },
+//         data: {
+//           sponsor:
+//             officials[j]?.shortTitle +
+//             " " +
+//             officials[j]?.firstName +
+//             " " +
+//             officials[j]?.lastName,
+//           sponsorMemberType: `${
+//             officials[j]?.shortTitle === "Sen." ? "senator" : "representative"
+//           }`,
+//         },
+//       });
+//       console.log("creation:", creation);
+//     }
+//   }
+// };
 
-getSponsorNames();
+// getSponsorNames();
+
+// const addDateTimes = async () => {
+//   const sponsoredLegislation = await prisma.sponsoredLegislation.findMany();
+//   for (let i = 0; i < 2; i++) {
+//     const dateString = sponsoredLegislation[i]?.latestActionDate;
+//     if (dateString) {
+//       const newDateTimeNumber = Date.parse(dateString);
+//       const newDate = new Date(newDateTimeNumber);
+//       const creation = await prisma.sponsoredLegislation.updateMany({
+//         data: {
+//           latestActionDateTime: newDate,
+//         },
+//       });
+//       console.log("creation:", creation);
+//     }
+//   }
+// };
+
+// addDateTimes();
