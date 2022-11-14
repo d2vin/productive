@@ -10,7 +10,7 @@ const OfficialProfile: React.FC = () => {
   const router = useRouter();
   const query = router.query;
   const { data, status } = trpc.senator.getSenator.useQuery({
-    id: 2,
+    bioguideId: query.id as string,
   });
 
   if (status === "loading") {

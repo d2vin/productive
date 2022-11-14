@@ -53,7 +53,6 @@ const Feed: React.FC = () => {
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel>
-              {/* Bills */}
               <SenatorLegislation />
             </Tab.Panel>
             <Tab.Panel>

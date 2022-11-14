@@ -2,8 +2,9 @@ import { Tab } from "@headlessui/react";
 import { GoogleMap, InfoWindow } from "@react-google-maps/api";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import BookmarkedOfficials from "../components/bookmarked-officials";
+import Footer from "../components/footer";
 import Header from "../components/header";
 import MiniProfile from "../components/mini-profile";
 import PlacesAutocomplete from "../components/places";
@@ -141,38 +142,16 @@ const Index = () => {
       });
   };
 
-  useEffect(
-    () => {
-      const timer = setTimeout(() => {
-        // setPollingLocations(data?.pollingLocations);
-        // setContests(data?.contests);
-        // setState(data?.state);
-        // setSearchAddress(address);
-        // setOffices(repData?.offices);
-        // setOfficials(repData?.officials);
-      }, 1000);
-      return () => clearTimeout(timer);
-    },
-    [
-      // data?.pollingLocations,
-      // data?.contests,
-      // data?.state,
-      // address,
-      // repData?.officials,
-      // repData?.offices,
-    ]
-  );
-
   const containerStyle = {
     width: "full",
     height: "50vh",
     borderRadius: "10px",
-    marginBottom: "1rem",
   };
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
+
   return (
     <>
       <div className="h-screen overflow-y-scroll bg-gray-50 scrollbar-hide">
@@ -201,6 +180,7 @@ const Index = () => {
                     setSelected={setSelected}
                     setAddress={setAddress}
                     address={address}
+                    onSubmit={onSubmit}
                   />
                 </form>
                 {pollingLocations != undefined
@@ -228,241 +208,243 @@ const Index = () => {
                     ))
                   : null}
               </GoogleMap>
-              <Tab.Group>
-                <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
-                  <Tab
-                    className={({ selected }) =>
-                      classNames(
-                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                        "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
-                        selected
-                          ? "bg-white shadow"
-                          : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-                      )
-                    }
-                  >
-                    Your Voter Information
-                  </Tab>
-                  <Tab
-                    className={({ selected }) =>
-                      classNames(
-                        "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                        "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
-                        selected
-                          ? "bg-white shadow"
-                          : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-                      )
-                    }
-                  >
-                    Your Representative Information
-                  </Tab>
-                </Tab.List>
-                <Tab.Panels>
-                  <Tab.Panel>
-                    {state.length > 0 ? (
-                      <>
-                        <label className="my-7 block text-sm font-medium">
-                          Election Resources
-                        </label>
-                        <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-                          {state.map((s, k) => (
-                            <div
-                              className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2"
-                              key={k}
+            </div>
+            <Tab.Group>
+              <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-slate-400",
+                      "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none",
+                      selected
+                        ? "bg-white text-gray-400 shadow-md"
+                        : "text-gray-100 hover:bg-white/[0.12] hover:text-slate-600"
+                    )
+                  }
+                >
+                  Your Voter Information
+                </Tab>
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-slate-400",
+                      "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none",
+                      selected
+                        ? "bg-white text-gray-400 shadow-md"
+                        : "text-gray-100 hover:bg-white/[0.12] hover:text-slate-600"
+                    )
+                  }
+                >
+                  Your Representative Information
+                </Tab>
+              </Tab.List>
+              <Tab.Panels>
+                <Tab.Panel>
+                  {state.length > 0 ? (
+                    <>
+                      <label className="my-7 block text-sm font-medium">
+                        Election Resources
+                      </label>
+                      <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+                        {state.map((s, k) => (
+                          <div
+                            className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2"
+                            key={k}
+                          >
+                            <a
+                              className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
+                              href={
+                                s.electionAdministrationBody.electionInfoUrl
+                              }
+                              target="_blank"
+                              rel="noreferrer"
                             >
-                              <a
-                                className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
-                                href={
-                                  s.electionAdministrationBody.electionInfoUrl
-                                }
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                Election Information
-                              </a>
-                              <a
-                                className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
-                                href={
-                                  s.electionAdministrationBody
-                                    .electionRegistrationUrl
-                                }
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                Election Registration
-                              </a>
-                              <a
-                                className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
-                                href={
-                                  s.electionAdministrationBody
-                                    .absenteeVotingInfoUrl
-                                }
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                Absentee Voting
-                              </a>
-                            </div>
-                          ))}
-                        </div>
-                        <label className="my-7 block text-sm font-medium">
-                          Upcoming Elections
-                        </label>
-                        {contests.length > 0 &&
-                          contests.map((contest, k) => (
-                            <div
-                              className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl"
-                              key={k}
+                              Election Information
+                            </a>
+                            <a
+                              className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
+                              href={
+                                s.electionAdministrationBody
+                                  .electionRegistrationUrl
+                              }
+                              target="_blank"
+                              rel="noreferrer"
                             >
-                              <div className="flex justify-between align-middle">
-                                <div>
-                                  {contest.type === "Referendum"
-                                    ? contest.referendumTitle
-                                    : contest.office}
-                                  {contest.district.name.includes(
-                                    contest.ballotTitle
-                                  )
-                                    ? null
-                                    : ": " + contest.district.name}
-                                  <br />
-                                  {contest.type === "Referendum" && (
-                                    <div className="w-full">
-                                      {contest.referendumSubtitle}
-                                      <br />
-                                      <br />
-                                      <div className="flex space-x-2">
-                                        {contest.referendumBallotResponses?.map(
-                                          (response, k) => {
-                                            return (
-                                              <div
-                                                className="w-full flex-1"
-                                                key={k}
-                                              >
-                                                <button className="w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 p-2 hover:bg-gray-300">
-                                                  {response}
-                                                </button>
-                                              </div>
-                                            );
-                                          }
-                                        )}
-                                      </div>
-                                      <br />
-                                      <button className="rounded-lg border border-gray-600 bg-gray-50 p-2 hover:bg-gray-300">
-                                        <a
-                                          href={contest.referendumUrl}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          Learn More
-                                        </a>
-                                      </button>
+                              Election Registration
+                            </a>
+                            <a
+                              className="flex-1 rounded-md border p-2 text-center hover:bg-gray-300"
+                              href={
+                                s.electionAdministrationBody
+                                  .absenteeVotingInfoUrl
+                              }
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              Absentee Voting
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                      <label className="my-7 block text-sm font-medium">
+                        Upcoming Elections
+                      </label>
+                      {contests.length > 0 &&
+                        contests.map((contest, k) => (
+                          <div
+                            className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl"
+                            key={k}
+                          >
+                            <div className="flex justify-between align-middle">
+                              <div>
+                                {contest.type === "Referendum"
+                                  ? contest.referendumTitle
+                                  : contest.office}
+                                {contest.district.name.includes(
+                                  contest.ballotTitle
+                                )
+                                  ? null
+                                  : ": " + contest.district.name}
+                                <br />
+                                {contest.type === "Referendum" && (
+                                  <div className="w-full">
+                                    {contest.referendumSubtitle}
+                                    <br />
+                                    <br />
+                                    <div className="flex space-x-2">
+                                      {contest.referendumBallotResponses?.map(
+                                        (response, k) => {
+                                          return (
+                                            <div
+                                              className="w-full flex-1"
+                                              key={k}
+                                            >
+                                              <button className="w-full flex-1 rounded-lg border border-gray-300 bg-gray-50 p-2 hover:bg-gray-300">
+                                                {response}
+                                              </button>
+                                            </div>
+                                          );
+                                        }
+                                      )}
                                     </div>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="flex flex-col space-y-2 overflow-scroll sm:flex-row sm:space-y-0 sm:space-x-2">
-                                {contest.candidates &&
-                                  contest.candidates.map((candidate, k) => (
-                                    <button
-                                      key={k}
-                                      className={`bg-${
-                                        candidate.party === "Republican Party"
-                                          ? "red"
-                                          : candidate.party ===
-                                            "Democratic Party"
-                                          ? "indigo"
-                                          : "slate"
-                                      }-400 flex-1 rounded-md p-2 text-center`}
-                                    >
-                                      {candidate.name}
+                                    <br />
+                                    <button className="rounded-lg border border-gray-600 bg-gray-50 p-2 hover:bg-gray-300">
+                                      <a
+                                        href={contest.referendumUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Learn More
+                                      </a>
                                     </button>
-                                  ))}
+                                  </div>
+                                )}
                               </div>
                             </div>
-                          ))}
-                        <label className="my-7 block text-sm font-medium">
-                          Your polling locations
-                        </label>
-                        <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-                          {pollingLocations != undefined ? (
-                            pollingLocations.map((pollingLocation, k) => (
-                              <div
-                                className="flex justify-between align-middle"
-                                key={k}
-                              >
-                                <div>
-                                  <p>{pollingLocation.address.locationName}</p>
-                                  <p>
-                                    {pollingLocation.address.line1},{" "}
-                                    {pollingLocation.address.city},{" "}
-                                    {pollingLocation.address.state}{" "}
-                                    {pollingLocation.address.zip}
-                                  </p>
-                                  {pollingLocation.startDate ===
-                                  pollingLocation.endDate ? (
-                                    <>
-                                      <p>
-                                        Election Day: {pollingLocation.endDate}
-                                      </p>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <p>
-                                        Start Date: {pollingLocation.startDate}
-                                      </p>
-                                      <p>End Date: {pollingLocation.endDate}</p>
-                                    </>
-                                  )}
-                                  <p>{pollingLocation.pollingHours}</p>
-                                </div>
-                                {/* <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
+                            <div className="flex flex-col space-y-2 overflow-scroll sm:flex-row sm:space-y-0 sm:space-x-2">
+                              {contest.candidates &&
+                                contest.candidates.map((candidate, k) => (
+                                  <button
+                                    key={k}
+                                    className={`bg-${
+                                      candidate.party === "Republican Party"
+                                        ? "red"
+                                        : candidate.party === "Democratic Party"
+                                        ? "indigo"
+                                        : "slate"
+                                    }-400 flex-1 rounded-md p-2 text-center`}
+                                  >
+                                    {candidate.name}
+                                  </button>
+                                ))}
+                            </div>
+                          </div>
+                        ))}
+                      <label className="my-7 block text-sm font-medium">
+                        Your polling locations
+                      </label>
+                      <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+                        {pollingLocations != undefined ? (
+                          pollingLocations.map((pollingLocation, k) => (
+                            <div
+                              className="flex justify-between align-middle"
+                              key={k}
+                            >
+                              <div>
+                                <p>{pollingLocation.address.locationName}</p>
+                                <p>
+                                  {pollingLocation.address.line1},{" "}
+                                  {pollingLocation.address.city},{" "}
+                                  {pollingLocation.address.state}{" "}
+                                  {pollingLocation.address.zip}
+                                </p>
+                                {pollingLocation.startDate ===
+                                pollingLocation.endDate ? (
+                                  <>
+                                    <p>
+                                      Election Day: {pollingLocation.endDate}
+                                    </p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <p>
+                                      Start Date: {pollingLocation.startDate}
+                                    </p>
+                                    <p>End Date: {pollingLocation.endDate}</p>
+                                  </>
+                                )}
+                                <p>{pollingLocation.pollingHours}</p>
+                              </div>
+                              {/* <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
                               Save
                             </button> */}
-                              </div>
-                            ))
-                          ) : (
-                            <div>
-                              Sorry, we couldn&apos;t find any polling
-                              locations, try a different address.
                             </div>
-                          )}
-                        </div>
-                      </>
-                    ) : (
-                      <p>
-                        Enter an address or select a location to find election
-                        resources
-                      </p>
-                    )}
-                  </Tab.Panel>
-                  <Tab.Panel>
-                    {offices.length > 0 ? (
-                      <>
-                        <div className="space-y-2">
-                          {offices.map((office, k) => (
-                            <div
-                              key={k}
-                              className="w-full rounded-lg border border-gray-300 p-2"
-                            >
-                              {office.name}:{" "}
-                              {
-                                officials[office?.officialIndices[0] as number]
-                                  ?.name
-                              }
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      <p>
-                        Enter an adress or select a location to find your
-                        representatives
-                      </p>
-                    )}
-                  </Tab.Panel>
-                </Tab.Panels>
-              </Tab.Group>
-            </div>
+                          ))
+                        ) : (
+                          <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+                            Sorry, we couldn&apos;t find any polling locations,
+                            try a different address.
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+                      Enter an address or select a location to find election
+                      resources
+                    </p>
+                  )}
+                </Tab.Panel>
+                <Tab.Panel>
+                  {offices.length > 0 ? (
+                    <>
+                      <label className="my-7 block text-sm font-medium">
+                        Your Representatives
+                      </label>
+                      <div className="space-y-2">
+                        {offices.map((office, k) => (
+                          <div
+                            key={k}
+                            className="w-full rounded-lg border border-gray-300 p-2"
+                          >
+                            {office.name}:{" "}
+                            {
+                              officials[office?.officialIndices[0] as number]
+                                ?.name
+                            }
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <p className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+                      Enter an adress or select a location to find your
+                      representatives
+                    </p>
+                  )}
+                </Tab.Panel>
+              </Tab.Panels>
+            </Tab.Group>
           </section>
           {session && (
             <section className="hidden md:col-span-1 xl:inline-grid">
@@ -476,54 +458,7 @@ const Index = () => {
           )}
         </main>
       </div>
-      <footer className="bg-gray-50 p-4 md:px-6 md:py-8">
-        <div className="sm:flex sm:items-center sm:justify-between">
-          <a
-            href="https://productive.vote"
-            className="mb-4 flex items-center sm:mb-0"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/productive.png"
-              className="mr-3 h-8"
-              alt="Productive Logo"
-            />
-            <span className="self-center whitespace-nowrap text-2xl font-semibold">
-              Productive
-            </span>
-          </a>
-          <ul className="mb-6 flex flex-wrap items-center text-sm text-gray-500 sm:mb-0">
-            <li>
-              <a href="#" className="mr-4 hover:underline md:mr-6 ">
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#" className="mr-4 hover:underline md:mr-6">
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a href="#" className="mr-4 hover:underline md:mr-6 ">
-                Licensing
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Contact
-              </a>
-            </li>
-          </ul>
-        </div>
-        <hr className="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
-        <span className="block text-sm text-gray-500 dark:text-gray-400 sm:text-center">
-          © 2022{" "}
-          <a href="https://productive.vote/" className="hover:underline">
-            Productive™
-          </a>
-          . All Rights Reserved.
-        </span>
-      </footer>
+      <Footer />
     </>
   );
 };

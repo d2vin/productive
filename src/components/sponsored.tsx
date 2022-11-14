@@ -31,11 +31,12 @@ const Sponsored: React.FC<SponsoredProps> = ({ id }) => {
                 title={legislation.title}
                 url={legislation.url}
                 sponsor={legislation.sponsor}
+                sponsorMemberType={legislation.sponsorMemberType}
+                sponsorId={legislation.sponsorId}
               />
             </div>
           );
-        })
-        }
+        })}
     </div>
   );
 };

@@ -43,6 +43,7 @@ export const legislationRouter = t.router({
       z.object({
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
+        policyArea: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -57,6 +58,7 @@ export const legislationRouter = t.router({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
         where: {
           sponsorMemberType: "senator",
+          policyArea: input.policyArea,
         },
         cursor: cursor ? { id: cursor } : undefined,
       });
@@ -76,6 +78,7 @@ export const legislationRouter = t.router({
       z.object({
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.number().nullish(), // <-- "cursor" needs to exist, but can be any type
+        policyArea: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -90,6 +93,7 @@ export const legislationRouter = t.router({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
         where: {
           sponsorMemberType: "representative",
+          policyArea: input.policyArea,
         },
         cursor: cursor ? { id: cursor } : undefined,
       });

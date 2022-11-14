@@ -1,6 +1,13 @@
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, SearchIcon } from "@heroicons/react/solid";
-import { SetStateAction, Dispatch, Fragment, useRef, useEffect } from "react";
+import {
+  SetStateAction,
+  Dispatch,
+  Fragment,
+  useRef,
+  useEffect,
+  MouseEventHandler,
+} from "react";
 import usePlacesAutocomplete, {
   GeocodeResult,
   getGeocode,
@@ -10,6 +17,7 @@ import usePlacesAutocomplete, {
 type PlacesAutocompleteProps = {
   setSelected: Dispatch<SetStateAction<{ lat: number; lng: number }>>;
   setAddress: Dispatch<SetStateAction<string>>;
+  onSubmit: MouseEventHandler;
   address: string;
 };
 
@@ -17,6 +25,7 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   setSelected,
   setAddress,
   address,
+  onSubmit,
 }) => {
   const {
     ready,
@@ -60,8 +69,9 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
               />
               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                 <SearchIcon
-                  className="h-5 w-5 text-gray-400"
+                  className="h-5 w-5 text-gray-400 hover:text-gray-900"
                   aria-hidden="true"
+                  onClick={onSubmit}
                 />
               </Combobox.Button>
             </div>

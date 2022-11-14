@@ -10,7 +10,7 @@ const OfficialProfile: React.FC = () => {
   const router = useRouter();
   const query = router.query;
   const { data, status } = trpc.representative.getRepresentative.useQuery({
-    id: 1
+    bioguideId: query.id as string,
   });
 
   if (status === "loading") {
@@ -30,7 +30,7 @@ const OfficialProfile: React.FC = () => {
         <Header message="Productive" />
       </div>
       <main
-        className={`bg-gray-50 mx-auto grid grid-cols-1 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${"!max-w-3xl !grid-cols-1"}`}
+        className={`mx-auto grid grid-cols-1 bg-gray-50 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${"!max-w-3xl !grid-cols-1"}`}
       >
         {/* Section */}
         <section className="col-span-2 mx-2 lg:mx-0">

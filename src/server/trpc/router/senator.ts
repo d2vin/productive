@@ -5,13 +5,13 @@ export const senatorRouter = t.router({
   getSenator: t.procedure
     .input(
       z.object({
-        id: z.number(),
+        bioguideId: z.string(),
       })
     )
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.senator.findFirst({
         where: {
-          id: input.id,
+          bioguideId: input.bioguideId,
         },
       });
     }),

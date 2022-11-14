@@ -14,6 +14,8 @@ type LegislationProps = {
   title: string;
   url: string;
   sponsor: string;
+  sponsorMemberType: string;
+  sponsorId: string;
 };
 
 const Legislation: React.FC<LegislationProps> = ({
@@ -23,6 +25,8 @@ const Legislation: React.FC<LegislationProps> = ({
   policyArea,
   title,
   sponsor,
+  sponsorMemberType,
+  sponsorId,
 }) => {
   const { data: session } = useSession();
   const buttonRef = useRef(null);
@@ -112,9 +116,14 @@ const Legislation: React.FC<LegislationProps> = ({
           </span>
         </h1>
       </div>
-      <h2 className="text-gray-400">Policy Area: {policyArea}</h2>
+      <h2 className="text-gray-400">
+        Policy Area: {policyArea ? policyArea : "General"}
+      </h2>
       <h2>Latest Action: {latestAction}</h2>
-      <h2>Sponsored by: {sponsor}</h2>
+      <h2>
+        Sponsored by:{" "}
+        <a href={`/${sponsorMemberType}/${sponsorId}`}>{sponsor}</a>
+      </h2>
       {session ? (
         <div className="flex flex-col space-y-2 ">
           <button

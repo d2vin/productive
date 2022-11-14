@@ -5,13 +5,13 @@ export const representativeRouter = t.router({
   getRepresentative: t.procedure
     .input(
       z.object({
-        id: z.number(),
+        bioguideId: z.string(),
       })
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.representative.findUnique({
+      return await ctx.prisma.representative.findFirst({
         where: {
-          id: input.id,
+          bioguideId: input.bioguideId,
         },
       });
     }),
@@ -32,7 +32,7 @@ export const representativeRouter = t.router({
       const items = await ctx.prisma.representative.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
         where: {
-          state: input.state
+          state: input.state,
         },
         cursor: cursor ? { id: cursor } : undefined,
       });

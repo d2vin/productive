@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { Tab } from "@headlessui/react";
 import Legislation from "../../components/legislation";
 import Link from "next/link";
+import Footer from "../../components/footer";
 const Profile: React.FC = () => {
   const { data: session } = useSession();
   const { data, status } =
@@ -20,7 +21,7 @@ const Profile: React.FC = () => {
     return classes.filter(Boolean).join(" ");
   }
 
-  if (!session) {
+  if (!session && status != "loading") {
     return (
       <>
         <div className="mb-16">
@@ -57,12 +58,11 @@ const Profile: React.FC = () => {
         <div className="mb-16">
           <Header message={"Productive"} />
         </div>
-        <div>Loading...</div>
       </>
     );
   }
   return (
-    <>
+    <div className="h-full bg-gray-50">
       <div className="mb-16">
         <Header message={"Productive"} />
       </div>
@@ -112,11 +112,11 @@ const Profile: React.FC = () => {
               <Tab
                 className={({ selected }) =>
                   classNames(
-                    "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                    "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                    "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-slate-400",
+                    "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none",
                     selected
-                      ? "bg-white shadow"
-                      : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                      ? "bg-white text-gray-400 shadow-md"
+                      : "text-gray-100 hover:bg-white/[0.12] hover:text-slate-600"
                   )
                 }
               >
@@ -125,11 +125,11 @@ const Profile: React.FC = () => {
               <Tab
                 className={({ selected }) =>
                   classNames(
-                    "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                    "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                    "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-slate-400",
+                    "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none",
                     selected
-                      ? "bg-white shadow"
-                      : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                      ? "bg-white text-gray-400 shadow-md"
+                      : "text-gray-100 hover:bg-white/[0.12] hover:text-slate-600"
                   )
                 }
               >
@@ -137,12 +137,7 @@ const Profile: React.FC = () => {
               </Tab>
             </Tab.List>
             <Tab.Panels>
-              <Tab.Panel
-                className={classNames(
-                  "rounded-xl bg-white p-3",
-                  "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
-                )}
-              >
+              <Tab.Panel className="h-full">
                 {/* Saved Votes */}
                 {data &&
                   data?.length > 0 &&
@@ -161,18 +156,15 @@ const Profile: React.FC = () => {
                             title={legislation.title}
                             url={legislation.url}
                             sponsor={legislation.sponsor}
+                            sponsorMemberType={legislation.sponsorMemberType}
+                            sponsorId={legislation.sponsorId}
                           />
                         </div>
                       );
                     }
                   )}
               </Tab.Panel>
-              <Tab.Panel
-                className={classNames(
-                  "rounded-xl bg-white p-3",
-                  "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
-                )}
-              ></Tab.Panel>
+              <Tab.Panel className="h-screen"></Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         </section>
@@ -188,55 +180,8 @@ const Profile: React.FC = () => {
           </section>
         )}
       </main>
-      <footer className="bg-gray-50 p-4 md:px-6 md:py-8">
-        <div className="sm:flex sm:items-center sm:justify-between">
-          <a
-            href="https://productive.vote"
-            className="mb-4 flex items-center sm:mb-0"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/productive.png"
-              className="mr-3 h-8"
-              alt="Productive Logo"
-            />
-            <span className="self-center whitespace-nowrap text-2xl font-semibold">
-              Productive
-            </span>
-          </a>
-          <ul className="mb-6 flex flex-wrap items-center text-sm text-gray-500 sm:mb-0">
-            <li>
-              <a href="#" className="mr-4 hover:underline md:mr-6 ">
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#" className="mr-4 hover:underline md:mr-6">
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a href="#" className="mr-4 hover:underline md:mr-6 ">
-                Licensing
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Contact
-              </a>
-            </li>
-          </ul>
-        </div>
-        <hr className="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
-        <span className="block text-sm text-gray-500 dark:text-gray-400 sm:text-center">
-          © 2022{" "}
-          <a href="https://productive.vote/" className="hover:underline">
-            Productive™
-          </a>
-          . All Rights Reserved.
-        </span>
-      </footer>
-    </>
+      <Footer />
+    </div>
   );
 };
 
