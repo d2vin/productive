@@ -4,6 +4,7 @@ import { trpc } from "../utils/trpc";
 import Legislation from "./legislation";
 import Image from "next/image";
 import { RadioGroup } from "@headlessui/react";
+import RadioGroupOptions from "./radio-group";
 
 const SenatorLegislation: React.FC = () => {
   const plans = [
@@ -42,6 +43,7 @@ const SenatorLegislation: React.FC = () => {
   ];
 
   const [selected, setSelected] = useState(plans[0]);
+  const [onTop, setOnTop] = useState(true);
   const senatorLegislation =
     trpc.legislation.infiniteSenatorLegislation.useInfiniteQuery(
       {
@@ -61,43 +63,26 @@ const SenatorLegislation: React.FC = () => {
 
   useEffect(() => {
     if (inView) senatorLegislation.fetchNextPage();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log(document.scrollingElement?.scrollTop);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
-  console.log(selected, plans[0]);
+  if (senatorLegislation.isFetching) {
+    return (
+      <>
+        {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+        <RadioGroupOptions selected={selected!} setSelected={setSelected} />
+        <div className="my-8 flex w-full justify-center">
+          <Image src="/grid.svg" height={32} width={32} alt="Loader" />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
-      <div className="w-full">
-        <div className="w-full">
-          <RadioGroup value={selected} onChange={setSelected}>
-            <div className="flex space-x-4 overflow-x-scroll p-2">
-              {plans.map((plan) => (
-                <RadioGroup.Option
-                  key={plan.name}
-                  value={plan}
-                  className={({ active }) =>
-                    `${
-                      active
-                        ? "ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300"
-                        : ""
-                    }
-                    relative w-full cursor-pointer rounded-lg px-4 py-2 shadow-md focus:outline-none`
-                  }
-                >
-                  <div className="flex w-full items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="truncate text-sm">
-                        <RadioGroup.Label>{plan.name}</RadioGroup.Label>
-                      </div>
-                    </div>
-                  </div>
-                </RadioGroup.Option>
-              ))}
-            </div>
-          </RadioGroup>
-        </div>
-      </div>
+      {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+      <RadioGroupOptions selected={selected!} setSelected={setSelected} />
       {selected?.name === plans[0]?.name
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
           senatorLegislation.data?.pages.map((page: { items: any[] }) =>

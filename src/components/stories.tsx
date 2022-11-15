@@ -135,11 +135,8 @@ const Stories: React.FC = () => {
 
   return (
     <>
-      <div
-        ref={ref}
-        className="mt-8 h-48 flex-col justify-center space-y-4 overflow-x-scroll rounded-sm border border-gray-200 bg-white p-4 align-middle scrollbar-thin scrollbar-thumb-black"
-      >
-        <div className="sticky z-10 flex max-w-xl space-x-2">
+      <div className="flex-col">
+        <div className="sticky z-10 flex max-w-xl space-x-2 mt-8">
           <Listbox value={selected} onChange={setSelected}>
             <div className="relative">
               <Listbox.Button className="relative w-48 cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -247,7 +244,10 @@ const Stories: React.FC = () => {
             </div>
           </Listbox>
         </div>
-        <div className="flex space-x-2">
+        <div
+          ref={ref}
+          className="mt-8 space-x-2 h-full flex overflow-x-scroll rounded-sm border border-gray-200 bg-white p-4 items-center align-middle scrollbar-thin scrollbar-thumb-black"
+        >
           {selected?.name === "Senators" &&
             (selectedState != states[0]
               ? senators.isFetching
