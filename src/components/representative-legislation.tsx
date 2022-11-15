@@ -60,7 +60,8 @@ const RepresentativeLegislation: React.FC = () => {
 
   useEffect(() => {
     if (inView) representativeLegislation.fetchNextPage();
-  }, [inView, representativeLegislation]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
 
   return (
     <>

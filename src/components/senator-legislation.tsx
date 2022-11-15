@@ -61,7 +61,8 @@ const SenatorLegislation: React.FC = () => {
 
   useEffect(() => {
     if (inView) senatorLegislation.fetchNextPage();
-  }, [inView, senatorLegislation, selected]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
 
   console.log(selected, plans[0]);
 
