@@ -235,7 +235,7 @@ const Index = () => {
                     )
                   }
                 >
-                  Your Representative Information
+                  Your Representatives
                 </Tab>
               </Tab.List>
               <Tab.Panels>
@@ -421,7 +421,7 @@ const Index = () => {
                       <label className="my-7 block text-sm font-medium">
                         Your Representatives
                       </label>
-                      <div className="space-y-2">
+                      <div className="space-y-8">
                         {offices.map((office, k) => (
                           <div
                             key={k}
@@ -458,7 +458,7 @@ const Index = () => {
           )}
         </main>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

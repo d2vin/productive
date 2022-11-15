@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
 
   return (
     <div className="fixed top-0 z-20 w-full border-b bg-white shadow-sm">
-      <div className="mx-5 flex max-w-5xl items-center justify-between bg-white lg:mx-auto h-16">
+      <div className="mx-5 flex h-16 max-w-7xl items-center justify-between bg-white lg:mx-auto">
         {/* Left - Logo */}
         <div className="relative hidden cursor-pointer lg:inline-grid ">
           <h1
@@ -64,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
         >
           <Image src="/productive.png" alt="Logo" height={40} width={40} />
         </div>
-          {/* Middle - Search Input */}
+        {/* Middle - Search Input */}
         {/* <form onSubmit={onSubmit}>
           <div className="max-w-xs">
             <div className="relative rounded-md p-3">

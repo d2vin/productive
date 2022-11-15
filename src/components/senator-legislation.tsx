@@ -43,7 +43,6 @@ const SenatorLegislation: React.FC = () => {
   ];
 
   const [selected, setSelected] = useState(plans[0]);
-  const [onTop, setOnTop] = useState(true);
   const senatorLegislation =
     trpc.legislation.infiniteSenatorLegislation.useInfiniteQuery(
       {
@@ -63,11 +62,10 @@ const SenatorLegislation: React.FC = () => {
 
   useEffect(() => {
     if (inView) senatorLegislation.fetchNextPage();
-    console.log(document.scrollingElement?.scrollTop);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
-  if (senatorLegislation.isFetching) {
+  if (senatorLegislation.isFetching && !senatorLegislation.isFetchingNextPage) {
     return (
       <>
         {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
@@ -158,16 +156,6 @@ const SenatorLegislation: React.FC = () => {
                         sponsorMemberType={legislation.sponsorMemberType}
                         sponsorId={legislation.sponsorId}
                       />
-                      {senatorLegislation.isFetching && (
-                        <div className="mb-7 flex w-full justify-center">
-                          <Image
-                            src="/grid.svg"
-                            height={32}
-                            width={32}
-                            alt="Loader"
-                          />
-                        </div>
-                      )}
                     </div>
                   );
                 }
@@ -190,6 +178,9 @@ const SenatorLegislation: React.FC = () => {
                 );
               })
           )}
+      {senatorLegislation.hasNextPage ? null : (
+        <p className="mb-8 text-center">You have reached the end of the page</p>
+      )}
     </>
   );
 };

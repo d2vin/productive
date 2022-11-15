@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import React from "react";
 import Header from "../../components/header";
 import MiniProfile from "../../components/mini-profile";
@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
       <main
         className={`mx-auto grid grid-cols-1 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${
           !session && "!max-w-3xl !grid-cols-1"
-        }`}
+        } h-screen`}
       >
         {/* Section */}
         <section className="col-span-2 mx-2 space-y-8 lg:mx-0">
@@ -102,6 +102,14 @@ const Profile: React.FC = () => {
                     <button className="rounded-lg border border-gray-300 px-2">
                       Bookmarked Representatives
                     </button>
+                    <button
+                      className="rounded-lg border border-gray-300 px-2"
+                      onClick={() => {
+                        signOut({ callbackUrl: "https://productive.vote" });
+                      }}
+                    >
+                      Sign out
+                    </button>
                   </div>
                 </div>
               </div>
@@ -133,7 +141,7 @@ const Profile: React.FC = () => {
                   )
                 }
               >
-                Elections
+                Your Representatives
               </Tab>
             </Tab.List>
             <Tab.Panels>
@@ -180,7 +188,7 @@ const Profile: React.FC = () => {
           </section>
         )}
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
