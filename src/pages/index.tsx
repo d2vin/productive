@@ -6,6 +6,7 @@ import usePlacesAutocomplete from "use-places-autocomplete";
 import Header from "../components/header";
 import { NextPage } from "next";
 import Footer from "../components/footer";
+import Head from "next/head";
 
 const Landing: NextPage = () => {
   const [address, setAddress] = useState<string>();
