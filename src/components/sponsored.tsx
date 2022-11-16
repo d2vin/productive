@@ -13,7 +13,7 @@ const Sponsored: React.FC<SponsoredProps> = ({ id }) => {
 
   return (
     <div>
-      <h1 className="mt-10 text-center text-4xl font-semibold sm:text-left">
+      <h1 className="mt-8 text-center text-lg font-semibold sm:text-left">
         Sponsored Legislation
       </h1>
       {data

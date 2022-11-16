@@ -34,9 +34,9 @@ const OfficialProfile: React.FC = () => {
       >
         {/* Section */}
         <section className="col-span-2 mx-2 lg:mx-0">
-          <div className="mt-20 text-4xl font-semibold">
-            <div className="flex justify-between">
-              <div className="ml-12">
+          <div className="mt-20">
+            <div className="flex flex-col">
+              <div>
                 <Image
                   src={`https://theunitedstates.io/images/congress/225x275/${query.id}.jpg`}
                   alt="Profile"
@@ -45,14 +45,14 @@ const OfficialProfile: React.FC = () => {
                   className="rounded-md"
                 />
               </div>
-              <div className="ml-12 flex-1 space-y-3">
-                <h1 className="text-lg">
+              <div>
+                <h1 className="text-lg font-semibold">
                   {data?.shortTitle} {data?.firstName} {data?.lastName}
                 </h1>
               </div>
             </div>
 
-            <div className="mx-2 mt-4 flex flex-col space-y-2">
+            <div className="mt-2 flex flex-col space-y-2">
               <div className="flex w-full space-x-2 text-lg text-gray-400">
                 <span className="flex-1 rounded-lg border border-gray-200 p-1 text-center">
                   State: {data?.state}

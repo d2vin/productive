@@ -15,8 +15,8 @@ const SocialAccount: React.FC<SocialAccountProps> = ({ platform, account }) => {
           <Image
             src={`/${platform}.png`}
             alt={platform}
-            height={32}
-            width={32}
+            height={24}
+            width={24}
           />
         </a>
       </Link>
