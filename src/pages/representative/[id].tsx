@@ -3,8 +3,8 @@ import Header from "../../components/header";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { trpc } from "../../utils/trpc";
-import Link from "next/link";
 import Sponsored from "../../components/sponsored";
+import SocialAccount from "../../components/social-account";
 
 const OfficialProfile: React.FC = () => {
   const router = useRouter();
@@ -35,7 +35,7 @@ const OfficialProfile: React.FC = () => {
         {/* Section */}
         <section className="col-span-2 mx-2 lg:mx-0">
           <div className="mt-20 text-4xl font-semibold">
-            <div className="flex items-center justify-between">
+            <div className="flex justify-between">
               <div className="ml-12">
                 <Image
                   src={`https://theunitedstates.io/images/congress/225x275/${query.id}.jpg`}
@@ -45,68 +45,51 @@ const OfficialProfile: React.FC = () => {
                   className="rounded-md"
                 />
               </div>
-              <div className="ml-16 flex-1 space-y-3">
-                <h1>
+              <div className="ml-12 flex-1 space-y-3">
+                <h1 className="text-lg">
                   {data?.shortTitle} {data?.firstName} {data?.lastName}
                 </h1>
               </div>
             </div>
 
-            <div className="mx-2 mt-8 flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
-              <div className="space-x-2 text-lg text-gray-400">
-                <span className="rounded-lg border border-gray-200 p-1">
+            <div className="mx-2 mt-4 flex flex-col space-y-2">
+              <div className="flex w-full space-x-2 text-lg text-gray-400">
+                <span className="flex-1 rounded-lg border border-gray-200 p-1 text-center">
                   State: {data?.state}
                 </span>
-                <span className="rounded-lg border border-gray-200 p-1">
+                <span className="flex-1 rounded-lg border border-gray-200 p-1 text-center">
                   Party: {data?.party}
                 </span>
               </div>
-              <div className="space-x-2 text-lg text-gray-400">
-                <span className="rounded-lg border border-gray-200 p-1">
+              <div className="flex w-full space-x-2 text-lg text-gray-400">
+                <span className="flex-1 rounded-lg border border-gray-200 p-1 text-center">
                   {data?.title}
                 </span>
-              </div>
-              <div className="space-x-2 text-lg text-gray-400">
-                <span className="rounded-lg border border-gray-200 p-1">
+                <span className="flex-1 rounded-lg border border-gray-200 p-1 text-center">
                   Next election: {data?.nextElection}
                 </span>
               </div>
-              <div>
+              <button className="rounded-lg border p-2 text-xs hover:bg-gray-300">
+                Bookmark
+              </button>
+              <div className="itmes-center flex justify-between space-x-2">
                 {data?.twitterAccount && (
-                  <Link href={`https://twitter.com/${data?.twitterAccount}`}>
-                    <a target="_blank">
-                      <Image
-                        src="/twitter.png"
-                        alt="Twitter"
-                        height={32}
-                        width={32}
-                      />
-                    </a>
-                  </Link>
+                  <SocialAccount
+                    platform="twitter"
+                    account={data?.twitterAccount}
+                  />
                 )}
                 {data?.youtubeAccount && (
-                  <Link href={`https://youtube.com/${data?.youtubeAccount}`}>
-                    <a target="_blank">
-                      <Image
-                        src="/youtube.png"
-                        alt="Youtube"
-                        height={32}
-                        width={32}
-                      />
-                    </a>
-                  </Link>
+                  <SocialAccount
+                    platform="youtube"
+                    account={data?.youtubeAccount}
+                  />
                 )}
                 {data?.facebookAccount && (
-                  <Link href={`https://facebook.com/${data?.facebookAccount}`}>
-                    <a target="_blank">
-                      <Image
-                        src="/facebook.png"
-                        alt="Facebook"
-                        height={32}
-                        width={32}
-                      />
-                    </a>
-                  </Link>
+                  <SocialAccount
+                    platform="facebook"
+                    account={data?.facebookAccount}
+                  />
                 )}
               </div>
             </div>

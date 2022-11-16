@@ -41,12 +41,9 @@ const Landing: NextPage = () => {
             </h1>
           </div>
           <div className="text-center sm:text-left">
-            Welcome to{" "}
-            <strong className="bg-gradient-to-bl from-gray-400 to-gray-800 bg-clip-text text-transparent">
-              Productive
-            </strong>
-            , an accessible resource for government data. Search via address or
-            explore to find all relative representative and voter information
+            Welcome to <strong>Productive</strong>, an accessible resource for
+            government data. Search via address or explore to find all relative
+            representative and voter information
           </div>
           <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
             <button
