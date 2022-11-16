@@ -243,6 +243,53 @@ const Index = () => {
                   {state.length > 0 ? (
                     <>
                       <label className="my-7 block text-sm font-medium">
+                        Your polling locations
+                      </label>
+                      <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+                        {pollingLocations != undefined ? (
+                          pollingLocations.map((pollingLocation, k) => (
+                            <div
+                              className="flex justify-between align-middle"
+                              key={k}
+                            >
+                              <div>
+                                <p>{pollingLocation.address.locationName}</p>
+                                <p>
+                                  {pollingLocation.address.line1},{" "}
+                                  {pollingLocation.address.city},{" "}
+                                  {pollingLocation.address.state}{" "}
+                                  {pollingLocation.address.zip}
+                                </p>
+                                {pollingLocation.startDate ===
+                                pollingLocation.endDate ? (
+                                  <>
+                                    <p>
+                                      Election Day: {pollingLocation.endDate}
+                                    </p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <p>
+                                      Start Date: {pollingLocation.startDate}
+                                    </p>
+                                    <p>End Date: {pollingLocation.endDate}</p>
+                                  </>
+                                )}
+                                <p>{pollingLocation.pollingHours}</p>
+                              </div>
+                              {/* <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
+                              Save
+                            </button> */}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
+                            Sorry, we couldn&apos;t find any polling locations,
+                            try a different address.
+                          </div>
+                        )}
+                      </div>
+                      <label className="my-7 block text-sm font-medium">
                         Election Resources
                       </label>
                       <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
@@ -360,53 +407,6 @@ const Index = () => {
                             </div>
                           </div>
                         ))}
-                      <label className="my-7 block text-sm font-medium">
-                        Your polling locations
-                      </label>
-                      <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-                        {pollingLocations != undefined ? (
-                          pollingLocations.map((pollingLocation, k) => (
-                            <div
-                              className="flex justify-between align-middle"
-                              key={k}
-                            >
-                              <div>
-                                <p>{pollingLocation.address.locationName}</p>
-                                <p>
-                                  {pollingLocation.address.line1},{" "}
-                                  {pollingLocation.address.city},{" "}
-                                  {pollingLocation.address.state}{" "}
-                                  {pollingLocation.address.zip}
-                                </p>
-                                {pollingLocation.startDate ===
-                                pollingLocation.endDate ? (
-                                  <>
-                                    <p>
-                                      Election Day: {pollingLocation.endDate}
-                                    </p>
-                                  </>
-                                ) : (
-                                  <>
-                                    <p>
-                                      Start Date: {pollingLocation.startDate}
-                                    </p>
-                                    <p>End Date: {pollingLocation.endDate}</p>
-                                  </>
-                                )}
-                                <p>{pollingLocation.pollingHours}</p>
-                              </div>
-                              {/* <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
-                              Save
-                            </button> */}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
-                            Sorry, we couldn&apos;t find any polling locations,
-                            try a different address.
-                          </div>
-                        )}
-                      </div>
                     </>
                   ) : (
                     <p className="my-7 max-w-2xl space-y-2 rounded-lg border bg-white p-4 sm:max-w-6xl">
