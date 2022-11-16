@@ -152,8 +152,15 @@ const Index = () => {
     return classes.filter(Boolean).join(" ");
   }
 
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string;
+
   return (
     <>
+      <script
+        async
+        defer
+        src={`https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places`}
+      />
       <div className="h-screen overflow-y-scroll bg-gray-50 scrollbar-hide">
         <div className="mb-16">
           <Header message={"Productive"} />

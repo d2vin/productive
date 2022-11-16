@@ -9,15 +9,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string;
+  // const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string;
   return (
     <SessionProvider session={session}>
       <Component {...pageProps} />
-      <script
+      {/* <script
         async
         defer
         src={`https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&libraries=places`}
-      />
+      /> */}
     </SessionProvider>
   );
 };
