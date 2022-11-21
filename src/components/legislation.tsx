@@ -1,5 +1,3 @@
-import { DotsHorizontalIcon, BookmarkIcon } from "@heroicons/react/solid";
-import { Data } from "@react-google-maps/api";
 import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 import { trpc } from "../utils/trpc";
@@ -29,7 +27,6 @@ const Legislation: React.FC<LegislationProps> = ({
   sponsorId,
 }) => {
   const { data: session } = useSession();
-  const buttonRef = useRef(null);
   const [voteFor, setVoteFor] = useState<boolean>(false);
   const [voteAgainst, setVoteAgainst] = useState<boolean>(false);
   const { data, status } = trpc.legislation.getVoteForLegislation.useQuery({

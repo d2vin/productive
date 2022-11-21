@@ -33,7 +33,7 @@ const SignIn: NextPage<SignInProps> = ({ providers }) => {
           {Object.values(providers).map((provider) => (
             <div key={provider.name}>
               <button
-                className="rounded-lg bg-blue-500 p-3 text-white"
+                className="rounded-lg bg-slate-900 p-3 text-white hover:bg-slate-800"
                 onClick={() =>
                   signIn(provider.id, {
                     callbackUrl: "https://www.productive.vote",

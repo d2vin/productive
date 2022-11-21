@@ -1,31 +1,12 @@
 import { useRouter } from "next/router";
-import { Combobox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
 import { useState, Fragment } from "react";
 import usePlacesAutocomplete from "use-places-autocomplete";
 import Header from "../components/header";
 import { NextPage } from "next";
 import Footer from "../components/footer";
-import Head from "next/head";
 
 const Landing: NextPage = () => {
-  const [address, setAddress] = useState<string>();
   const router = useRouter();
-  const {
-    ready,
-    value,
-    setValue,
-    suggestions: { status, data },
-    clearSuggestions,
-  } = usePlacesAutocomplete();
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSelect = async (address: string) => {
-    setAddress(address);
-    setValue(address, false);
-    console.log(value);
-    clearSuggestions();
-  };
 
   return (
     <>
@@ -47,7 +28,7 @@ const Landing: NextPage = () => {
           </div>
           <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
             <button
-              className="w-full rounded-lg bg-gray-900 p-2 text-white focus:shadow hover:bg-gray-800"
+              className="w-full rounded-lg bg-slate-900 p-2 text-white focus:shadow hover:bg-slate-800"
               onClick={() => {
                 router.push("/elections");
               }}
@@ -55,7 +36,7 @@ const Landing: NextPage = () => {
               Search
             </button>
             <button
-              className="w-full rounded-lg bg-gray-900 p-2 text-white focus:shadow hover:bg-gray-800"
+              className="w-full rounded-lg bg-slate-900 p-2 text-white focus:shadow hover:bg-slate-800"
               onClick={() => {
                 router.push("/home");
               }}

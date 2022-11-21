@@ -6,7 +6,7 @@ import {
   Fragment,
   useRef,
   useEffect,
-  MouseEventHandler,
+  FormEventHandler,
 } from "react";
 import usePlacesAutocomplete, {
   GeocodeResult,
@@ -17,7 +17,7 @@ import usePlacesAutocomplete, {
 type PlacesAutocompleteProps = {
   setSelected: Dispatch<SetStateAction<{ lat: number; lng: number }>>;
   setAddress: Dispatch<SetStateAction<string>>;
-  onSubmit: MouseEventHandler;
+  onSubmit: FormEventHandler;
   address: string;
 };
 
@@ -66,6 +66,8 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
                 onChange={(event) => setValue(event.target.value)}
                 value={value}
                 disabled={!ready}
+                onSubmit={onSubmit}
+                autoComplete="off"
               />
               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                 <SearchIcon

@@ -1,11 +1,10 @@
 import { useSession } from "next-auth/react";
 import React from "react";
-import MiniProfile from "./mini-profile";
 import Stories from "./stories";
-import Suggestions from "./bookmarked-officials";
 import { Tab } from "@headlessui/react";
 import SenatorLegislation from "./senator-legislation";
 import RepresentativeLegislation from "./representative-legislation";
+import SessionSidebar from "./session-sidebar";
 
 const Feed: React.FC = () => {
   const { data: session } = useSession();
@@ -22,7 +21,9 @@ const Feed: React.FC = () => {
       <section className="col-span-2 mx-2 space-y-8 lg:mx-0">
         {/* Stories */}
         <Stories />
+        {/* Tab Group */}
         <Tab.Group>
+          {/* Tab List */}
           <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
             <Tab
               className={({ selected }) =>
@@ -51,6 +52,7 @@ const Feed: React.FC = () => {
               House Legislation
             </Tab>
           </Tab.List>
+          {/* Tab Content */}
           <Tab.Panels>
             <Tab.Panel>
               <SenatorLegislation />
@@ -62,16 +64,7 @@ const Feed: React.FC = () => {
         </Tab.Group>
       </section>
       {/* Section */}
-      {session && (
-        <section className="hidden md:col-span-1 xl:inline-grid">
-          <div className="fixed top-20">
-            {/* Mini Profile */}
-            <MiniProfile />
-            {/* Suggestions */}
-            <Suggestions message={"Bookmarked Officials "} />
-          </div>
-        </section>
-      )}
+      {session && <SessionSidebar />}
     </main>
   );
 };

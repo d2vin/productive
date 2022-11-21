@@ -37,6 +37,7 @@ export const senatorRouter = t.router({
     )
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 50;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { cursor } = input;
       const items = await ctx.prisma.senator.findMany({
         take: limit + 1, // get an extra item at the end which we'll use as next cursor
@@ -76,12 +77,14 @@ export const senatorRouter = t.router({
   isBookmarkedSenator: t.procedure
     .input(z.object({ senatorId: z.number() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.bookmarkedSenator.findFirst({
+      const bookmarked = await ctx.prisma.bookmarkedSenator.findFirst({
         where: {
           senatorId: input.senatorId,
           userId: ctx.session?.user?.id,
         },
       });
+      const result = bookmarked ? true : false;
+      return result;
     }),
   bookmarkSenator: t.procedure
     .input(
@@ -91,9 +94,19 @@ export const senatorRouter = t.router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.bookmarkedSenator.create({
-        data: input,
+      const bookmarkedSenator = await ctx.prisma.bookmarkedSenator.findFirst({
+        where: {
+          userId: input.userId,
+          senatorId: input.senatorId,
+        },
       });
+      if (bookmarkedSenator) {
+        return;
+      } else {
+        return await ctx.prisma.bookmarkedSenator.create({
+          data: input,
+        });
+      }
     }),
   unbookmarkSenator: t.procedure
     .input(
@@ -109,6 +122,7 @@ export const senatorRouter = t.router({
           senatorId: input.senatorId,
         },
       });
+      if (!bookmarkedSenator) return;
       return await ctx.prisma.bookmarkedSenator.delete({
         where: {
           id: bookmarkedSenator?.id,

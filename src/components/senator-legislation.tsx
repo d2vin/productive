@@ -3,7 +3,6 @@ import { useInView } from "react-intersection-observer";
 import { trpc } from "../utils/trpc";
 import Legislation from "./legislation";
 import Image from "next/image";
-import { RadioGroup } from "@headlessui/react";
 import RadioGroupOptions from "./radio-group";
 
 const SenatorLegislation: React.FC = () => {

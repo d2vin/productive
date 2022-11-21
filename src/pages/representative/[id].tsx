@@ -20,6 +20,7 @@ const OfficialProfile: React.FC = () => {
       </div>
     );
   }
+
   if (status === "error") {
     return <p>Error...</p>;
   }
@@ -51,7 +52,7 @@ const OfficialProfile: React.FC = () => {
                 </h1>
               </div>
             </div>
-
+            {/* Profile Buttons */}
             <div className="mt-2 flex flex-col space-y-2">
               <div className="flex w-full space-x-2 text-lg text-gray-400">
                 <span className="flex-1 rounded-lg border border-gray-200 p-1 text-center">
