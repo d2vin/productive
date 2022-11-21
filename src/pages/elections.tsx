@@ -448,7 +448,7 @@ const Index = () => {
                 </GoogleMap>
               </div>
             </section>
-            {session && <SessionSidebar />}
+            {/* {session && <SessionSidebar />} */}
           </main>
         </div>
       </>
