@@ -160,41 +160,6 @@ const Index = () => {
     setIsOpen(true);
   }
 
-  const [categories] = useState({
-    Representatives: [
-      {
-        id: 1,
-        title: "Does drinking coffee make you smarter?",
-        date: "5h ago",
-        commentCount: 5,
-        shareCount: 2,
-      },
-      {
-        id: 2,
-        title: "So you've bought coffee... now what?",
-        date: "2h ago",
-        commentCount: 3,
-        shareCount: 2,
-      },
-    ],
-    "Voter Details": [
-      {
-        id: 1,
-        title: "Is tech making coffee better or worse?",
-        date: "Jan 7",
-        commentCount: 29,
-        shareCount: 16,
-      },
-      {
-        id: 2,
-        title: "The most innovative things happening in coffee",
-        date: "Mar 19",
-        commentCount: 24,
-        shareCount: 12,
-      },
-    ],
-  });
-
   if (isLoaded)
     return (
       <>
@@ -294,79 +259,66 @@ const Index = () => {
                               </Tab.List>
                               <Tab.Panels>
                                 <Tab.Panel>
-                                  <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
-                                    {pollingLocations != undefined &&
-                                    pollingLocations.length > 0 ? (
-                                      pollingLocations.map(
+                                  {pollingLocations != undefined &&
+                                  pollingLocations.length > 0 ? (
+                                    <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
+                                      {pollingLocations.map(
                                         (pollingLocation, k) => (
                                           <>
                                             <div
-                                              className="flex w-full justify-between rounded-lg border border-gray-300 p-4 align-middle"
                                               key={k}
+                                              className="w-full rounded-lg border border-gray-300 p-4"
                                             >
-                                              <div>
-                                                <p>
-                                                  {
-                                                    pollingLocation.address
-                                                      .locationName
-                                                  }
-                                                </p>
-                                                <p>
-                                                  {
-                                                    pollingLocation.address
-                                                      .line1
-                                                  }
-                                                  ,{" "}
-                                                  {pollingLocation.address.city}
-                                                  ,{" "}
-                                                  {
-                                                    pollingLocation.address
-                                                      .state
-                                                  }{" "}
-                                                  {pollingLocation.address.zip}
-                                                </p>
-                                                {pollingLocation.startDate ===
-                                                pollingLocation.endDate ? (
-                                                  <>
-                                                    <p>
-                                                      Election Day:{" "}
-                                                      {pollingLocation.endDate}
-                                                    </p>
-                                                  </>
-                                                ) : (
-                                                  <>
-                                                    <p>
-                                                      Start Date:{" "}
-                                                      {
-                                                        pollingLocation.startDate
-                                                      }
-                                                    </p>
-                                                    <p>
-                                                      End Date:{" "}
-                                                      {pollingLocation.endDate}
-                                                    </p>
-                                                  </>
-                                                )}
-                                                <p>
-                                                  {pollingLocation.pollingHours}
-                                                </p>
-                                              </div>
+                                              <p>
+                                                {
+                                                  pollingLocation.address
+                                                    .locationName
+                                                }
+                                              </p>
+                                              <p>
+                                                {pollingLocation.address.line1},{" "}
+                                                {pollingLocation.address.city},{" "}
+                                                {pollingLocation.address.state}{" "}
+                                                {pollingLocation.address.zip}
+                                              </p>
+                                              {pollingLocation.startDate ===
+                                              pollingLocation.endDate ? (
+                                                <>
+                                                  <p>
+                                                    Election Day:{" "}
+                                                    {pollingLocation.endDate}
+                                                  </p>
+                                                </>
+                                              ) : (
+                                                <>
+                                                  <p>
+                                                    Start Date:{" "}
+                                                    {pollingLocation.startDate}
+                                                  </p>
+                                                  <p>
+                                                    End Date:{" "}
+                                                    {pollingLocation.endDate}
+                                                  </p>
+                                                </>
+                                              )}
+                                              <p>
+                                                {pollingLocation.pollingHours}
+                                              </p>
                                               <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
                                                 Save
                                               </button>
                                             </div>
                                           </>
                                         )
-                                      )
-                                    ) : (
-                                      <p className="mt-4 rounded-lg border bg-white p-4 text-center">
-                                        Enter an adress to find voter details
-                                      </p>
-                                    )}
-                                  </div>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <p className="mt-4 rounded-lg border bg-white p-4 text-center">
+                                      Enter an adress to find voter details
+                                    </p>
+                                  )}
                                 </Tab.Panel>
                                 <Tab.Panel>
-                                  {" "}
                                   {offices.length > 0 ? (
                                     <>
                                       <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
