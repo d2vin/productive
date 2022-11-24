@@ -1,5 +1,5 @@
 import { signIn, useSession } from "next-auth/react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { trpc } from "../utils/trpc";
 
 type LegislationProps = {
@@ -29,13 +29,11 @@ const Legislation: React.FC<LegislationProps> = ({
   const { data: session } = useSession();
   const [voteFor, setVoteFor] = useState<boolean>(false);
   const [voteAgainst, setVoteAgainst] = useState<boolean>(false);
+  const voteMutation = trpc.legislation.voteForLegislation.useMutation();
+  const unvoteMutation = trpc.legislation.unvoteForLegislation.useMutation();
   const { data, status } = trpc.legislation.getVoteForLegislation.useQuery({
     sponsoredLegislationId: id,
   });
-  const voteMutation = trpc.legislation.voteForLegislation.useMutation();
-  const updateVoteMutation =
-    trpc.legislation.updateVoteForLegislation.useMutation();
-  const unvoteMutation = trpc.legislation.unvoteForLegislation.useMutation();
 
   const vote = async (result: boolean) => {
     const userId = session?.user?.id;
@@ -89,12 +87,6 @@ const Legislation: React.FC<LegislationProps> = ({
     }
   };
 
-  const handleVoteResetClick = async () => {
-    setVoteAgainst(false);
-    setVoteFor(false);
-    await unvote();
-  };
-
   useEffect(() => {
     if (data && status === "success") {
       setVoteFor(data.result);
@@ -124,24 +116,16 @@ const Legislation: React.FC<LegislationProps> = ({
       {session ? (
         <div className="flex flex-col space-y-2 ">
           <button
-            disabled={voteFor}
             className={`w-full rounded-lg bg-slate-300 p-2 ${
               voteFor && "bg-green-500"
             }`}
-            onClick={async (e) => {
-              if (e?.currentTarget) {
-                e.currentTarget.disabled = true;
-              }
-              if (e.currentTarget) {
-                e.currentTarget.disabled = false;
-              }
+            onClick={async () => {
               await handleVoteForClick();
             }}
           >
             Vote For
           </button>
           <button
-            disabled={voteAgainst}
             className={`w-full rounded-lg bg-slate-300 p-2 ${
               voteAgainst && "bg-cyan-400"
             }`}

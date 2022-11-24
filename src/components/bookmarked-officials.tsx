@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useRouter } from "next/router";
 import { trpc } from "../utils/trpc";
+import BookmarkedOfficial from "./bookmarked-official";
 
 type BookmarkedOfficialsProps = {
   message: string;
@@ -10,7 +10,6 @@ const BookmarkedOfficials: React.FC<BookmarkedOfficialsProps> = ({
   message,
 }) => {
   const [list, setList] = useState(true);
-  const router = useRouter();
   const senators = trpc.senator.getBookmarkedSenators.useQuery();
   const representatives =
     trpc.representative.getBookmarkedRepresentatives.useQuery();
@@ -30,55 +29,15 @@ const BookmarkedOfficials: React.FC<BookmarkedOfficialsProps> = ({
         ? senators.data
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ?.map((profile: any) => (
-              <div
-                key={profile.id}
-                className="mt-3 flex items-center justify-between"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  className="h-10 transform cursor-pointer rounded-md border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
-                  src={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
-                  alt="Logo"
-                />
-                <div className="ml-4 flex-1">
-                  <h2 className="text-sm font-semibold">{profile.firstName}</h2>
-                  <h3 className="text-xs text-gray-400">
-                    Party: {profile.party}
-                  </h3>
-                </div>
-                <button
-                  className="text-xs font-bold text-blue-400"
-                  onClick={() => router.push(`/senator/${profile.id}`)}
-                >
-                  View
-                </button>
+              <div key={profile.id}>
+                <BookmarkedOfficial profile={profile} />
               </div>
             ))
         : representatives.data
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ?.map((profile: any) => (
-              <div
-                key={profile.id}
-                className="mt-3 flex items-center justify-between"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  className="h-10 transform cursor-pointer rounded-md border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"
-                  src={`https://theunitedstates.io/images/congress/225x275/${profile.id}.jpg`}
-                  alt="Logo"
-                />
-                <div className="ml-4 flex-1">
-                  <h2 className="text-sm font-semibold">{profile.firstName}</h2>
-                  <h3 className="text-xs text-gray-400">
-                    Party: {profile.party}
-                  </h3>
-                </div>
-                <button
-                  className="text-xs font-bold text-blue-400"
-                  onClick={() => router.push(`/senator/${profile.id}`)}
-                >
-                  View
-                </button>
+              <div key={profile.id}>
+                <BookmarkedOfficial profile={profile} />
               </div>
             ))}
     </div>

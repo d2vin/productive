@@ -1,24 +1,39 @@
 import { signOut, useSession } from "next-auth/react";
-import React from "react";
+import React, { Fragment, useState } from "react";
 import Header from "../../components/header";
-import MiniProfile from "../../components/mini-profile";
-import Suggestions from "../../components/bookmarked-officials";
 import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Tab } from "@headlessui/react";
 import Legislation from "../../components/legislation";
 import Link from "next/link";
-import Footer from "../../components/footer";
+import { Dialog, Transition } from "@headlessui/react";
+import BookmarkedOfficial from "../../components/bookmarked-official";
+import SessionSidebar from "../../components/session-sidebar";
+
 const Profile: React.FC = () => {
   const { data: session } = useSession();
   const { data, status } =
     trpc.legislation.getUserVotesOnSponsoredLegislation.useQuery({
       userId: session?.user?.id as string,
     });
+  const bookmarkedRepresentatives =
+    trpc.representative.getBookmarkedRepresentatives.useQuery();
+  const bookmarkedSenators = trpc.senator.getBookmarkedSenators.useQuery();
   const router = useRouter();
+
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
+  }
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  function openModal() {
+    setIsOpen(true);
   }
 
   if (!session && status != "loading") {
@@ -73,47 +88,161 @@ const Profile: React.FC = () => {
       >
         {/* Section */}
         <section className="col-span-2 mx-2 space-y-8 lg:mx-0">
-          <div className="mt-8 flex-col justify-center space-y-12 rounded-sm border border-gray-200 bg-white p-6 align-middle">
-            <>
-              <div className="flex items-center">
-                <a
-                  className="flex items-center"
-                  onClick={() => {
-                    router.push(`/profile/${session?.user?.id}`);
-                  }}
-                >
-                  <Image
-                    src={
-                      typeof session?.user?.image === "string"
-                        ? session?.user?.image
-                        : "/productive.png"
-                    }
-                    height="64"
-                    width="64"
-                    alt="Profile"
-                    className="h-10 cursor-pointer rounded-full"
-                  />
-                </a>
-                <div className="flex flex-1 justify-center">
-                  <div className="mx-10 flex flex-1 space-x-10 text-center">
-                    <button className="rounded-lg border border-gray-300 px-2">
-                      Bookmarked Senators
-                    </button>
-                    <button className="rounded-lg border border-gray-300 px-2">
-                      Bookmarked Representatives
-                    </button>
-                    <button
-                      className="rounded-lg border border-gray-300 px-2"
-                      onClick={() => {
-                        signOut({ callbackUrl: "https://productive.vote" });
-                      }}
-                    >
-                      Sign out
-                    </button>
-                  </div>
+          <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="relative z-20" onClose={closeModal}>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0 bg-black bg-opacity-25" />
+              </Transition.Child>
+
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4 text-center">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                  >
+                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                      <Tab.Group>
+                        <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+                          <Dialog.Title
+                            as="h3"
+                            className="flex flex-1 text-lg font-medium leading-6 text-gray-900"
+                          >
+                            <Tab
+                              className={({ selected }) =>
+                                classNames(
+                                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-slate-400",
+                                  "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none",
+                                  selected
+                                    ? "bg-white text-gray-400 shadow-md"
+                                    : "text-gray-100 hover:bg-white/[0.12] hover:text-slate-600"
+                                )
+                              }
+                            >
+                              Senators
+                            </Tab>
+                          </Dialog.Title>
+                          <Dialog.Title
+                            as="h3"
+                            className="flex flex-1 text-lg font-medium leading-6 text-gray-900"
+                          >
+                            <Tab
+                              className={({ selected }) =>
+                                classNames(
+                                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-slate-400",
+                                  "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none",
+                                  selected
+                                    ? "bg-white text-gray-400 shadow-md"
+                                    : "text-gray-100 hover:bg-white/[0.12] hover:text-slate-600"
+                                )
+                              }
+                            >
+                              Representatives
+                            </Tab>
+                          </Dialog.Title>
+                        </Tab.List>
+                        <Tab.Panels>
+                          <Tab.Panel>
+                            {bookmarkedSenators.status === "success" &&
+                            bookmarkedSenators.data.length > 0 ? (
+                              <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
+                                {bookmarkedSenators.data
+                                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                  ?.map((profile: any) => (
+                                    <BookmarkedOfficial
+                                      key={profile.id}
+                                      profile={profile}
+                                    />
+                                  ))}
+                              </div>
+                            ) : (
+                              <p className="mt-4 rounded-lg border bg-white p-4 text-center">
+                                No Bookmarked Senators
+                              </p>
+                            )}
+                          </Tab.Panel>
+                          <Tab.Panel>
+                            {bookmarkedRepresentatives.status === "success" &&
+                            bookmarkedRepresentatives.data.length > 0 ? (
+                              <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
+                                {bookmarkedRepresentatives.data
+                                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                  ?.map((profile: any) => (
+                                    <BookmarkedOfficial
+                                      key={profile.id}
+                                      profile={profile}
+                                    />
+                                  ))}
+                              </div>
+                            ) : (
+                              <p className="mt-4 rounded-lg border bg-white p-4 text-center">
+                                No Bookmarked Representatives
+                              </p>
+                            )}
+                          </Tab.Panel>
+                        </Tab.Panels>
+                      </Tab.Group>
+
+                      <div className="mt-4">
+                        <button
+                          type="button"
+                          className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 hover:bg-blue-200"
+                          onClick={closeModal}
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </Dialog.Panel>
+                  </Transition.Child>
                 </div>
               </div>
-            </>
+            </Dialog>
+          </Transition>
+          <div className="mt-8 flex-col justify-center space-y-12 rounded-sm border border-gray-200 bg-white p-6 align-middle">
+            <div className="flex items-center">
+                <Image
+                  src={
+                    typeof session?.user?.image === "string"
+                      ? session?.user?.image
+                      : "/productive.png"
+                  }
+                  height="64"
+                  width="64"
+                  alt="Profile"
+                  className="h-10 cursor-pointer rounded-full"
+                />
+              <div className="flex flex-1 flex-col justify-center space-y-2">
+                <h1 className="mx-10 text-xl">Welcome, {session?.user?.name}</h1>
+                <div className="mx-10 flex flex-1 space-x-10 text-center">
+                  <button
+                    className="rounded-lg border border-gray-300 px-2"
+                    onClick={openModal}
+                  >
+                    Bookmarked Officials
+                  </button>
+                  <button
+                    className="rounded-lg border border-gray-300 px-2"
+                    onClick={() => {
+                      signOut({ callbackUrl: "https://productive.vote" });
+                    }}
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
           <Tab.Group>
             <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
@@ -177,16 +306,7 @@ const Profile: React.FC = () => {
           </Tab.Group>
         </section>
         {/* Section */}
-        {session && (
-          <section className="hidden md:col-span-1 xl:inline-grid">
-            <div className="fixed top-20">
-              {/* Mini Profile */}
-              <MiniProfile />
-              {/* Suggestions */}
-              <Suggestions message={"Bookmarked Officials "} />
-            </div>
-          </section>
-        )}
+        {session && <SessionSidebar />}
       </main>
       {/* <Footer /> */}
     </div>

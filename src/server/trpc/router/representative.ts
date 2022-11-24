@@ -68,12 +68,14 @@ export const representativeRouter = t.router({
   isBookmarkedRepresentative: t.procedure
     .input(z.object({ representativeId: z.number() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.bookmarkedRepresentative.findFirst({
+      const bookmarked = await ctx.prisma.bookmarkedRepresentative.findFirst({
         where: {
           representativeId: input.representativeId,
           userId: ctx.session?.user?.id,
         },
       });
+      const result = bookmarked ? true : false;
+      return result;
     }),
   bookmarkRepresentative: t.procedure
     .input(

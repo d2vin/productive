@@ -17,12 +17,12 @@ const OfficialProfile: React.FC = () => {
     trpc.senator.getSenator.useQuery({
       bioguideId: query.id as string,
     });
-  // mutations
-  const bookmarkMutation = trpc.senator.bookmarkSenator.useMutation();
-  const unbookmarkMutation = trpc.senator.unbookmarkSenator.useMutation();
   const isBookmarked = trpc.senator.isBookmarkedSenator.useQuery({
     senatorId: data?.id as number,
   });
+  // mutations
+  const bookmarkMutation = trpc.senator.bookmarkSenator.useMutation();
+  const unbookmarkMutation = trpc.senator.unbookmarkSenator.useMutation();
 
   useEffect(() => {
     setBookmarked(isBookmarked.data);
@@ -112,8 +112,11 @@ const OfficialProfile: React.FC = () => {
                 className="rounded-lg border p-2 text-xs hover:bg-gray-300"
                 onClick={bookmarked ? unbookmark : bookmark}
               >
-                {bookmarked && "Unbookmark and Server Side Render"}
-                {!bookmarked && "Bookmark"}
+                {isBookmarked.status === "loading" && "..."}
+                {isBookmarked.status === "success" &&
+                  bookmarked &&
+                  "Unbookmark"}
+                {isBookmarked.status === "success" && !bookmarked && "Bookmark"}
               </button>
               {/* Social Accounts */}
               <div className="itmes-center flex justify-between space-x-2">

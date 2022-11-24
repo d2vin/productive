@@ -1,15 +1,15 @@
 import { GoogleMap, InfoWindow } from "@react-google-maps/api";
 import { Tab } from "@headlessui/react";
 import axios from "axios";
-import { useSession } from "next-auth/react";
-import React, { useMemo, useState, Fragment } from "react";
+import React, { useMemo, useState, Fragment, useEffect, useRef } from "react";
 import Header from "../components/header";
 import PlacesAutocomplete from "../components/places-autocomplete";
 import { useLoadScript } from "@react-google-maps/api";
-import SessionSidebar from "../components/session-sidebar";
 import { Dialog, Transition } from "@headlessui/react";
+import PollingLocation from "../components/polling-location";
+import { LinkIcon } from "@heroicons/react/solid";
 
-type PollingLocation = {
+type TypeOfPollingLocation = {
   address: {
     locationName: string;
     line1: string;
@@ -82,7 +82,6 @@ type Office = {
 };
 
 const Index = () => {
-  const { data: session } = useSession();
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string;
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: googleMapsApiKey,
@@ -93,17 +92,21 @@ const Index = () => {
   const [officials, setOfficials] = useState<Official[]>([]);
   const [state, setState] = useState<State[]>([]);
   const [contests, setContests] = useState<Contest[]>([]);
-  const [pollingLocations, setPollingLocations] = useState<PollingLocation[]>(
-    []
-  );
+  const [pollingLocations, setPollingLocations] = useState<
+    TypeOfPollingLocation[] | null
+  >([]);
   const center = useMemo(() => ({ lat: 40.7351, lng: -73.9945 }), []);
+  const [submitted, setSubmitted] = useState<boolean>(false);
   const [selected, setSelected] = useState(center);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (event: any) => {
     event.preventDefault();
     const electionId = 2000;
-    if (!address) return;
+    if (!address) {
+      console.log("no address");
+      return;
+    }
 
     const url = "https://www.googleapis.com/civicinfo/v2/voterinfo";
     const params = {
@@ -122,7 +125,9 @@ const Index = () => {
       .get(url, { params })
       .then((response) => {
         console.log(response);
-        if (!response.data) return;
+        if (!response.data) {
+          setPollingLocations(null);
+        }
         const data = response.data;
         setPollingLocations(data.pollingLocations);
         setContests(data.contests);
@@ -144,6 +149,7 @@ const Index = () => {
       .catch((error) => {
         return error;
       });
+    setSubmitted(true);
   };
 
   function classNames(...classes: string[]) {
@@ -160,6 +166,10 @@ const Index = () => {
     setIsOpen(true);
   }
 
+  const form = useRef<HTMLFormElement>(null);
+
+  useEffect(() => console.log("Polling locations updated"), [pollingLocations]);
+
   if (isLoaded)
     return (
       <>
@@ -167,26 +177,31 @@ const Index = () => {
           <div className="mb-16">
             <Header message={"Productive"} />
           </div>
-          <main
-          // className={`mx-auto grid grid-cols-1 md:max-w-3xl md:grid-cols-2 xl:max-w-6xl xl:grid-cols-3 ${
-          //   !session && "!max-w-3xl !grid-cols-1"
-          // }`}
-          >
-            <section
-            // className="col-span-2 mx-2 lg:mx-0"
-            >
-              <div
-              // headless ui modal here
-              >
-                <div className="fixed bottom-4 left-[50%] z-10 flex translate-x-[-50%] items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={openModal}
-                    className="rounded-md bg-black bg-opacity-50 px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-30"
-                  >
-                    View Voter Details
-                  </button>
-                </div>
+          <main>
+            <section>
+              <div>
+                {submitted && (
+                  <div className="fixed bottom-4 left-[50%] z-10 flex translate-x-[-50%] items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={openModal}
+                      className="rounded-md bg-black bg-opacity-50 px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-30"
+                    >
+                      View Voter Details
+                    </button>
+                  </div>
+                )}
+                {address && !submitted && (
+                  <div className="fixed bottom-4 left-[50%] z-10 flex translate-x-[-50%] items-center justify-center">
+                    <button
+                      type="submit"
+                      onClick={onSubmit}
+                      className="rounded-md bg-black bg-opacity-50 px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-30"
+                    >
+                      Find Voter Details
+                    </button>
+                  </div>
+                )}
 
                 <Transition appear show={isOpen} as={Fragment}>
                   <Dialog
@@ -264,51 +279,10 @@ const Index = () => {
                                     <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
                                       {pollingLocations.map(
                                         (pollingLocation, k) => (
-                                          <>
-                                            <div
-                                              key={k}
-                                              className="w-full rounded-lg border border-gray-300 p-4"
-                                            >
-                                              <p>
-                                                {
-                                                  pollingLocation.address
-                                                    .locationName
-                                                }
-                                              </p>
-                                              <p>
-                                                {pollingLocation.address.line1},{" "}
-                                                {pollingLocation.address.city},{" "}
-                                                {pollingLocation.address.state}{" "}
-                                                {pollingLocation.address.zip}
-                                              </p>
-                                              {pollingLocation.startDate ===
-                                              pollingLocation.endDate ? (
-                                                <>
-                                                  <p>
-                                                    Election Day:{" "}
-                                                    {pollingLocation.endDate}
-                                                  </p>
-                                                </>
-                                              ) : (
-                                                <>
-                                                  <p>
-                                                    Start Date:{" "}
-                                                    {pollingLocation.startDate}
-                                                  </p>
-                                                  <p>
-                                                    End Date:{" "}
-                                                    {pollingLocation.endDate}
-                                                  </p>
-                                                </>
-                                              )}
-                                              <p>
-                                                {pollingLocation.pollingHours}
-                                              </p>
-                                              <button className="self-start rounded-lg border border-gray-300 px-2 hover:bg-gray-300">
-                                                Save
-                                              </button>
-                                            </div>
-                                          </>
+                                          <PollingLocation
+                                            key={k}
+                                            pollingLocation={pollingLocation}
+                                          />
                                         )
                                       )}
                                     </div>
@@ -325,15 +299,29 @@ const Index = () => {
                                         {offices.map((office, k) => (
                                           <div
                                             key={k}
-                                            className="w-full rounded-lg border border-gray-300 p-4"
+                                            className="flex w-full items-center justify-between rounded-lg border border-gray-300 p-4"
                                           >
-                                            {office.name}:{" "}
-                                            {
-                                              officials[
-                                                office
-                                                  ?.officialIndices[0] as number
-                                              ]?.name
-                                            }
+                                            <div>
+                                              {office.name}:<br />
+                                              {
+                                                officials[
+                                                  office
+                                                    ?.officialIndices[0] as number
+                                                ]?.name
+                                              }
+                                            </div>
+                                            <a
+                                              target="_blank"
+                                              href={
+                                                officials[
+                                                  office
+                                                    ?.officialIndices[0] as number
+                                                ]?.urls[0]
+                                              }
+                                              rel="noreferrer"
+                                            >
+                                              <LinkIcon className="nav-btn" />
+                                            </a>
                                           </div>
                                         ))}
                                       </div>
@@ -373,8 +361,10 @@ const Index = () => {
                     zoomControl: false,
                   }}
                 >
-                  <form onSubmit={onSubmit}>
+                  <form onSubmit={onSubmit} ref={form}>
                     <PlacesAutocomplete
+                      setPollingLocations={setPollingLocations}
+                      setSubmitted={setSubmitted}
                       setSelected={setSelected}
                       setAddress={setAddress}
                       address={address}
@@ -382,25 +372,37 @@ const Index = () => {
                     />
                   </form>
 
-                  {pollingLocations != undefined
-                    ? pollingLocations.map((pollingLocation, k) => (
-                        <InfoWindow position={center} key={k}>
-                          <div className="text-center">
-                            <p>{pollingLocation.address.locationName}</p>
-                            <p>{pollingLocation.address.line1}</p>
-                            <p>
-                              {pollingLocation.address.city},{" "}
-                              {pollingLocation.address.state}{" "}
-                              {pollingLocation.address.zip}
-                            </p>
-                          </div>
-                        </InfoWindow>
-                      ))
-                    : null}
+                  {(pollingLocations != undefined || null) &&
+                    submitted &&
+                    pollingLocations?.map((pollingLocation, k) => (
+                      <InfoWindow position={selected} key={k}>
+                        <div className="text-left">
+                          <h1 className="font-semibold">
+                            Your polling location
+                          </h1>
+                          <p>{pollingLocation.address.locationName}</p>
+                          <p>{pollingLocation.address.line1}</p>
+                          <p>
+                            {pollingLocation.address.city},{" "}
+                            {pollingLocation.address.state}{" "}
+                            {pollingLocation.address.zip}
+                          </p>
+                        </div>
+                      </InfoWindow>
+                    ))}
+                  {(pollingLocations === undefined || null) && submitted && (
+                    <InfoWindow position={selected}>
+                      <div className="text-left">
+                        <h1 className="font-semibold">Sorry</h1>
+                        <p>We couldn&apos;t find a polling </p>
+                        <p>location for this address.</p>
+                        <p>Please try another</p>
+                      </div>
+                    </InfoWindow>
+                  )}
                 </GoogleMap>
               </div>
             </section>
-            {/* {session && <SessionSidebar />} */}
           </main>
         </div>
       </>

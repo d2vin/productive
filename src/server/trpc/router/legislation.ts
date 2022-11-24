@@ -1,6 +1,5 @@
 import { t } from "../trpc";
 import { z } from "zod";
-import { Input, Result } from "postcss";
 
 export const legislationRouter = t.router({
   getSponsoredLegislation: t.procedure
@@ -161,23 +160,5 @@ export const legislationRouter = t.router({
           sponsoredLegislationId: input.sponsoredLegislationId,
         },
       });
-    }),
-  updateVoteForLegislation: t.procedure
-    .input(
-      z.object({
-        id: z.number(),
-        result: z.boolean(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const userVote = await ctx.prisma.userVote.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          result: input.result,
-        },
-      });
-      return userVote;
     }),
 });

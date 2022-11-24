@@ -1,17 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/header";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { trpc } from "../../utils/trpc";
 import Sponsored from "../../components/sponsored";
 import SocialAccount from "../../components/social-account";
+import { useSession } from "next-auth/react";
 
 const OfficialProfile: React.FC = () => {
+  const [bookmarked, setBookmarked] = useState<boolean>();
+  const { data: session } = useSession();
   const router = useRouter();
   const query = router.query;
   const { data, status } = trpc.representative.getRepresentative.useQuery({
     bioguideId: query.id as string,
   });
+  const isBookmarked = trpc.representative.isBookmarkedRepresentative.useQuery({
+    representativeId: data?.id as number,
+  });
+  // mutations
+  const bookmarkMutation =
+    trpc.representative.bookmarkRepresentative.useMutation();
+  const unbookmarkMutation =
+    trpc.representative.unbookmarkRepresentative.useMutation();
+
+  useEffect(() => {
+    setBookmarked(isBookmarked.data);
+  }, [isBookmarked.data]);
 
   if (status === "loading") {
     return (
@@ -71,7 +86,11 @@ const OfficialProfile: React.FC = () => {
                 </span>
               </div>
               <button className="rounded-lg border p-2 text-xs hover:bg-gray-300">
-                Bookmark
+                {isBookmarked.status === "loading" && "..."}
+                {isBookmarked.status === "success" &&
+                  bookmarked &&
+                  "Unbookmark"}
+                {isBookmarked.status === "success" && !bookmarked && "Bookmark"}
               </button>
               <div className="itmes-center flex justify-between space-x-2">
                 {data?.twitterAccount && (

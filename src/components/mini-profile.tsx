@@ -1,11 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 
 const MiniProfile: React.FC = () => {
   const { data: session } = useSession();
-  const router = useRouter();
   return (
     <div className="mt-14 ml-10 flex items-center justify-between">
       <Image
@@ -24,7 +22,7 @@ const MiniProfile: React.FC = () => {
       </div>
       <button
         onClick={() => {
-          signOut({ callbackUrl: 'https://productive.vote'});
+          signOut({ callbackUrl: "https://productive.vote" });
         }}
         className="text-sm font-semibold text-blue-400"
       >
