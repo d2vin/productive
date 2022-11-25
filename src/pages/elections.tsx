@@ -364,7 +364,7 @@ const Index = () => {
                       <button
                         type="submit"
                         onClick={onSubmit}
-                        className="rounded-md bg-white px-4 py-2 text-base text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-80"
+                        className="rounded-md bg-white px-4 py-1.5 text-base text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-80"
                       >
                         Find Voter Details
                       </button>
