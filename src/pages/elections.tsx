@@ -180,29 +180,6 @@ const Index = () => {
           <main>
             <section>
               <div>
-                {submitted && (
-                  <div className="fixed bottom-4 left-[50%] z-10 flex translate-x-[-50%] items-center justify-center">
-                    <button
-                      type="button"
-                      onClick={openModal}
-                      className="rounded-md bg-black bg-opacity-50 px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-30"
-                    >
-                      View Voter Details
-                    </button>
-                  </div>
-                )}
-                {address && !submitted && (
-                  <div className="fixed bottom-4 left-[50%] z-10 flex translate-x-[-50%] items-center justify-center">
-                    <button
-                      type="submit"
-                      onClick={onSubmit}
-                      className="rounded-md bg-black bg-opacity-50 px-4 py-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-30"
-                    >
-                      Find Voter Details
-                    </button>
-                  </div>
-                )}
-
                 <Transition appear show={isOpen} as={Fragment}>
                   <Dialog
                     as="div"
@@ -371,6 +348,28 @@ const Index = () => {
                       onSubmit={onSubmit}
                     />
                   </form>
+                  {submitted && (
+                    <div className="absolute left-72 top-3 z-10 transition-all duration-200">
+                      <button
+                        type="button"
+                        onClick={openModal}
+                        className="rounded-md bg-white px-4 py-1.5 text-base text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-80"
+                      >
+                        View Voter Details
+                      </button>
+                    </div>
+                  )}
+                  {address && !submitted && (
+                    <div className="absolute left-72 top-3 z-10 transition-all duration-200">
+                      <button
+                        type="submit"
+                        onClick={onSubmit}
+                        className="rounded-md bg-white px-4 py-2 text-base text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-80"
+                      >
+                        Find Voter Details
+                      </button>
+                    </div>
+                  )}
 
                   {(pollingLocations != undefined || null) &&
                     submitted &&
