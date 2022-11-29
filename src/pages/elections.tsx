@@ -209,7 +209,7 @@ const Index = () => {
                           leaveFrom="opacity-100 scale-100"
                           leaveTo="opacity-0 scale-95"
                         >
-                          <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                          <Dialog.Panel className="h-96 w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                             <Tab.Group>
                               <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
                                 <Dialog.Title
@@ -253,7 +253,7 @@ const Index = () => {
                                 <Tab.Panel>
                                   {pollingLocations != undefined &&
                                   pollingLocations.length > 0 ? (
-                                    <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
+                                    <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
                                       {pollingLocations.map(
                                         (pollingLocation, k) => (
                                           <PollingLocation
@@ -272,7 +272,7 @@ const Index = () => {
                                 <Tab.Panel>
                                   {offices.length > 0 ? (
                                     <>
-                                      <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
+                                      <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
                                         {offices.map((office, k) => (
                                           <div
                                             key={k}
@@ -297,7 +297,7 @@ const Index = () => {
                                               }
                                               rel="noreferrer"
                                             >
-                                              <LinkIcon className="nav-btn" />
+                                              <LinkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
                                             </a>
                                           </div>
                                         ))}
