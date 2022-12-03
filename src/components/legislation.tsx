@@ -73,6 +73,7 @@ const Legislation: React.FC<LegislationProps> = ({
 
   const handleVoteAgainstClick = async () => {
     if (!voteFor && !voteAgainst) {
+      setVoteAgainst(true)
       await vote(false);
     }
     if (voteAgainst) {

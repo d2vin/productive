@@ -6,6 +6,7 @@ import { legislationRouter } from "./legislation";
 import { senatorRouter } from "./senator";
 import { representativeRouter } from "./representative";
 import { voteRouter } from "./vote";
+import { officialRouter } from "./official";
 
 export const appRouter = t.router({
   auth: authRouter,
@@ -14,6 +15,7 @@ export const appRouter = t.router({
   election: electionRouter,
   legislation: legislationRouter,
   vote: voteRouter,
+  official: officialRouter,
 });
 
 // export type definition of API

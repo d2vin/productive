@@ -3,13 +3,13 @@ import React, { Fragment, useState } from "react";
 import Header from "../../components/header";
 import { trpc } from "../../utils/trpc";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { Tab } from "@headlessui/react";
 import Legislation from "../../components/legislation";
 import Link from "next/link";
 import { Dialog, Transition } from "@headlessui/react";
 import BookmarkedOfficial from "../../components/bookmarked-official";
 import SessionSidebar from "../../components/session-sidebar";
+import Official from "../../components/official";
 
 const Profile: React.FC = () => {
   const { data: session } = useSession();
@@ -20,7 +20,7 @@ const Profile: React.FC = () => {
   const bookmarkedRepresentatives =
     trpc.representative.getBookmarkedRepresentatives.useQuery();
   const bookmarkedSenators = trpc.senator.getBookmarkedSenators.useQuery();
-  const router = useRouter();
+  const savedOfficials = trpc.official.getSavedOfficials.useQuery();
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
@@ -212,19 +212,21 @@ const Profile: React.FC = () => {
           </Transition>
           <div className="mt-8 flex-col justify-center space-y-12 rounded-sm border border-gray-200 bg-white p-6 align-middle">
             <div className="flex items-center">
-                <Image
-                  src={
-                    typeof session?.user?.image === "string"
-                      ? session?.user?.image
-                      : "/productive.png"
-                  }
-                  height="64"
-                  width="64"
-                  alt="Profile"
-                  className="h-10 cursor-pointer rounded-full"
-                />
+              <Image
+                src={
+                  typeof session?.user?.image === "string"
+                    ? session?.user?.image
+                    : "/productive.png"
+                }
+                height="64"
+                width="64"
+                alt="Profile"
+                className="h-10 cursor-pointer rounded-full"
+              />
               <div className="flex flex-1 flex-col justify-center space-y-2">
-                <h1 className="mx-10 text-xl">Welcome, {session?.user?.name}</h1>
+                <h1 className="mx-10 text-xl">
+                  Welcome, {session?.user?.name}
+                </h1>
                 <div className="mx-10 flex flex-1 space-x-10 text-center">
                   <button
                     className="rounded-lg border border-gray-300 px-2"
@@ -301,7 +303,22 @@ const Profile: React.FC = () => {
                     }
                   )}
               </Tab.Panel>
-              <Tab.Panel className="h-screen"></Tab.Panel>
+              <Tab.Panel className="h-screen">
+                <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
+                  {savedOfficials.data?.map((official, k) => (
+                    <Official
+                      key={k}
+                      office={official.office as string}
+                      official={official.name}
+                      channel={official.channel as string}
+                      channelId={""}
+                      url={""}
+                      wikiUrl={""}
+                      photoUrl={""}
+                    />
+                  ))}
+                </div>
+              </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         </section>

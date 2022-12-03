@@ -1,13 +1,15 @@
 import { GoogleMap, InfoWindow } from "@react-google-maps/api";
 import { Tab } from "@headlessui/react";
 import axios from "axios";
-import React, { useMemo, useState, Fragment, useEffect, useRef } from "react";
+import React, { useMemo, useState, Fragment, useRef } from "react";
 import Header from "../components/header";
 import PlacesAutocomplete from "../components/places-autocomplete";
 import { useLoadScript } from "@react-google-maps/api";
 import { Dialog, Transition } from "@headlessui/react";
 import PollingLocation from "../components/polling-location";
-import { LinkIcon } from "@heroicons/react/solid";
+import { BookmarkIcon, LinkIcon, UserIcon } from "@heroicons/react/solid";
+import { trpc } from "../utils/trpc";
+import { signIn, useSession } from "next-auth/react";
 
 type TypeOfPollingLocation = {
   address: {
@@ -64,7 +66,7 @@ type Channel = {
   id: string;
 };
 
-type Official = {
+type TypeOfOfficial = {
   name: string;
   address: RepAddress[];
   party: string;
@@ -89,7 +91,7 @@ const Index = () => {
   });
   const [address, setAddress] = useState<string>("");
   const [offices, setOffices] = useState<Office[]>([]);
-  const [officials, setOfficials] = useState<Official[]>([]);
+  const [officials, setOfficials] = useState<TypeOfOfficial[]>([]);
   const [state, setState] = useState<State[]>([]);
   const [contests, setContests] = useState<Contest[]>([]);
   const [pollingLocations, setPollingLocations] = useState<
@@ -98,6 +100,10 @@ const Index = () => {
   const center = useMemo(() => ({ lat: 40.7351, lng: -73.9945 }), []);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [selected, setSelected] = useState(center);
+  const [officialIndex, setOfficialIndex] = useState<number>(0);
+  const { data: session } = useSession();
+
+  const officialMutation = trpc.official.saveOfficial.useMutation();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (event: any) => {
@@ -152,6 +158,37 @@ const Index = () => {
     setSubmitted(true);
   };
 
+  const handleSaveOfficialClick = async () => {
+    console.log("saving official");
+    await saveOfficial();
+  };
+
+  const saveOfficial = async () => {
+    const userId = session?.user?.id;
+    const office = offices[officialIndex]?.name;
+    const name = officials[officialIndex]?.name;
+    const party = officials[officialIndex]?.party;
+    const channel = officials[officialIndex]?.channels[0]?.type;
+    const channelId = officials[officialIndex]?.channels[1]?.id;
+    const url = officials[officialIndex]?.urls[0];
+    const wikiUrl = officials[officialIndex]?.urls[1];
+    await officialMutation.mutate({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      userId: userId!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      name: name!,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      party: party!,
+      office: office,
+      channel: channel,
+      channelId: channelId,
+      url: url,
+      wikiUrl: wikiUrl,
+      // photoUrl: z.string().optional(),
+      // bioguideId: z.string().optional(),
+    });
+  };
+
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
   }
@@ -167,8 +204,6 @@ const Index = () => {
   }
 
   const form = useRef<HTMLFormElement>(null);
-
-  useEffect(() => console.log("Polling locations updated"), [pollingLocations]);
 
   if (isLoaded)
     return (
@@ -274,32 +309,55 @@ const Index = () => {
                                     <>
                                       <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
                                         {offices.map((office, k) => (
-                                          <div
-                                            key={k}
-                                            className="flex w-full items-center justify-between rounded-lg border border-gray-300 p-4"
-                                          >
-                                            <div>
-                                              {office.name}:<br />
-                                              {
-                                                officials[
-                                                  office
-                                                    ?.officialIndices[0] as number
-                                                ]?.name
-                                              }
-                                            </div>
-                                            <a
-                                              target="_blank"
-                                              href={
-                                                officials[
-                                                  office
-                                                    ?.officialIndices[0] as number
-                                                ]?.urls[0]
-                                              }
-                                              rel="noreferrer"
+                                          <>
+                                            <div
+                                              key={k}
+                                              className="flex w-full items-center justify-between rounded-lg border border-gray-300 p-4"
                                             >
-                                              <LinkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
-                                            </a>
-                                          </div>
+                                              <div>
+                                                {office.name}:<br />
+                                                {
+                                                  officials[
+                                                    office
+                                                      ?.officialIndices[0] as number
+                                                  ]?.name
+                                                }
+                                              </div>
+                                              <div className="flex">
+                                                <a
+                                                  target="_blank"
+                                                  href={
+                                                    officials[
+                                                      office
+                                                        ?.officialIndices[0] as number
+                                                    ]?.urls[0]
+                                                  }
+                                                  rel="noreferrer"
+                                                >
+                                                  <LinkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
+                                                </a>
+                                                {session ? (
+                                                  <button
+                                                    onClick={async () => {
+                                                      await setOfficialIndex(
+                                                        office
+                                                          ?.officialIndices[0] as number
+                                                      );
+                                                      await handleSaveOfficialClick();
+                                                    }}
+                                                  >
+                                                    <BookmarkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
+                                                  </button>
+                                                ) : (
+                                                  <button
+                                                    onClick={() => signIn()}
+                                                  >
+                                                    <UserIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
+                                                  </button>
+                                                )}
+                                              </div>
+                                            </div>
+                                          </>
                                         ))}
                                       </div>
                                     </>

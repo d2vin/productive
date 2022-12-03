@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ message }) => {
         <div className="relative hidden cursor-pointer lg:inline-grid ">
           <h1
             onClick={() => router.push("/")}
-            className="ml-8 text-2xl font-extralight"
+            className="ml-8 text-2xl font-alex"
           >
             {message}
           </h1>
