@@ -1,11 +1,14 @@
 import { BookmarkIcon, LinkIcon, UserIcon } from "@heroicons/react/solid";
-import React from "react";
+import { BookmarkIcon as OutlinedBookmarkIcon } from "@heroicons/react/outline";
+import React, { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
+import { trpc } from "../utils/trpc";
 
 type OfficialProps = {
   key: number;
   office: string;
   official: string;
+  party: string;
   channel: string;
   channelId: string;
   url: string;
@@ -17,6 +20,7 @@ const Official: React.FC<OfficialProps> = ({
   key,
   office,
   official,
+  party,
   channel,
   channelId,
   url,
@@ -24,6 +28,30 @@ const Official: React.FC<OfficialProps> = ({
   photoUrl,
 }) => {
   const { data: session } = useSession();
+  const [isSaved, setIsSaved] = useState<boolean>(true);
+  const saveOfficialMutation = trpc.official.saveOfficial.useMutation();
+  const unsaveOfficialMutation = trpc.official.unsaveOfficial.useMutation();
+  const handleSaveOfficialClick = async () => {
+    if (isSaved) {
+      setIsSaved(false);
+      unsaveOfficialMutation.mutate({
+        name: official,
+        party: party,
+      });
+    } else {
+      setIsSaved(true);
+      saveOfficialMutation.mutate({
+        userId: session?.user?.id as string,
+        name: official,
+        party: party,
+        office: office,
+        channel: channel,
+        channelId: channelId,
+        url: url,
+        wikiUrl: wikiUrl,
+      });
+    }
+  };
   return (
     <div
       key={key}
@@ -40,12 +68,14 @@ const Official: React.FC<OfficialProps> = ({
         {session ? (
           <button
             onClick={async () => {
-              console.log("saving official");
-              // await setOfficialIndex(office?.officialIndices[0] as number);
-              // await handleSaveOfficialClick();
+              await handleSaveOfficialClick();
             }}
           >
-            <BookmarkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
+            {isSaved ? (
+              <BookmarkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
+            ) : (
+              <OutlinedBookmarkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
+            )}
           </button>
         ) : (
           <button onClick={() => signIn()}>

@@ -25,21 +25,23 @@ const BookmarkedOfficials: React.FC<BookmarkedOfficialsProps> = ({
           {list ? "Sen" : "Rep"}
         </button>
       </div>
-      {list
-        ? senators.data
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ?.map((profile: any) => (
-              <div key={profile.id}>
-                <BookmarkedOfficial profile={profile} />
-              </div>
-            ))
-        : representatives.data
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ?.map((profile: any) => (
-              <div key={profile.id}>
-                <BookmarkedOfficial profile={profile} />
-              </div>
-            ))}
+      <div className="space-y-2">
+        {list
+          ? senators.data
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ?.map((profile: any) => (
+                <div key={profile.id}>
+                  <BookmarkedOfficial profile={profile} />
+                </div>
+              ))
+          : representatives.data
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ?.map((profile: any) => (
+                <div key={profile.id}>
+                  <BookmarkedOfficial profile={profile} />
+                </div>
+              ))}
+      </div>
     </div>
   );
 };

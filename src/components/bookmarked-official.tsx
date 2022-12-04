@@ -9,7 +9,7 @@ type BookmarkedOfficialProps = {
 const BookmarkedOfficial: React.FC<BookmarkedOfficialProps> = ({ profile }) => {
   const router = useRouter();
   return (
-    <div key={profile.id} className="mt-4 flex items-center justify-between">
+    <div key={profile.id} className="flex items-center justify-between">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         className="h-10 transform cursor-pointer rounded-md border object-contain p-[2px] transition duration-200 ease-out hover:scale-110"

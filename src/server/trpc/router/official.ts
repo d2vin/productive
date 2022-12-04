@@ -43,9 +43,9 @@ export const officialRouter = t.router({
       },
     });
   }),
-  unSaveOfficial: t.procedure
+  unsaveOfficial: t.procedure
     .input(z.object({ name: z.string(), party: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const savedOfficial = await ctx.prisma.official.findFirst({
         where: {
           userId: ctx?.session?.user?.id,

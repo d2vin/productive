@@ -100,7 +100,6 @@ const Index = () => {
   const center = useMemo(() => ({ lat: 40.7351, lng: -73.9945 }), []);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [selected, setSelected] = useState(center);
-  const [officialIndex, setOfficialIndex] = useState<number>(0);
   const { data: session } = useSession();
 
   const officialMutation = trpc.official.saveOfficial.useMutation();
@@ -158,12 +157,12 @@ const Index = () => {
     setSubmitted(true);
   };
 
-  const handleSaveOfficialClick = async () => {
+  const handleSaveOfficialClick = async (officialIndex: number) => {
     console.log("saving official");
-    await saveOfficial();
+    await saveOfficial(officialIndex);
   };
 
-  const saveOfficial = async () => {
+  const saveOfficial = async (officialIndex: number) => {
     const userId = session?.user?.id;
     const office = offices[officialIndex]?.name;
     const name = officials[officialIndex]?.name;
@@ -339,11 +338,10 @@ const Index = () => {
                                                 {session ? (
                                                   <button
                                                     onClick={async () => {
-                                                      await setOfficialIndex(
+                                                      await handleSaveOfficialClick(
                                                         office
                                                           ?.officialIndices[0] as number
                                                       );
-                                                      await handleSaveOfficialClick();
                                                     }}
                                                   >
                                                     <BookmarkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />

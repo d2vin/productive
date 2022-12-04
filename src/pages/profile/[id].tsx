@@ -77,7 +77,7 @@ const Profile: React.FC = () => {
     );
   }
   return (
-    <div className="h-full bg-gray-50">
+    <div className="h-screen overflow-y-scroll bg-gray-50 scrollbar-hide">
       <div className="mb-16">
         <Header message={"Productive"} />
       </div>
@@ -157,39 +157,53 @@ const Profile: React.FC = () => {
                           <Tab.Panel>
                             {bookmarkedSenators.status === "success" &&
                             bookmarkedSenators.data.length > 0 ? (
-                              <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
+                              <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
                                 {bookmarkedSenators.data
                                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                   ?.map((profile: any) => (
-                                    <BookmarkedOfficial
+                                    <div
                                       key={profile.id}
-                                      profile={profile}
-                                    />
+                                      className="rounded-lg border bg-white p-2"
+                                    >
+                                      <BookmarkedOfficial
+                                        key={profile.id}
+                                        profile={profile}
+                                      />
+                                    </div>
                                   ))}
                               </div>
                             ) : (
-                              <p className="mt-4 rounded-lg border bg-white p-4 text-center">
-                                No Bookmarked Senators
-                              </p>
+                              <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
+                                <p className="mt-4 rounded-lg border bg-white p-4 text-center">
+                                  No Bookmarked Senators
+                                </p>
+                              </div>
                             )}
                           </Tab.Panel>
                           <Tab.Panel>
                             {bookmarkedRepresentatives.status === "success" &&
                             bookmarkedRepresentatives.data.length > 0 ? (
-                              <div className="mt-4 h-16 space-y-2 overflow-y-scroll scrollbar-none">
+                              <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
                                 {bookmarkedRepresentatives.data
                                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                   ?.map((profile: any) => (
-                                    <BookmarkedOfficial
+                                    <div
                                       key={profile.id}
-                                      profile={profile}
-                                    />
+                                      className="rounded-lg border bg-white p-2"
+                                    >
+                                      <BookmarkedOfficial
+                                        key={profile.id}
+                                        profile={profile}
+                                      />
+                                    </div>
                                   ))}
                               </div>
                             ) : (
-                              <p className="mt-4 rounded-lg border bg-white p-4 text-center">
-                                No Bookmarked Representatives
-                              </p>
+                              <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
+                                <p className="rounded-lg border bg-white p-4 text-center">
+                                  No Bookmarked Representatives
+                                </p>
+                              </div>
                             )}
                           </Tab.Panel>
                         </Tab.Panels>
@@ -304,28 +318,36 @@ const Profile: React.FC = () => {
                   )}
               </Tab.Panel>
               <Tab.Panel className="h-screen">
-                <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
-                  {savedOfficials.data?.map((official, k) => (
-                    <Official
-                      key={k}
-                      office={official.office as string}
-                      official={official.name}
-                      channel={official.channel as string}
-                      channelId={""}
-                      url={""}
-                      wikiUrl={""}
-                      photoUrl={""}
-                    />
-                  ))}
-                </div>
+                {savedOfficials?.status === "success" &&
+                savedOfficials.data?.length > 0 ? (
+                  <div className="mt-4 space-y-2 overflow-y-scroll scrollbar-none">
+                    {savedOfficials.data?.map((official, k) => (
+                      <Official
+                        key={k}
+                        office={official.office as string}
+                        official={official.name}
+                        party={official.party}
+                        channel={official.channel as string}
+                        channelId={""}
+                        url={official.url as string}
+                        wikiUrl={""}
+                        photoUrl={""}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
+                    <div className="flex w-full items-center justify-between rounded-lg border border-gray-300 p-4">
+                      No saved representatives
+                    </div>
+                  </div>
+                )}
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         </section>
-        {/* Section */}
         {session && <SessionSidebar />}
       </main>
-      {/* <Footer /> */}
     </div>
   );
 };
