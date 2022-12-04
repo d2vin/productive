@@ -262,7 +262,7 @@ const Index = () => {
                                       )
                                     }
                                   >
-                                    Voter Details
+                                    Polling Locations
                                   </Tab>
                                 </Dialog.Title>
                                 <Dialog.Title
@@ -411,9 +411,9 @@ const Index = () => {
                       <button
                         type="button"
                         onClick={openModal}
-                        className="rounded-md bg-white px-4 py-1.5 text-base text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-80"
+                        className="w-20 rounded-md bg-white px-4 py-1.5 text-base text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-80"
                       >
-                        View Voter Details
+                        View
                       </button>
                     </div>
                   )}
@@ -422,9 +422,9 @@ const Index = () => {
                       <button
                         type="submit"
                         onClick={onSubmit}
-                        className="rounded-md bg-white px-4 py-1.5 text-base text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-80"
+                        className="w-20 rounded-md bg-white px-4 py-1.5 text-base text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 hover:bg-opacity-80"
                       >
-                        Find Voter Details
+                        Find
                       </button>
                     </div>
                   )}
