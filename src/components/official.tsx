@@ -14,6 +14,7 @@ type OfficialProps = {
   url: string;
   wikiUrl: string;
   photoUrl: string;
+  saved: boolean;
 };
 
 const Official: React.FC<OfficialProps> = ({
@@ -26,9 +27,10 @@ const Official: React.FC<OfficialProps> = ({
   url,
   wikiUrl,
   photoUrl,
+  saved,
 }) => {
   const { data: session } = useSession();
-  const [isSaved, setIsSaved] = useState<boolean>(true);
+  const [isSaved, setIsSaved] = useState<boolean>(saved);
   const saveOfficialMutation = trpc.official.saveOfficial.useMutation();
   const unsaveOfficialMutation = trpc.official.unsaveOfficial.useMutation();
   const handleSaveOfficialClick = async () => {

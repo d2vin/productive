@@ -73,7 +73,7 @@ const OfficialProfile: React.FC = () => {
         <section className="col-span-2 mx-2 lg:mx-0">
           {/* Profile masthead */}
           <div className="mt-20">
-            <div className="flex flex-col">
+            <div className="flex flex-col text-center sm:text-left">
               <div>
                 <Image
                   src={`https://theunitedstates.io/images/congress/225x275/${query.id}.jpg`}

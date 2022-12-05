@@ -292,8 +292,7 @@ const Profile: React.FC = () => {
             <Tab.Panels>
               <Tab.Panel className="h-full">
                 {/* Saved Votes */}
-                {data &&
-                  data?.length > 0 &&
+                {data && data?.length > 0 ? (
                   data?.map(
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     (legislation: any, k: React.Key | null | undefined) => {
@@ -315,7 +314,14 @@ const Profile: React.FC = () => {
                         </div>
                       );
                     }
-                  )}
+                  )
+                ) : (
+                  <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
+                    <div className="flex w-full items-center justify-between rounded-lg border border-gray-300 p-4">
+                      No saved representatives
+                    </div>
+                  </div>
+                )}
               </Tab.Panel>
               <Tab.Panel className="h-screen">
                 {savedOfficials?.status === "success" &&
@@ -332,6 +338,7 @@ const Profile: React.FC = () => {
                         url={official.url as string}
                         wikiUrl={""}
                         photoUrl={""}
+                        saved={true}
                       />
                     ))}
                   </div>

@@ -10,6 +10,7 @@ import PollingLocation from "../components/polling-location";
 import { BookmarkIcon, LinkIcon, UserIcon } from "@heroicons/react/solid";
 import { trpc } from "../utils/trpc";
 import { signIn, useSession } from "next-auth/react";
+import Official from "../components/official";
 
 type TypeOfPollingLocation = {
   address: {
@@ -168,7 +169,7 @@ const Index = () => {
     const name = officials[officialIndex]?.name;
     const party = officials[officialIndex]?.party;
     const channel = officials[officialIndex]?.channels[0]?.type;
-    const channelId = officials[officialIndex]?.channels[1]?.id;
+    const channelId = officials[officialIndex]?.channels[0]?.id;
     const url = officials[officialIndex]?.urls[0];
     const wikiUrl = officials[officialIndex]?.urls[1];
     await officialMutation.mutate({
@@ -309,52 +310,48 @@ const Index = () => {
                                       <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
                                         {offices.map((office, k) => (
                                           <>
-                                            <div
+                                            <Official
                                               key={k}
-                                              className="flex w-full items-center justify-between rounded-lg border border-gray-300 p-4"
-                                            >
-                                              <div>
-                                                {office.name}:<br />
-                                                {
-                                                  officials[
-                                                    office
-                                                      ?.officialIndices[0] as number
-                                                  ]?.name
-                                                }
-                                              </div>
-                                              <div className="flex">
-                                                <a
-                                                  target="_blank"
-                                                  href={
-                                                    officials[
-                                                      office
-                                                        ?.officialIndices[0] as number
-                                                    ]?.urls[0]
-                                                  }
-                                                  rel="noreferrer"
-                                                >
-                                                  <LinkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
-                                                </a>
-                                                {session ? (
-                                                  <button
-                                                    onClick={async () => {
-                                                      await handleSaveOfficialClick(
-                                                        office
-                                                          ?.officialIndices[0] as number
-                                                      );
-                                                    }}
-                                                  >
-                                                    <BookmarkIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
-                                                  </button>
-                                                ) : (
-                                                  <button
-                                                    onClick={() => signIn()}
-                                                  >
-                                                    <UserIcon className="h-6 cursor-pointer transition-all duration-150 ease-out hover:scale-125" />
-                                                  </button>
-                                                )}
-                                              </div>
-                                            </div>
+                                              office={office.name}
+                                              official={
+                                                officials[
+                                                  office
+                                                    ?.officialIndices[0] as number
+                                                ]?.name as string
+                                              }
+                                              party={
+                                                officials[
+                                                  office
+                                                    ?.officialIndices[0] as number
+                                                ]?.party as string
+                                              }
+                                              channel={
+                                                officials[
+                                                  office
+                                                    ?.officialIndices[0] as number
+                                                ]?.channels[0]?.type as string
+                                              }
+                                              channelId={
+                                                officials[
+                                                  office
+                                                    ?.officialIndices[0] as number
+                                                ]?.channels[0]?.id as string
+                                              }
+                                              url={
+                                                officials[
+                                                  office
+                                                    ?.officialIndices[0] as number
+                                                ]?.urls[0] as string
+                                              }
+                                              wikiUrl={
+                                                officials[
+                                                  office
+                                                    ?.officialIndices[0] as number
+                                                ]?.urls[1] as string
+                                              }
+                                              photoUrl={""}
+                                              saved={false}
+                                            />
                                           </>
                                         ))}
                                       </div>

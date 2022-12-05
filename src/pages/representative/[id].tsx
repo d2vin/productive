@@ -50,7 +50,7 @@ const OfficialProfile: React.FC = () => {
       >
         {/* Section */}
         <section className="col-span-2 mx-2 lg:mx-0">
-          <div className="mt-20">
+          <div className="mt-20 text-center sm:text-left">
             <div className="flex flex-col">
               <div>
                 <Image
