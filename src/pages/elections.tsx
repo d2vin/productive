@@ -299,9 +299,11 @@ const Index = () => {
                                       )}
                                     </div>
                                   ) : (
-                                    <p className="mt-4 rounded-lg border bg-white p-4 text-center">
-                                      Enter an adress to find voter details
-                                    </p>
+                                    <div className="mt-4 h-56 space-y-2 overflow-y-scroll scrollbar-none">
+                                      <p className="rounded-lg border bg-white p-4 text-center">
+                                        Polling location not found
+                                      </p>
+                                    </div>
                                   )}
                                 </Tab.Panel>
                                 <Tab.Panel>
