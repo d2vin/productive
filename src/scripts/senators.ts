@@ -7,7 +7,7 @@ const doBackfill = async () => {
     "https://api.propublica.org/congress/v1/117/senate/members.json",
     {
       headers: {
-        "X-API-Key": "UfkwGLR7qYlW4i0fKxiLJ3kxIFnPp1lJolHy8hw8",
+        "X-API-Key": process.env.PROPUBLICA_API_KEY as string,
       },
     }
   );

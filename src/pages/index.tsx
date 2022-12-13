@@ -1,6 +1,4 @@
 import { useRouter } from "next/router";
-import { useState, Fragment } from "react";
-import usePlacesAutocomplete from "use-places-autocomplete";
 import Header from "../components/header";
 import { NextPage } from "next";
 import Footer from "../components/footer";

@@ -20,7 +20,7 @@ const prisma = new PrismaClient();
 //       `https://api.congress.gov/v3/member/${officials[i]?.bioguideId}/sponsored-legislation/`,
 //       {
 //         params: {
-//           api_key: process.env.CONGRESS_API,
+//           api_key: process.env.CONGRESS_API_KEY,
 //         },
 //       }
 //     );
