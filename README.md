@@ -1,4 +1,30 @@
-# Create T3 App
+# Welcome
+
+This is [Productive](https://productive.vote), an online resource for governmnet legislation.
+
+## What's next? What do I do with this?
+
+With Productive, users can stay up to date on legislation passed by members of congress, and find data on the issues they care about most.
+
+Productive offers users even more features such as
+
+- [Map of Representatives](https://productive.vote/elections)
+- [Private Voting on Legislation](https://productive.vote/home)
+- [Representative Profiles](https://productive.vote/home)
+- [Plus more features coming soon](https://productive.vote)
+
+## Learn More
+
+To learn more about the [Productive](https://productive.vote), take a look at the following resources:
+
+- [Mission](https://productive.vote)
+- [Founder](https://devinminn.com) — My personal site
+
+You can contact me on my personal site by clicking [here](https://devinminn.com/contact) — your feedback and contributions are welcome!
+
+## How do I join?
+
+Sign up for [Productive](https://productive.vote) by clicking the icon on the top right
 
 This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
 
@@ -21,7 +47,7 @@ If you are not familiar with the different technologies used in this project, pl
 
 Also checkout these awesome tutorials on `create-t3-app`.
 
-- [Build a Blog With the T3 Stack - tRPC, TypeScript, Next.js, Prisma & Zod](https://www.youtube.com/watch?v=syEWlxVFUrY)
+- [Build a Blog With the T3 Stack - tRPC, TypeScript, Next.js, Prisma &amp; Zod](https://www.youtube.com/watch?v=syEWlxVFUrY)
 - [Build a Live Chat Application with the T3 Stack - TypeScript, Tailwind, tRPC](https://www.youtube.com/watch?v=dXRRY37MPuk)
 - [Build a full stack app with create-t3-app](https://www.nexxel.dev/blog/ct3a-guestbook)
 - [A first look at create-t3-app](https://dev.to/ajcwebdev/a-first-look-at-create-t3-app-1i8f)
