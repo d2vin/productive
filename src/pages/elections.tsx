@@ -7,7 +7,6 @@ import PlacesAutocomplete from "../components/places-autocomplete";
 import { useLoadScript } from "@react-google-maps/api";
 import { Dialog, Transition } from "@headlessui/react";
 import PollingLocation from "../components/polling-location";
-import { BookmarkIcon, LinkIcon, UserIcon } from "@heroicons/react/solid";
 import { trpc } from "../utils/trpc";
 import { signIn, useSession } from "next-auth/react";
 import Official from "../components/official";
